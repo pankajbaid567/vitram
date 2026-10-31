@@ -3,6 +3,8 @@ import { X } from 'lucide-react'
 import { Dialog as D } from 'radix-ui'
 import { useRef, type ReactNode } from 'react'
 
+/* oxlint-disable react/refs -- deliberate: focus must be captured *during render*. Radix moves focus into the dialog in a child
+   effect, before any parent effect or layout effect could read document.activeElement (verified by the axe/keyboard audit). */
 /** Radix restores focus only to its own <Trigger>. Our overlays open programmatically, so remember what had
  * focus when they opened and return it on close (WCAG 2.4.3 focus order). */
 function useReturnFocus(open: boolean) {
@@ -19,6 +21,8 @@ function useReturnFocus(open: boolean) {
     }
   }
 }
+
+/* oxlint-enable react/refs */
 
 const OVERLAY = 'overlay-in fixed inset-0 z-50 bg-navy-900/35 backdrop-blur-[3px]'
 const CLOSE = 'inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-ink/5 hover:text-ink'

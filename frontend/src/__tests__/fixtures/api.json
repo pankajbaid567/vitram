@@ -1,0 +1,1829 @@
+{
+ "me": {
+  "id": "86be468e-e888-4b92-aeb2-2ee5247ca656",
+  "name": "Sample User",
+  "email": "sample-fixture@sample.vitram.local",
+  "dob": "1994-02-11",
+  "city": "Mumbai",
+  "employment_type": "salaried",
+  "employer": "Acme Technologies (sample)",
+  "designation": "Senior Engineer",
+  "salary_manual": null,
+  "preferred_language": "en",
+  "phone_masked": null,
+  "phone_verified": false,
+  "email_verified": false,
+  "onboarding_step": "done",
+  "is_sample": true,
+  "consents": [
+   "ai_processing",
+   "financial_documents",
+   "terms"
+  ]
+ },
+ "dashboard": {
+  "currency": "INR",
+  "user": {
+   "name": "Sample User",
+   "is_sample": true,
+   "onboarding_step": "done"
+  },
+  "assistant": {
+   "chat_mode": "tool",
+   "voice_available": false
+  },
+  "money": {
+   "monthly_income": {
+    "value": 118200.0,
+    "state": "extracted",
+    "source": "Recurring credit 'Acme Technologies Pvt Ltd Salary' looks like salary",
+    "confidence": 0.95
+   },
+   "avg_monthly_outflow": {
+    "value": 115500.47,
+    "state": "extracted",
+    "source": "260 transactions, 01 Mar 2026 – 31 Aug 2026"
+   },
+   "fixed_monthly": {
+    "value": 43923.56,
+    "state": "extracted",
+    "source": "Recurring EMIs, rent, premiums, subscriptions and utilities"
+   },
+   "monthly_surplus": {
+    "value": 8446.08,
+    "state": "extracted",
+    "source": "Average inflow minus average outflow"
+   },
+   "months_covered": 6.0,
+   "period_start": "2026-03-01",
+   "period_end": "2026-08-31",
+   "top_categories": [
+    {
+     "category": "rent",
+     "label": "Rent",
+     "total": 168000.0,
+     "monthly_avg": 27793.04,
+     "count": 6,
+     "share_pct": 24.1
+    },
+    {
+     "category": "card_payment",
+     "label": "Credit card bills",
+     "total": 165437.46,
+     "monthly_avg": 27369.11,
+     "count": 6,
+     "share_pct": 23.7
+    },
+    {
+     "category": "emi",
+     "label": "Loan EMIs",
+     "total": 67440.0,
+     "monthly_avg": 11156.92,
+     "count": 6,
+     "share_pct": 9.7
+    },
+    {
+     "category": "other",
+     "label": "Other",
+     "total": 46990.0,
+     "monthly_avg": 7773.78,
+     "count": 1,
+     "share_pct": 6.7
+    },
+    {
+     "category": "ecommerce",
+     "label": "Online shopping",
+     "total": 40679.66,
+     "monthly_avg": 6729.83,
+     "count": 20,
+     "share_pct": 5.8
+    },
+    {
+     "category": "travel",
+     "label": "Travel",
+     "total": 40039.39,
+     "monthly_avg": 6623.91,
+     "count": 51,
+     "share_pct": 5.7
+    }
+   ],
+   "monthly_series": [
+    {
+     "month": "2026-03",
+     "inflow": 112450.0,
+     "outflow": 100939.88
+    },
+    {
+     "month": "2026-04",
+     "inflow": 112450.0,
+     "outflow": 147281.97
+    },
+    {
+     "month": "2026-05",
+     "inflow": 113262.0,
+     "outflow": 126916.58
+    },
+    {
+     "month": "2026-06",
+     "inflow": 172450.0,
+     "outflow": 114155.17
+    },
+    {
+     "month": "2026-07",
+     "inflow": 119499.0,
+     "outflow": 104960.93
+    },
+    {
+     "month": "2026-08",
+     "inflow": 119106.0,
+     "outflow": 103908.61
+    }
+   ]
+  },
+  "journeys": {
+   "loans": {
+    "documents": 1,
+    "tracked_loans": 1
+   },
+   "insurance": {
+    "active_policies": 3,
+    "covered_people": 3,
+    "upcoming_renewals": []
+   },
+   "cards": {
+    "count": 3,
+    "next_due": "2026-11-09",
+    "reward_balances": [
+     {
+      "card": "Horizon Voyager",
+      "balance": 18400,
+      "unit": "Voyager Miles",
+      "as_of": "2026-10-31"
+     },
+     {
+      "card": "Deccan Cashback",
+      "balance": 740,
+      "unit": "cashback (₹)",
+      "as_of": "2026-10-31"
+     },
+     {
+      "card": "Coastal Shopper",
+      "balance": 9200,
+      "unit": "Shopper Points",
+      "as_of": "2026-10-31"
+     }
+    ]
+   },
+   "emis": {
+    "count": 2,
+    "confirmed": 0,
+    "monthly_total": 24960.0,
+    "monthly_total_confirmed": 0
+   }
+  },
+  "upcoming": [
+   {
+    "kind": "emi",
+    "object_id": "bd15e3af-fc3f-443b-ba5d-04b4e1d86d55",
+    "title": "Konkan Finance Ltd EMI",
+    "date": "2026-11-03",
+    "amount": 11240.0,
+    "confirmed": false,
+    "source_type": "bank_detection",
+    "link": "/emis/bd15e3af-fc3f-443b-ba5d-04b4e1d86d55"
+   },
+   {
+    "kind": "emi",
+    "object_id": "dffcdc13-83c2-43de-99d4-459c29b5e64c",
+    "title": "Personal Loan",
+    "date": "2026-11-05",
+    "amount": 13720.0,
+    "confirmed": false,
+    "source_type": "document",
+    "link": "/emis/dffcdc13-83c2-43de-99d4-459c29b5e64c"
+   },
+   {
+    "kind": "card",
+    "object_id": "e978daf3-406b-4f84-a99e-d589647f0951",
+    "title": "Horizon Voyager bill",
+    "date": "2026-11-09",
+    "amount": 24650.0,
+    "confirmed": true,
+    "source_type": "manual",
+    "link": "/cards/e978daf3-406b-4f84-a99e-d589647f0951"
+   },
+   {
+    "kind": "card",
+    "object_id": "ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b",
+    "title": "Deccan Cashback bill",
+    "date": "2026-11-16",
+    "amount": 6320.0,
+    "confirmed": true,
+    "source_type": "manual",
+    "link": "/cards/ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b"
+   },
+   {
+    "kind": "card",
+    "object_id": "bcb94e82-1eb6-4aec-a0bd-48bd171a9f15",
+    "title": "Coastal Shopper bill",
+    "date": "2026-11-21",
+    "amount": 3890.0,
+    "confirmed": true,
+    "source_type": "manual",
+    "link": "/cards/bcb94e82-1eb6-4aec-a0bd-48bd171a9f15"
+   }
+  ],
+  "data_quality": {
+   "statements_processed": 1,
+   "documents_processing": 0,
+   "documents_failed": 0,
+   "items_needing_review": 5
+  },
+  "attention": [
+   {
+    "kind": "review",
+    "title": "5 items need your review",
+    "body": "Confirm salary, EMIs and other recurring payments so recommendations use the right numbers.",
+    "link": "/profile/review"
+   },
+   {
+    "kind": "confirm_emi",
+    "title": "2 detected EMIs to confirm",
+    "body": "Confirm them to add them to your calendar and reminders.",
+    "link": "/emis"
+   },
+   {
+    "kind": "policy_review",
+    "title": "Review 3 policy summaries",
+    "body": "Check the extracted coverage and who is covered.",
+    "link": "/insurance/policies/9fdaa8f2-d6c9-47b0-bf64-8bcbe13a8bb9"
+   }
+  ],
+  "unread_notifications": 5
+ },
+ "loan_recommend": {
+  "currency": "INR",
+  "calculation_id": "a1b34a7c-42cc-4b0d-90fd-679e76595ad2",
+  "intent": {
+   "purpose": "personal",
+   "amount": 300000.0,
+   "tenure_months": 36,
+   "collateral": null,
+   "emi_comfort": null,
+   "prepayment_important": false,
+   "monthly_income_override": null
+  },
+  "profile_used": {
+   "age": 32,
+   "employment_type": "salaried",
+   "monthly_income": 118200.0,
+   "monthly_income_state": "extracted",
+   "monthly_income_source": "Recurring credit 'Acme Technologies Pvt Ltd Salary' looks like salary",
+   "monthly_surplus": 8446.08,
+   "existing_emis": 24960.0,
+   "existing_emis_confirmed": false
+  },
+  "results": [
+   {
+    "product_id": "nilgiri-salaried-personal",
+    "lender": "Nilgiri Bank (sample)",
+    "product_name": "Salaried Personal Loan",
+    "category": "personal",
+    "secured": false,
+    "interest_type": "fixed",
+    "rate_range": [
+     10.75,
+     14
+    ],
+    "indicative_rate": 11.25,
+    "tenure_months": 36,
+    "cost": {
+     "principal": 300000.0,
+     "annual_rate_pct": 11.25,
+     "tenure_months": 36,
+     "monthly_emi": 9857.170474039849,
+     "scheduled_interest": 54858.137065434596,
+     "processing_fee": 4999,
+     "tax_on_fees": 989.82,
+     "documented_mandatory_charges": [
+      {
+       "key": "processing_fee",
+       "label": "Processing fee",
+       "amount": 4999,
+       "gst": 899.82,
+       "basis": "percent_of_principal",
+       "rate_value": 1,
+       "status": "known",
+       "note": null,
+       "source": null
+      },
+      {
+       "key": "documentation",
+       "label": "Documentation charges",
+       "amount": 500.0,
+       "gst": 90.0,
+       "basis": "flat",
+       "rate_value": 500,
+       "status": "known",
+       "note": null,
+       "source": null
+      }
+     ],
+     "optional_charges": [],
+     "upfront_charges_total": 6488.82,
+     "scheduled_total_outflow": 361346.9570654346,
+     "total_cost_of_credit": 61346.9570654346,
+     "contingent_charges": [
+      {
+       "key": "late_payment",
+       "label": "Late-payment charges",
+       "rule": {
+        "flat_fee": 400,
+        "penal_rate_pa": 18,
+        "gst_applicable": true
+       },
+       "description": "₹400 per instance, 18% p.a. on the overdue amount, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "foreclosure",
+       "label": "Foreclosure charges",
+       "rule": {
+        "allowed_after_months": 12,
+        "charge_pct": 3,
+        "on": "outstanding principal",
+        "gst_applicable": true
+       },
+       "description": "3% of outstanding principal, allowed after 12 EMIs, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "part_prepayment",
+       "label": "Part-prepayment",
+       "rule": {
+        "allowed": true,
+        "allowed_after_months": 12,
+        "charge_pct": 2,
+        "max_per_year_pct": 40,
+        "gst_applicable": true
+       },
+       "description": "2% of outstanding principal, allowed after 12 EMIs, up to 40% of outstanding per year, plus GST",
+       "status": "known",
+       "source": null
+      }
+     ],
+     "annualized_cost_pct": 12.770732662874762,
+     "assumptions": [
+      "Indicative rate 11.25% p.a. from the sample catalogue (range 10.75–14%). The actual rate depends on the lender's assessment.",
+      "Fixed rate of 11.25% p.a. for the full tenure on a reducing balance.",
+      "All EMIs are paid on time; contingent charges are shown separately.",
+      "GST at 18% applied to service fees marked taxable.",
+      "Annualized cost = monthly IRR × 12 of (principal − upfront charges) against the EMI stream; an estimate, not a lender-issued APR."
+     ],
+     "missing": [],
+     "source_refs": [],
+     "formula_version": "loan_cost.v1"
+    },
+    "score": 0.5463,
+    "reason_codes": [
+     "EMPLOYMENT_MATCH",
+     "AGE_MATCH",
+     "INCOME_MEETS_FLOOR",
+     "NO_COLLATERAL_NEEDED",
+     "EMI_ABOVE_SURPLUS",
+     "PREPAYMENT_ALLOWED"
+    ],
+    "unknown_conditions": [
+     "CREDIT_SCORE_REQUIREMENT_UNKNOWN"
+    ],
+    "excluded_reasons": [],
+    "why": [
+     "Offered for a personal need, and your amount of ₹3,00,000 is within its range.",
+     "No collateral needed."
+    ],
+    "cautions": [
+     "EMI of ₹9,857 is more than your estimated monthly surplus.",
+     "Has a credit-score requirement VITTRM can't check."
+    ],
+    "warnings": [
+     {
+      "title": "Credit score requirement",
+      "severity": "eligibility_condition",
+      "text": "Requires a credit bureau score of 750 or more in the sample terms. VITTRM doesn't know your score, so this is marked unknown."
+     }
+    ],
+    "notes": [],
+    "obligation_share_pct": 29.456150993265524,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    }
+   },
+   {
+    "product_id": "aravali-personal-flex",
+    "lender": "Aravali Bank (sample)",
+    "product_name": "Personal Loan Flex",
+    "category": "personal",
+    "secured": false,
+    "interest_type": "fixed",
+    "rate_range": [
+     11.25,
+     16.5
+    ],
+    "indicative_rate": 12.5,
+    "tenure_months": 36,
+    "cost": {
+     "principal": 300000.0,
+     "annual_rate_pct": 12.5,
+     "tenure_months": 36,
+     "monthly_emi": 10036.087673014901,
+     "scheduled_interest": 61299.15622853645,
+     "processing_fee": 4500.0,
+     "tax_on_fees": 810.0,
+     "documented_mandatory_charges": [
+      {
+       "key": "processing_fee",
+       "label": "Processing fee",
+       "amount": 4500.0,
+       "gst": 810.0,
+       "basis": "percent_of_principal",
+       "rate_value": 1.5,
+       "status": "known",
+       "note": null,
+       "source": null
+      },
+      {
+       "key": "documentation",
+       "label": "Documentation charges",
+       "amount": 0.0,
+       "gst": null,
+       "basis": "flat",
+       "rate_value": 0,
+       "status": "known",
+       "note": null,
+       "source": null
+      },
+      {
+       "key": "stamp_duty",
+       "label": "Stamp duty",
+       "amount": null,
+       "gst": null,
+       "basis": "flat",
+       "rate_value": null,
+       "status": "not_available",
+       "note": "As per state law; not stated in the sample terms",
+       "source": null
+      }
+     ],
+     "optional_charges": [],
+     "upfront_charges_total": 5310.0,
+     "scheduled_total_outflow": 366609.15622853645,
+     "total_cost_of_credit": 66609.15622853645,
+     "contingent_charges": [
+      {
+       "key": "late_payment",
+       "label": "Late-payment charges",
+       "rule": {
+        "flat_fee": 500,
+        "penal_rate_pa": 24,
+        "gst_applicable": true
+       },
+       "description": "₹500 per instance, 24% p.a. on the overdue amount, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "foreclosure",
+       "label": "Foreclosure charges",
+       "rule": {
+        "allowed_after_months": 12,
+        "charge_pct": 4,
+        "on": "outstanding principal",
+        "gst_applicable": true
+       },
+       "description": "4% of outstanding principal, allowed after 12 EMIs, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "part_prepayment",
+       "label": "Part-prepayment",
+       "rule": {
+        "allowed": true,
+        "allowed_after_months": 6,
+        "charge_pct": 2,
+        "max_per_year_pct": 25,
+        "gst_applicable": true
+       },
+       "description": "2% of outstanding principal, allowed after 6 EMIs, up to 25% of outstanding per year, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "bounce",
+       "label": "EMI bounce charge",
+       "rule": {
+        "flat_fee": 590
+       },
+       "description": "₹590 per instance",
+       "status": "known",
+       "source": null
+      }
+     ],
+     "annualized_cost_pct": null,
+     "assumptions": [
+      "Indicative rate 12.5% p.a. from the sample catalogue (range 11.25–16.5%). The actual rate depends on the lender's assessment.",
+      "Fixed rate of 12.5% p.a. for the full tenure on a reducing balance.",
+      "All EMIs are paid on time; contingent charges are shown separately.",
+      "GST at 18% applied to service fees marked taxable.",
+      "Annualized cost not computed because some mandatory charges are unknown."
+     ],
+     "missing": [
+      "Stamp duty — amount not available from the source"
+     ],
+     "source_refs": [],
+     "formula_version": "loan_cost.v1"
+    },
+    "score": 0.5229,
+    "reason_codes": [
+     "EMPLOYMENT_MATCH",
+     "AGE_MATCH",
+     "INCOME_MEETS_FLOOR",
+     "NO_COLLATERAL_NEEDED",
+     "EMI_ABOVE_SURPLUS",
+     "PREPAYMENT_ALLOWED"
+    ],
+    "unknown_conditions": [],
+    "excluded_reasons": [],
+    "why": [
+     "Offered for a personal need, and your amount of ₹3,00,000 is within its range.",
+     "No collateral needed."
+    ],
+    "cautions": [
+     "EMI of ₹10,036 is more than your estimated monthly surplus."
+    ],
+    "warnings": [
+     {
+      "title": "Part-prepayment only after 6 EMIs",
+      "severity": "flexibility_impact",
+      "text": "Part-prepayment is allowed after 6 EMIs, up to 25% of the outstanding principal each year, with a 2% charge plus GST."
+     },
+     {
+      "title": "Processing fee is non-refundable",
+      "severity": "cost_impact",
+      "text": "The processing fee is deducted at disbursal and is not refunded if the loan is cancelled."
+     }
+    ],
+    "notes": [],
+    "obligation_share_pct": 29.607519181907698,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    }
+   },
+   {
+    "product_id": "narmada-gold-quick",
+    "lender": "Narmada Small Finance Bank (sample)",
+    "product_name": "Gold Loan Quick",
+    "category": "gold",
+    "secured": true,
+    "interest_type": "fixed",
+    "rate_range": [
+     9.5,
+     18
+    ],
+    "indicative_rate": 10.5,
+    "tenure_months": 24,
+    "cost": {
+     "principal": 300000.0,
+     "annual_rate_pct": 10.5,
+     "tenure_months": 24,
+     "monthly_emi": 13912.812491811446,
+     "scheduled_interest": 33907.4998034747,
+     "processing_fee": 1500.0,
+     "tax_on_fees": 333.0,
+     "documented_mandatory_charges": [
+      {
+       "key": "processing_fee",
+       "label": "Processing fee",
+       "amount": 1500.0,
+       "gst": 270.0,
+       "basis": "percent_of_principal",
+       "rate_value": 0.5,
+       "status": "known",
+       "note": null,
+       "source": null
+      },
+      {
+       "key": "valuation",
+       "label": "Gold valuation charge",
+       "amount": 350.0,
+       "gst": 63.0,
+       "basis": "flat",
+       "rate_value": 350,
+       "status": "known",
+       "note": null,
+       "source": null
+      }
+     ],
+     "optional_charges": [],
+     "upfront_charges_total": 2183.0,
+     "scheduled_total_outflow": 336090.4998034747,
+     "total_cost_of_credit": 36090.4998034747,
+     "contingent_charges": [
+      {
+       "key": "late_payment",
+       "label": "Late-payment charges",
+       "rule": {
+        "flat_fee": null,
+        "penal_rate_pa": 24,
+        "gst_applicable": false
+       },
+       "description": "24% p.a. on the overdue amount",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "foreclosure",
+       "label": "Foreclosure charges",
+       "rule": {
+        "allowed_after_months": 0,
+        "charge_pct": 0,
+        "on": "outstanding principal"
+       },
+       "description": "0% of outstanding principal, allowed after 0 EMIs",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "auction",
+       "label": "Auction on default",
+       "rule": null,
+       "description": "Not stated in the available terms.",
+       "status": "not_available",
+       "source": null
+      }
+     ],
+     "annualized_cost_pct": 11.232764138193962,
+     "assumptions": [
+      "Indicative rate 10.5% p.a. from the sample catalogue (range 9.5–18%). The actual rate depends on the lender's assessment.",
+      "Fixed rate of 10.5% p.a. for the full tenure on a reducing balance.",
+      "All EMIs are paid on time; contingent charges are shown separately.",
+      "GST at 18% applied to service fees marked taxable.",
+      "Annualized cost = monthly IRR × 12 of (principal − upfront charges) against the EMI stream; an estimate, not a lender-issued APR."
+     ],
+     "missing": [
+      "Auction on default — rule not available from the source"
+     ],
+     "source_refs": [],
+     "formula_version": "loan_cost.v1"
+    },
+    "score": 0.495,
+    "reason_codes": [
+     "AGE_MATCH",
+     "EMI_ABOVE_SURPLUS"
+    ],
+    "unknown_conditions": [
+     "COLLATERAL_UNKNOWN"
+    ],
+    "excluded_reasons": [],
+    "why": [
+     "Offered for a personal need, and your amount of ₹3,00,000 is within its range.",
+     "Lowest scheduled total cost among these options (₹36,090 over the loan)."
+    ],
+    "cautions": [
+     "EMI of ₹13,913 is more than your estimated monthly surplus.",
+     "Needs collateral; tell us whether you can offer it."
+    ],
+    "warnings": [
+     {
+      "title": "Gold can be auctioned on default",
+      "severity": "important",
+      "text": "If dues remain unpaid the pledged gold may be auctioned after notice. The auction terms aren't detailed in the sample data."
+     },
+     {
+      "title": "Loan capped at 75% of gold value",
+      "severity": "eligibility_condition",
+      "text": "You can borrow up to 75% of the assessed value of the pledged gold."
+     }
+    ],
+    "notes": [
+     "Your preferred tenure of 36 months isn't offered; shown at 24 months."
+    ],
+    "obligation_share_pct": 32.88732021303845,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    }
+   },
+   {
+    "product_id": "vindhya-instant-personal",
+    "lender": "Vindhya Credit (sample)",
+    "product_name": "Instant Personal Loan",
+    "category": "personal",
+    "secured": false,
+    "interest_type": "fixed",
+    "rate_range": [
+     13.5,
+     24
+    ],
+    "indicative_rate": 15.5,
+    "tenure_months": 36,
+    "cost": {
+     "principal": 300000.0,
+     "annual_rate_pct": 15.5,
+     "tenure_months": 36,
+     "monthly_emi": 10473.204306538617,
+     "scheduled_interest": 77035.35503539024,
+     "processing_fee": 9000.0,
+     "tax_on_fees": 1799.82,
+     "documented_mandatory_charges": [
+      {
+       "key": "processing_fee",
+       "label": "Processing fee",
+       "amount": 9000.0,
+       "gst": 1620.0,
+       "basis": "percent_of_principal",
+       "rate_value": 3,
+       "status": "known",
+       "note": null,
+       "source": null
+      },
+      {
+       "key": "documentation",
+       "label": "Documentation charges",
+       "amount": 999.0,
+       "gst": 179.82,
+       "basis": "flat",
+       "rate_value": 999,
+       "status": "known",
+       "note": null,
+       "source": null
+      },
+      {
+       "key": "credit_insurance",
+       "label": "Loan protection cover (bundled)",
+       "amount": 3600.0,
+       "gst": null,
+       "basis": "percent_of_principal",
+       "rate_value": 1.2,
+       "status": "known",
+       "note": "Mandatory as a condition of the loan in the sample terms",
+       "source": null
+      }
+     ],
+     "optional_charges": [],
+     "upfront_charges_total": 15398.82,
+     "scheduled_total_outflow": 392434.17503539025,
+     "total_cost_of_credit": 92434.17503539025,
+     "contingent_charges": [
+      {
+       "key": "late_payment",
+       "label": "Late-payment charges",
+       "rule": {
+        "flat_fee": 750,
+        "penal_rate_pa": 36,
+        "gst_applicable": true
+       },
+       "description": "₹750 per instance, 36% p.a. on the overdue amount, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "foreclosure",
+       "label": "Foreclosure charges",
+       "rule": {
+        "allowed_after_months": 6,
+        "charge_pct": 5,
+        "on": "outstanding principal",
+        "gst_applicable": true
+       },
+       "description": "5% of outstanding principal, allowed after 6 EMIs, plus GST",
+       "status": "known",
+       "source": null
+      },
+      {
+       "key": "part_prepayment",
+       "label": "Part-prepayment",
+       "rule": {
+        "allowed": false
+       },
+       "description": "not permitted",
+       "status": "known",
+       "source": null
+      }
+     ],
+     "annualized_cost_pct": 19.283631224422628,
+     "assumptions": [
+      "Indicative rate 15.5% p.a. from the sample catalogue (range 13.5–24%). The actual rate depends on the lender's assessment.",
+      "Fixed rate of 15.5% p.a. for the full tenure on a reducing balance.",
+      "All EMIs are paid on time; contingent charges are shown separately.",
+      "GST at 18% applied to service fees marked taxable.",
+      "Annualized cost = monthly IRR × 12 of (principal − upfront charges) against the EMI stream; an estimate, not a lender-issued APR."
+     ],
+     "missing": [],
+     "source_refs": [],
+     "formula_version": "loan_cost.v1"
+    },
+    "score": 0.2077,
+    "reason_codes": [
+     "EMPLOYMENT_MATCH",
+     "AGE_MATCH",
+     "INCOME_MEETS_FLOOR",
+     "NO_COLLATERAL_NEEDED",
+     "EMI_ABOVE_SURPLUS",
+     "NO_PART_PREPAYMENT",
+     "BUNDLED_INSURANCE"
+    ],
+    "unknown_conditions": [],
+    "excluded_reasons": [],
+    "why": [
+     "Offered for a personal need, and your amount of ₹3,00,000 is within its range.",
+     "No collateral needed."
+    ],
+    "cautions": [
+     "EMI of ₹10,473 is more than your estimated monthly surplus.",
+     "Part-prepayment isn't allowed.",
+     "A bundled loan insurance cover is mandatory and adds to the cost."
+    ],
+    "warnings": [
+     {
+      "title": "Bundled loan protection cover",
+      "severity": "important",
+      "text": "A loan protection cover of 1.2% of the loan amount is mandatory and is added to the upfront cost."
+     },
+     {
+      "title": "No part-prepayment",
+      "severity": "flexibility_impact",
+      "text": "Part-prepayment is not permitted; only full foreclosure after 6 EMIs with a 5% charge plus GST."
+     },
+     {
+      "title": "High penal interest",
+      "severity": "cost_impact",
+      "text": "Overdue EMIs attract penal interest of 36% p.a. plus a ₹750 fee and GST."
+     }
+    ],
+    "notes": [],
+    "obligation_share_pct": 29.977330208577513,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    }
+   }
+  ],
+  "excluded": [],
+  "missing_data": [],
+  "weights": {
+   "cost": 0.35,
+   "affordability": 0.35,
+   "flexibility": 0.15,
+   "certainty": 0.1,
+   "warnings": 0.05
+  },
+  "formula_version": "recommend.loans.v1"
+ },
+ "emergency": {
+  "currency": "INR",
+  "person": {
+   "key": "84c4a4f7-3eb5-42ad-8134-8b023e070f98",
+   "name": "Kamala Sample",
+   "relation": "mother"
+  },
+  "event": {
+   "key": "hospitalisation",
+   "label": "Hospitalisation",
+   "types": [
+    "health"
+   ]
+  },
+  "policies": [
+   {
+    "policy": {
+     "id": "bce3f91d-e208-4216-8191-f4cf39b3447c",
+     "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+     "insurer": "Sahyadri General Insurance Co. Ltd. (sample)",
+     "product_name": "Senior Care",
+     "type": "health",
+     "type_label": "Health",
+     "policy_ref_masked": "••••7761",
+     "start_date": "2026-04-01",
+     "end_date": "2027-03-31",
+     "premium": {
+      "amount": 27500.0,
+      "frequency": "annual"
+     },
+     "coverage": {
+      "sum_insured": 500000.0,
+      "copay_pct": 20.0,
+      "deductible": null,
+      "room_rent_limit": "Up to 1% of sum insured per day"
+     },
+     "status": "needs_review",
+     "members_confirmed": true,
+     "members": [
+      {
+       "key": "84c4a4f7-3eb5-42ad-8134-8b023e070f98",
+       "name": "Kamala Sample",
+       "relation": "mother"
+      }
+     ]
+    },
+    "status": "may_apply",
+    "reasons": [
+     "Covers Kamala Sample and is a health policy.",
+     "A waiting period is still running — some conditions may not be covered yet."
+    ],
+    "coverage": {
+     "sum_insured": {
+      "value": 500000,
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "SAHYADRI GENERAL INSURANCE (SAMPLE)",
+       "snippet": "Sum Insured: Rs. 5,00,000",
+       "fact_key": "sum_insured",
+       "confidence": 0.85,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "copay": {
+      "value": 20,
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "SAHYADRI GENERAL INSURANCE (SAMPLE)",
+       "snippet": "Co-payment: 20% of every admissible claim",
+       "fact_key": "copay",
+       "confidence": 0.85,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "room_rent": {
+      "value": "Up to 1% of sum insured per day",
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "SAHYADRI GENERAL INSURANCE (SAMPLE)",
+       "snippet": "Room Rent: Up to 1% of sum insured per day",
+       "fact_key": "room_rent_limit",
+       "confidence": 0.8,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "deductible": null,
+     "benefits": {
+      "value": [
+       "In-patient hospitalisation",
+       "Pre-hospitalisation expenses for 30 days",
+       "Post-hospitalisation expenses for 60 days",
+       "Day-care procedures"
+      ],
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "COVERAGE",
+       "snippet": "In-patient hospitalisation",
+       "fact_key": "benefits",
+       "confidence": 0.7,
+       "user_verified": false
+      },
+      "state": "extracted"
+     }
+    },
+    "waiting_periods": [
+     {
+      "label": "Initial waiting period",
+      "value": "30 days",
+      "status": {
+       "ends_on": "2026-05-01",
+       "running": false
+      },
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "WAITING PERIODS",
+       "snippet": "Initial waiting period: 30 days",
+       "fact_key": "initial_waiting_period",
+       "confidence": 0.8,
+       "user_verified": false
+      }
+     },
+     {
+      "label": "Pre-existing conditions waiting period",
+      "value": "24 months",
+      "status": {
+       "months": 24,
+       "ends_on": "2028-04-01",
+       "running": true
+      },
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "WAITING PERIODS",
+       "snippet": "Pre-existing diseases: 24 months",
+       "fact_key": "ped_waiting_period",
+       "confidence": 0.8,
+       "user_verified": false
+      }
+     },
+     {
+      "label": "Specific illness waiting period",
+      "value": "24 months",
+      "status": {
+       "months": 24,
+       "ends_on": "2028-04-01",
+       "running": true
+      },
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 1,
+       "section": "WAITING PERIODS",
+       "snippet": "Specific illness waiting period: 24 months",
+       "fact_key": "specific_disease_waiting_period",
+       "confidence": 0.8,
+       "user_verified": false
+      }
+     }
+    ],
+    "exclusions": {
+     "value": [
+      "Dental treatment unless due to an accident",
+      "Cosmetic treatment",
+      "Hearing aids and spectacles"
+     ],
+     "citation": {
+      "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+      "document_type": "insurance_policy",
+      "document_name": "sample_policy_senior_care.pdf",
+      "page": 1,
+      "section": "EXCLUSIONS",
+      "snippet": "Dental treatment unless due to an accident",
+      "fact_key": "exclusions",
+      "confidence": 0.7,
+      "user_verified": false
+     },
+     "state": "extracted"
+    },
+    "conditions": {
+     "value": [
+      "Knee replacement is limited to Rs. 1,50,000 per policy year",
+      "Cataract is limited to Rs. 30,000 per eye"
+     ],
+     "citation": {
+      "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+      "document_type": "insurance_policy",
+      "document_name": "sample_policy_senior_care.pdf",
+      "page": 2,
+      "section": "IMPORTANT CONDITIONS",
+      "snippet": "Knee replacement is limited to Rs. 1,50,000 per policy year",
+      "fact_key": "conditions",
+      "confidence": 0.7,
+      "user_verified": false
+     },
+     "state": "extracted"
+    },
+    "claim": {
+     "intimation": {
+      "value": "24 hours",
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 2,
+       "section": "CLAIM PROCEDURE",
+       "snippet": "Intimate the claim within 24 hours of emergency admission.",
+       "fact_key": "claim_intimation",
+       "confidence": 0.8,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "cashless": null,
+     "reimbursement": null,
+     "process": {
+      "value": [
+       "Intimate the claim within 24 hours of emergency admission.",
+       "TPA Name: Konkan Health TPA (sample)",
+       "Claims Helpline Number: 1800-000-1111"
+      ],
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 2,
+       "section": "CLAIM PROCEDURE",
+       "snippet": "Intimate the claim within 24 hours of emergency admission.",
+       "fact_key": "claim_process",
+       "confidence": 0.7,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "documents": {
+      "value": [
+       "Claim form signed by the insured or nominee",
+       "Discharge summary and final bill",
+       "Doctor's prescription advising admission",
+       "Investigation reports",
+       "KYC documents of the proposer"
+      ],
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 2,
+       "section": "DOCUMENTS REQUIRED",
+       "snippet": "Claim form signed by the insured or nominee",
+       "fact_key": "claim_documents",
+       "confidence": 0.7,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "general_steps": null,
+     "steps_source": "policy"
+    },
+    "contacts": {
+     "tpa": {
+      "value": "Konkan Health TPA (sample)",
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 2,
+       "section": "CLAIM PROCEDURE",
+       "snippet": "TPA Name: Konkan Health TPA (sample)",
+       "fact_key": "tpa",
+       "confidence": 0.8,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "helpline": {
+      "value": "1800-000-1111",
+      "citation": {
+       "document_id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+       "document_type": "insurance_policy",
+       "document_name": "sample_policy_senior_care.pdf",
+       "page": 2,
+       "section": "CLAIM PROCEDURE",
+       "snippet": "Claims Helpline Number: 1800-000-1111",
+       "fact_key": "helpline",
+       "confidence": 0.8,
+       "user_verified": false
+      },
+      "state": "extracted"
+     },
+     "email": null,
+     "insurer": "Sahyadri General Insurance Co. Ltd. (sample)"
+    }
+   }
+  ],
+  "applicable_count": 1,
+  "other_people_with_policies": [
+   "Sample",
+   "Asha Sample"
+  ],
+  "disclaimer": "The insurer decides whether a claim is admissible. VITTRM shows what your policy documents say and can't guarantee approval."
+ },
+ "insurance_events": [
+  {
+   "key": "hospitalisation",
+   "label": "Hospitalisation"
+  },
+  {
+   "key": "accident",
+   "label": "Accident / injury"
+  },
+  {
+   "key": "day_care",
+   "label": "Day-care procedure"
+  },
+  {
+   "key": "death",
+   "label": "Death of the insured"
+  },
+  {
+   "key": "travel_medical",
+   "label": "Medical emergency while travelling"
+  }
+ ],
+ "family": {
+  "self": {
+   "id": "self",
+   "name": "Sample User",
+   "relation": "self",
+   "policies": [
+    {
+     "id": "9fdaa8f2-d6c9-47b0-bf64-8bcbe13a8bb9",
+     "insurer": "Sahyadri General Insurance Co. Ltd. (sample)",
+     "product_name": "Family Health Shield",
+     "type": "health"
+    },
+    {
+     "id": "4723edd0-3475-4c31-b7a7-aa5450c67f6b",
+     "insurer": "Western Ghats Life Insurance Co. Ltd. (sample)",
+     "product_name": "Term Secure",
+     "type": "term_life"
+    }
+   ]
+  },
+  "members": [
+   {
+    "id": "7f790fb2-a90d-42f5-bab9-c40058fe2d43",
+    "name": "Asha Sample",
+    "relation": "spouse",
+    "dob": "1996-06-02",
+    "age": 30,
+    "is_dependant": false,
+    "policies": [
+     {
+      "id": "9fdaa8f2-d6c9-47b0-bf64-8bcbe13a8bb9",
+      "insurer": "Sahyadri General Insurance Co. Ltd. (sample)",
+      "product_name": "Family Health Shield",
+      "type": "health"
+     }
+    ]
+   },
+   {
+    "id": "84c4a4f7-3eb5-42ad-8134-8b023e070f98",
+    "name": "Kamala Sample",
+    "relation": "mother",
+    "dob": "1965-01-20",
+    "age": 61,
+    "is_dependant": true,
+    "policies": [
+     {
+      "id": "bce3f91d-e208-4216-8191-f4cf39b3447c",
+      "insurer": "Sahyadri General Insurance Co. Ltd. (sample)",
+      "product_name": "Senior Care",
+      "type": "health"
+     }
+    ]
+   }
+  ]
+ },
+ "reminders": {
+  "preferences": {
+   "whatsapp_blocked_reason": "WhatsApp reminders are turned off.",
+   "whatsapp_provider": "openwa",
+   "days_before": [
+    3
+   ],
+   "on_due_date": true,
+   "send_hour": 9,
+   "whatsapp_enabled": false,
+   "include": [
+    "emi",
+    "card",
+    "policy"
+   ],
+   "phone_masked": null,
+   "phone_verified": false,
+   "whatsapp_consent": false,
+   "whatsapp_configured": false,
+   "policy_lead_days": [
+    30,
+    7
+   ]
+  },
+  "upcoming": [
+   {
+    "id": "150130cf-053a-4906-b7f7-909a506ed21b",
+    "object_type": "card",
+    "object_id": "e978daf3-406b-4f84-a99e-d589647f0951",
+    "channel": "in_app",
+    "schedule_at": "2026-11-06T03:30:00",
+    "due_date": "2026-11-09",
+    "template_key": "due_in_3",
+    "status": "scheduled",
+    "status_text": "Scheduled",
+    "attempts": 0,
+    "last_error": null,
+    "sent_at": null
+   },
+   {
+    "id": "c59c5855-06a0-46ed-98c3-1986264d1978",
+    "object_type": "card",
+    "object_id": "e978daf3-406b-4f84-a99e-d589647f0951",
+    "channel": "in_app",
+    "schedule_at": "2026-11-09T03:30:00",
+    "due_date": "2026-11-09",
+    "template_key": "due_today",
+    "status": "scheduled",
+    "status_text": "Scheduled",
+    "attempts": 0,
+    "last_error": null,
+    "sent_at": null
+   },
+   {
+    "id": "6ed2d5cf-9718-4517-99f5-8618741711e1",
+    "object_type": "card",
+    "object_id": "ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b",
+    "channel": "in_app",
+    "schedule_at": "2026-11-13T03:30:00",
+    "due_date": "2026-11-16",
+    "template_key": "due_in_3",
+    "status": "scheduled",
+    "status_text": "Scheduled",
+    "attempts": 0,
+    "last_error": null,
+    "sent_at": null
+   },
+   {
+    "id": "2e7e1c8f-1819-4c61-acf4-bb0249fd19f3",
+    "object_type": "card",
+    "object_id": "ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b",
+    "channel": "in_app",
+    "schedule_at": "2026-11-16T03:30:00",
+    "due_date": "2026-11-16",
+    "template_key": "due_today",
+    "status": "scheduled",
+    "status_text": "Scheduled",
+    "attempts": 0,
+    "last_error": null,
+    "sent_at": null
+   },
+   {
+    "id": "594ac032-df75-4758-a906-652cf09c36e8",
+    "object_type": "card",
+    "object_id": "bcb94e82-1eb6-4aec-a0bd-48bd171a9f15",
+    "channel": "in_app",
+    "schedule_at": "2026-11-18T03:30:00",
+    "due_date": "2026-11-21",
+    "template_key": "due_in_3",
+    "status": "scheduled",
+    "status_text": "Scheduled",
+    "attempts": 0,
+    "last_error": null,
+    "sent_at": null
+   },
+   {
+    "id": "bed13017-169a-4453-9d02-ea30961e8804",
+    "object_type": "card",
+    "object_id": "bcb94e82-1eb6-4aec-a0bd-48bd171a9f15",
+    "channel": "in_app",
+    "schedule_at": "2026-11-21T03:30:00",
+    "due_date": "2026-11-21",
+    "template_key": "due_today",
+    "status": "scheduled",
+    "status_text": "Scheduled",
+    "attempts": 0,
+    "last_error": null,
+    "sent_at": null
+   }
+  ],
+  "history": [],
+  "items": [
+   {
+    "key": "emi:bd15e3af-fc3f-443b-ba5d-04b4e1d86d55",
+    "kind": "emi",
+    "object_id": "bd15e3af-fc3f-443b-ba5d-04b4e1d86d55",
+    "title": "Konkan Finance Ltd EMI",
+    "next_date": "2026-11-03",
+    "confirmed": false,
+    "muted": false,
+    "included": true
+   },
+   {
+    "key": "emi:dffcdc13-83c2-43de-99d4-459c29b5e64c",
+    "kind": "emi",
+    "object_id": "dffcdc13-83c2-43de-99d4-459c29b5e64c",
+    "title": "Personal Loan",
+    "next_date": "2026-11-05",
+    "confirmed": false,
+    "muted": false,
+    "included": true
+   },
+   {
+    "key": "card:e978daf3-406b-4f84-a99e-d589647f0951",
+    "kind": "card",
+    "object_id": "e978daf3-406b-4f84-a99e-d589647f0951",
+    "title": "Horizon Voyager bill",
+    "next_date": "2026-11-09",
+    "confirmed": true,
+    "muted": false,
+    "included": true
+   },
+   {
+    "key": "card:ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b",
+    "kind": "card",
+    "object_id": "ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b",
+    "title": "Deccan Cashback bill",
+    "next_date": "2026-11-16",
+    "confirmed": true,
+    "muted": false,
+    "included": true
+   },
+   {
+    "key": "card:bcb94e82-1eb6-4aec-a0bd-48bd171a9f15",
+    "kind": "card",
+    "object_id": "bcb94e82-1eb6-4aec-a0bd-48bd171a9f15",
+    "title": "Coastal Shopper bill",
+    "next_date": "2026-11-21",
+    "confirmed": true,
+    "muted": false,
+    "included": true
+   }
+  ]
+ },
+ "documents": [
+  {
+   "id": "edd931d9-d35a-4879-b1f0-8722bbc83383",
+   "type": "loan_document",
+   "type_label": "Loan document",
+   "display_name": "sample_loan_kfs.pdf",
+   "mime": "application/pdf",
+   "size_bytes": 3147,
+   "upload_time": "2026-10-31T18:11:33.237513",
+   "status": "needs_review",
+   "stage": "done",
+   "error_code": null,
+   "error_message": null,
+   "period_months": null,
+   "period_start": null,
+   "period_end": null,
+   "page_count": 2,
+   "extraction_method": "heuristic_text",
+   "bank_account_id": null,
+   "family_member_id": null,
+   "warnings": [],
+   "transactions_found": null,
+   "facts_found": 22,
+   "policy_id": null,
+   "user_loan_id": "6de1a903-1ad0-4837-8040-b66264f9d4dd",
+   "read_from_scan": false,
+   "ocr": null,
+   "receipt": null,
+   "linked_transaction_id": null
+  },
+  {
+   "id": "f12a44b8-8703-44fd-8d50-70ef0001f9c5",
+   "type": "insurance_policy",
+   "type_label": "Insurance policy",
+   "display_name": "sample_policy_term_life.pdf",
+   "mime": "application/pdf",
+   "size_bytes": 2235,
+   "upload_time": "2026-10-31T18:11:33.227359",
+   "status": "needs_review",
+   "stage": "done",
+   "error_code": null,
+   "error_message": null,
+   "period_months": null,
+   "period_start": null,
+   "period_end": null,
+   "page_count": 1,
+   "extraction_method": "heuristic_text",
+   "bank_account_id": null,
+   "family_member_id": null,
+   "warnings": [],
+   "transactions_found": null,
+   "facts_found": 15,
+   "policy_id": "4723edd0-3475-4c31-b7a7-aa5450c67f6b",
+   "user_loan_id": null,
+   "read_from_scan": false,
+   "ocr": null,
+   "receipt": null,
+   "linked_transaction_id": null
+  },
+  {
+   "id": "9af7e002-20d9-4ec6-a3da-15b4cc022ce7",
+   "type": "insurance_policy",
+   "type_label": "Insurance policy",
+   "display_name": "sample_policy_senior_care.pdf",
+   "mime": "application/pdf",
+   "size_bytes": 3391,
+   "upload_time": "2026-10-31T18:11:33.214028",
+   "status": "needs_review",
+   "stage": "done",
+   "error_code": null,
+   "error_message": null,
+   "period_months": null,
+   "period_start": null,
+   "period_end": null,
+   "page_count": 2,
+   "extraction_method": "heuristic_text",
+   "bank_account_id": null,
+   "family_member_id": "84c4a4f7-3eb5-42ad-8134-8b023e070f98",
+   "warnings": [],
+   "transactions_found": null,
+   "facts_found": 24,
+   "policy_id": "bce3f91d-e208-4216-8191-f4cf39b3447c",
+   "user_loan_id": null,
+   "read_from_scan": false,
+   "ocr": null,
+   "receipt": null,
+   "linked_transaction_id": null
+  },
+  {
+   "id": "ca745283-72c9-40ec-8ee2-26c0e9bffb3a",
+   "type": "insurance_policy",
+   "type_label": "Insurance policy",
+   "display_name": "sample_policy_family_health.pdf",
+   "mime": "application/pdf",
+   "size_bytes": 4670,
+   "upload_time": "2026-10-31T18:11:33.166109",
+   "status": "needs_review",
+   "stage": "done",
+   "error_code": null,
+   "error_message": null,
+   "period_months": null,
+   "period_start": null,
+   "period_end": null,
+   "page_count": 3,
+   "extraction_method": "heuristic_text",
+   "bank_account_id": null,
+   "family_member_id": null,
+   "warnings": [
+    "This document contains text addressed to AI assistants (page 2). VITTRM treated it as document text only and did not act on it."
+   ],
+   "transactions_found": null,
+   "facts_found": 27,
+   "policy_id": "9fdaa8f2-d6c9-47b0-bf64-8bcbe13a8bb9",
+   "user_loan_id": null,
+   "read_from_scan": false,
+   "ocr": null,
+   "receipt": null,
+   "linked_transaction_id": null
+  },
+  {
+   "id": "c6613ced-c61d-4431-b45b-061b87b28919",
+   "type": "bank_statement",
+   "type_label": "Bank statement",
+   "display_name": "sample_statement_6m.csv",
+   "mime": "text/csv",
+   "size_bytes": 21799,
+   "upload_time": "2026-10-31T18:11:33.122925",
+   "status": "needs_review",
+   "stage": "done",
+   "error_code": null,
+   "error_message": null,
+   "period_months": 6,
+   "period_start": "2026-03-01",
+   "period_end": "2026-08-31",
+   "page_count": null,
+   "extraction_method": "csv",
+   "bank_account_id": "7ed74c36-dc50-45bb-a2da-1d604bf64e42",
+   "family_member_id": null,
+   "warnings": [],
+   "transactions_found": 260,
+   "facts_found": null,
+   "policy_id": null,
+   "user_loan_id": null,
+   "read_from_scan": false,
+   "ocr": null,
+   "receipt": null,
+   "linked_transaction_id": null,
+   "account_label": "Salary account"
+  }
+ ],
+ "cards": {
+  "currency": "INR",
+  "cards": [
+   {
+    "id": "e978daf3-406b-4f84-a99e-d589647f0951",
+    "nickname": "Horizon Voyager",
+    "last4": "4821",
+    "masked": "•••• 4821",
+    "catalogue_id": "horizon-voyager",
+    "issuer": "Horizon Bank (sample)",
+    "card_name": "Voyager Travel Card",
+    "network": "Visa",
+    "credit_limit": 300000.0,
+    "outstanding": 24650.0,
+    "due_date": "2026-11-09",
+    "annual_fee": 2500,
+    "fees": {
+     "joining": 2500,
+     "annual": 2500,
+     "annual_waiver_spend": 300000,
+     "gst_applicable": true
+    },
+    "reward_currency": "miles",
+    "reward_unit": "Voyager Miles",
+    "points": {
+     "balance": 18400,
+     "as_of": "2026-10-31",
+     "expiring": [
+      {
+       "amount": 2500,
+       "date": "2027-01-14"
+      }
+     ],
+     "source": "sample"
+    },
+    "cycle_spend": {
+     "travel": 8000
+    },
+    "imported_spend": null,
+    "effective_cycle_spend": {
+     "travel": 8000.0
+    },
+    "user_benefits": [],
+    "has_rules": true,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    },
+    "source_document_id": null,
+    "source_fields": [],
+    "data_source": "You entered balances and dues; reward rules come from the sample catalogue"
+   },
+   {
+    "id": "ca8afa8d-5655-4ac1-a50b-46dcac8b4e6b",
+    "nickname": "Deccan Cashback",
+    "last4": "1937",
+    "masked": "•••• 1937",
+    "catalogue_id": "deccan-everyday-cashback",
+    "issuer": "Deccan Bank (sample)",
+    "card_name": "Everyday Cashback Card",
+    "network": "RuPay",
+    "credit_limit": 120000.0,
+    "outstanding": 6320.0,
+    "due_date": "2026-11-16",
+    "annual_fee": 499,
+    "fees": {
+     "joining": 499,
+     "annual": 499,
+     "annual_waiver_spend": 100000,
+     "gst_applicable": true
+    },
+    "reward_currency": "cashback",
+    "reward_unit": "cashback (₹)",
+    "points": {
+     "balance": 740,
+     "as_of": "2026-10-31",
+     "expiring": [],
+     "source": "sample"
+    },
+    "cycle_spend": {
+     "food_delivery": 3200
+    },
+    "imported_spend": null,
+    "effective_cycle_spend": {
+     "food_delivery": 3200.0
+    },
+    "user_benefits": [],
+    "has_rules": true,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    },
+    "source_document_id": null,
+    "source_fields": [],
+    "data_source": "You entered balances and dues; reward rules come from the sample catalogue"
+   },
+   {
+    "id": "bcb94e82-1eb6-4aec-a0bd-48bd171a9f15",
+    "nickname": "Coastal Shopper",
+    "last4": "5502",
+    "masked": "•••• 5502",
+    "catalogue_id": "coastal-shopper-points",
+    "issuer": "Coastal Bank (sample)",
+    "card_name": "Shopper Rewards Card",
+    "network": "Mastercard",
+    "credit_limit": 150000.0,
+    "outstanding": 3890.0,
+    "due_date": "2026-11-21",
+    "annual_fee": 999,
+    "fees": {
+     "joining": 0,
+     "annual": 999,
+     "annual_waiver_spend": 150000,
+     "gst_applicable": true
+    },
+    "reward_currency": "points",
+    "reward_unit": "Shopper Points",
+    "points": {
+     "balance": 9200,
+     "as_of": "2026-10-31",
+     "expiring": [],
+     "source": "sample"
+    },
+    "cycle_spend": {},
+    "imported_spend": null,
+    "effective_cycle_spend": {},
+    "user_benefits": [],
+    "has_rules": true,
+    "catalogue": {
+     "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+     "last_updated": "2026-09-01",
+     "is_mock": true,
+     "is_stale": false
+    },
+    "source_document_id": null,
+    "source_fields": [],
+    "data_source": "You entered balances and dues; reward rules come from the sample catalogue"
+   }
+  ],
+  "reward_totals": [
+   {
+    "unit": "Voyager Miles",
+    "balance": 18400
+   },
+   {
+    "unit": "cashback (₹)",
+    "balance": 740
+   },
+   {
+    "unit": "Shopper Points",
+    "balance": 9200
+   }
+  ],
+  "reward_totals_note": "Balances are shown per reward currency because different programmes aren't worth the same.",
+  "expiring": [
+   {
+    "card_id": "e978daf3-406b-4f84-a99e-d589647f0951",
+    "card": "Horizon Voyager",
+    "amount": 2500,
+    "date": "2027-01-14",
+    "unit": "Voyager Miles"
+   }
+  ],
+  "categories": [
+   {
+    "key": "travel",
+    "label": "Travel"
+   },
+   {
+    "key": "food_delivery",
+    "label": "Food & delivery"
+   },
+   {
+    "key": "groceries",
+    "label": "Groceries"
+   },
+   {
+    "key": "ecommerce",
+    "label": "Online shopping"
+   },
+   {
+    "key": "fuel",
+    "label": "Fuel"
+   },
+   {
+    "key": "utilities",
+    "label": "Bills & utilities"
+   },
+   {
+    "key": "entertainment",
+    "label": "Entertainment"
+   },
+   {
+    "key": "healthcare",
+    "label": "Healthcare"
+   },
+   {
+    "key": "education",
+    "label": "Education"
+   },
+   {
+    "key": "subscriptions",
+    "label": "Subscriptions"
+   },
+   {
+    "key": "rent",
+    "label": "Rent"
+   },
+   {
+    "key": "insurance",
+    "label": "Insurance premiums"
+   },
+   {
+    "key": "other",
+    "label": "Other"
+   }
+  ]
+ }
+}

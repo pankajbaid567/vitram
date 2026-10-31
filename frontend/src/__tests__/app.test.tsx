@@ -1,9 +1,8 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { App, queryClient } from '../app/App'
 import { ErrorBoundary } from '../app/ErrorBoundary'
+import { mockApi, renderAt, resetApp } from './helpers'
 
 const user = {
   id: 'u1', name: 'Sample User', email: 's@x.test', onboarding_step: 'done', is_sample: true, consents: ['terms'],
@@ -18,18 +17,8 @@ const documents = [{
   size_bytes: 3147, upload_time: '2026-10-31T10:00:00', status: 'needs_review', stage: 'done', page_count: 2, warnings: [],
 }]
 
-/** Answer the app's API calls from a table; anything unlisted is an empty object. */
-function mockApi(routes: Record<string, unknown>) {
-  vi.stubGlobal('fetch', vi.fn(async (url: string) => {
-    const path = String(url).replace(/^\/api/, '').split('?')[0]
-    const body = path in routes ? routes[path] : {}
-    return new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } })
-  }))
-}
-
-const at = (path: string) => render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>)
-
-beforeEach(() => queryClient.clear())
+beforeEach(resetApp)
+const at = renderAt
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks() })
 
 describe('Documents & data page', () => {

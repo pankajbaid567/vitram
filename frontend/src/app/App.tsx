@@ -1,19 +1,13 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { Suspense, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { SourceProvider } from '../components/ui/data'
 import { PageSkeleton, ToastProvider } from '../components/ui/feedback'
 import { SaathiProvider } from '../features/saathi/context'
-import { ApiError } from '../lib/api'
 import { AuthProvider } from '../lib/auth'
+import { queryClient } from '../lib/queryClient'
 import { ErrorBoundary } from './ErrorBoundary'
 import { AppRoutes } from './routes'
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { retry: (n, e) => !(e instanceof ApiError && [401, 403, 404, 422].includes(e.status)) && n < 2, refetchOnWindowFocus: false },
-  },
-})
 
 function ScrollTop() {
   const { pathname } = useLocation()

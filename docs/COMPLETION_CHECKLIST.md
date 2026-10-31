@@ -43,11 +43,11 @@ Each item has an acceptance test ("done when"). `[ ]` open · `[x]` done and ver
 
 ## Phase 3 — Quality and tests
 
-- [ ] **3.1 Twilio voice and consultation tests** (coverage 42 % today): create, failure, retry, cancel, status callbacks, signature, no-recording TwiML, "no call placed" honesty. Mocked HTTP.
-- [ ] **3.2 Gemini adapter outage/edge tests:** timeout, malformed tool call, cooldown, numeric-fidelity replacement, language handling.
-- [ ] **3.3 Cross-user isolation matrix:** one parametrised test that hits *every* object-scoped route as a second user and expects 404.
-- [ ] **3.4 Coverage:** backend ≥ 88 %, with the weakest modules (`twilio_voice`, `consultations`, `webhooks`, `replies`, `family`) ≥ 80 %.
-- [ ] **3.5 Frontend tests:** loans results, emergency mode, reminder settings, API error/401 handling, upload flow. Fix or justify all 19 lint warnings.
+- [x] **3.1 Twilio voice and consultation tests** (coverage 42 % today): create, failure, retry, cancel, status callbacks, signature, no-recording TwiML, "no call placed" honesty. Mocked HTTP.
+- [x] **3.2 Gemini adapter outage/edge tests:** timeout, malformed tool call, cooldown, numeric-fidelity replacement, language handling.
+- [x] **3.3 Cross-user isolation matrix:** one parametrised test that hits *every* object-scoped route as a second user and expects 404.
+- [x] **3.4 Coverage:** backend ≥ 88 %, with the weakest modules (`twilio_voice`, `consultations`, `webhooks`, `replies`, `family`) ≥ 80 %.
+- [x] **3.5 Frontend tests:** loans results, emergency mode, reminder settings, API error/401 handling, upload flow. Fix or justify all 19 lint warnings.
 - [ ] **3.6 End-to-end smoke in a real browser** (`frontend/scripts/e2e.mjs`): sample workspace → documents → loan results → real cost → card optimiser → emergency mode, with assertions; runs in CI against the compose stack.
 - [ ] **3.7 Accessibility audit re-run** after UI changes (target: 0 violations, 8/8 keyboard) and the high-contrast/lang items from the spec.
 - [ ] **3.8 Dependency hygiene:** `pip-audit` and `npm audit` clean or documented; Dependabot config; both added to CI.
