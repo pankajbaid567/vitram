@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   VITTRM design system (plan.md §5 + M11 glass upgrade)
+   VITTRM design system (docs/spec/plan.md §5 + M11 glass upgrade)
    Brand: deep navy foundation · indigo interaction · marigold = Vitt Saathi only.
    Glass is used selectively: floating chrome (top bar, tab bar, dialogs, sheets,
    assistant) and hero overlays. Content cards stay near-opaque for legibility.
@@ -178,7 +178,7 @@
   font-variant-numeric: tabular-nums lining-nums;
 }
 
-/* Trust marks: provenance states for material values (plan.md §5.1). */
+/* Trust marks: provenance states for material values (docs/spec/plan.md §5.1). */
 @utility hatch {
   background-image: repeating-linear-gradient(-45deg, transparent 0 4px, rgb(22 29 69 / 0.07) 4px 5px);
 }

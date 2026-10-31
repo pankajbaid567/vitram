@@ -3,7 +3,7 @@
  *
  * STATUS: written against the installed @google/genai Live API types
  * (live.connect / sendRealtimeInput / sendToolResponse) but NOT verified
- * end-to-end here — the server has no Gemini credentials (plan.md §7).
+ * end-to-end here — the server has no Gemini credentials (docs/spec/plan.md §7).
  *
  * Flow: backend mints an ephemeral token → browser connects directly →
  * mic audio streams as 16 kHz PCM → model audio (24 kHz PCM) plays back →

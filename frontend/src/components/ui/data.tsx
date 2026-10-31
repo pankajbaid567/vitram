@@ -18,7 +18,7 @@ export function Money({ value, paise, className, sign }: { value: number | null 
   )
 }
 
-/* --- Trust marks (plan.md §5.1) -------------------------------------------- */
+/* --- Trust marks (docs/spec/plan.md §5.1) -------------------------------------------- */
 
 type Mark = FactState | 'sample' | 'estimate' | 'user' | 'scan'
 const MARKS: Record<Mark, { label: string; cls: string; icon: ReactNode; title: string }> = {
