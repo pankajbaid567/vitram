@@ -57,8 +57,10 @@ export async function launch(base, { width = 1440, height = 900 } = {}) {
 
   const text = () => js('document.body.innerText')
   const hasText = (s) => `document.body.innerText.includes(${JSON.stringify(s)})`
+  // WAIT_SCALE=4 stretches every wait, for a slow remote target such as a free-tier host.
+  const SCALE = Number(process.env.WAIT_SCALE ?? 1)
   async function waitFor(what, test, ms = 15000) {
-    const end = Date.now() + ms
+    const end = Date.now() + ms * SCALE
     while (Date.now() < end) { if (await js(test).catch(() => false)) return; await sleep(200) }
     throw new Error(`timed out waiting for ${what}\n      page says: ${(await text()).replace(/\s+/g, ' ').slice(0, 260)}`)
   }

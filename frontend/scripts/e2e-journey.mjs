@@ -58,7 +58,7 @@ await step('upload a bank statement and see it read', async () => {
   await expectText('Upload a bank statement')
   await must(await b.click('label, button', '^(I agree|Agree)'), 'agree to document processing')
   await b.click('button', '^Continue$')
-  await sleep(600)
+  await b.waitFor('the file picker', `document.querySelectorAll('input[type=file]').length > 0`)
   await b.upload(`${FIX}/sample_statement_6m.csv`)
   await b.fill('account name', 'Salary account')
   await b.click('label', '6 months')
@@ -84,7 +84,8 @@ await step('add an insurance policy by upload', async () => {
   await b.go('/insurance/upload')
   await b.waitFor('the upload page', `document.querySelectorAll('input[type=file]').length > 0 || /I agree/.test(document.body.innerText)`)
   if (await b.js(`/I agree/.test(document.body.innerText) && document.querySelectorAll('input[type=file]').length === 0`)) {
-    await b.click('label', '^I agree'); await b.click('button', '^Continue$'); await sleep(600)
+    await b.click('label', '^I agree'); await b.click('button', '^Continue$')
+    await b.waitFor('the file picker', `document.querySelectorAll('input[type=file]').length > 0`)
   }
   await b.upload(`${FIX}/sample_policy_family_health.pdf`)
   await must(await b.click('label', '^You$'), 'say the policy covers you')
@@ -127,6 +128,7 @@ await step('EMIs: the detected EMI appears and can be confirmed', async () => {
 await step('insurance emergency mode finds the uploaded policy', async () => {
   await b.go('/insurance/emergency?event=hospitalisation')
   await expectText('Who needs care?')
+  await b.waitFor('the person list', `[...document.querySelectorAll('button, label, [role=radio]')].some((e) => /^Me$/.test(e.innerText.trim()))`)
   await must(await b.click('button, label, [role=radio]', '^Me$'), 'choose "Me"')
   await b.waitFor('a policy that may apply', `/May apply|Family Health Shield/.test(document.body.innerText)`)
 })

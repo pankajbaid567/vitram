@@ -123,6 +123,7 @@ await step('the card optimiser answers for a purchase', async () => {
 await step('emergency mode scopes to one person and cites the policy', async () => {
   await go('/insurance/emergency?event=hospitalisation')
   await waitFor('the person picker', hasText('Who needs care?'))
+  await waitFor('the family to load', hasText('Kamala'))   // the list arrives after the heading on a slow host
   if ((await text()).includes('Senior Care')) throw new Error('a policy was shown before choosing a person')
   await clickByText('button, label, [role=radio]', '/Kamala/')
   await waitFor('the policy that may apply', hasText('May apply'))

@@ -36,6 +36,12 @@ Everything below has a free plan. The trade-off is that the free API host sleeps
 Files are Fernet-encrypted before they reach the bucket, so R2 only ever holds ciphertext. `APP_ORIGIN` and `PUBLIC_API_URL` are the
 Worker's public URL, because the browser and providers' webhooks both reach the API through it.
 
+**Live deployment (free tier):** web https://vitram.baidpankaj567.workers.dev, API `vitram-api-pb` on Render (Ohio), database on Neon
+(`us-east-2`), uploads in the R2 bucket `vitram-uploads`. Verified from a real browser at desktop and phone width: smoke 9/9 and
+the sign-up → statement upload → loans → cards → EMIs → insurance → assistant → delete journey 16/16. Point Meta's WhatsApp webhook at
+`https://vitram.baidpankaj567.workers.dev/api/webhooks/whatsapp` (the verify-token handshake is confirmed). For remote runs of the browser
+scripts use `WAIT_SCALE=5 node scripts/e2e-journey.mjs --base <url>`: a cold free host is slower than the default waits.
+
 Limits to expect: the first request after a long idle takes up to a minute while the API wakes; the Worker's free plan allows
 100,000 API requests a day; Render's free plan gives 750 instance-hours a month, enough for one always-awake service.
 
