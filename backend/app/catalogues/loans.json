@@ -1,0 +1,218 @@
+{
+  "meta": {
+    "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+    "is_mock": true,
+    "last_updated": "2026-09-01"
+  },
+  "products": [
+    {
+      "id": "aravali-personal-flex",
+      "lender": "Aravali Bank (sample)",
+      "product_name": "Personal Loan Flex",
+      "category": "personal",
+      "secured": false,
+      "purposes": ["personal", "medical", "wedding", "travel", "home_renovation", "debt_consolidation", "other"],
+      "eligibility": {
+        "employment": ["salaried"],
+        "min_monthly_income": 30000,
+        "age_min": 23,
+        "age_max": 58,
+        "credit_score_min": null,
+        "collateral": "none"
+      },
+      "pricing": {"interest_type": "fixed", "rate_min": 11.25, "rate_max": 16.5, "indicative_rate": 12.5},
+      "repayment": {"amount_min": 50000, "amount_max": 2500000, "tenure_min": 12, "tenure_max": 60},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 1.5, "min": 2499, "max": 15000, "gst_applicable": true},
+        {"key": "documentation", "label": "Documentation charges", "basis": "flat", "value": 0, "gst_applicable": false},
+        {"key": "stamp_duty", "label": "Stamp duty", "basis": "flat", "value": null, "note": "As per state law; not stated in the sample terms"}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": 500, "penal_rate_pa": 24, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 12, "charge_pct": 4, "on": "outstanding principal", "gst_applicable": true}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 6, "charge_pct": 2, "max_per_year_pct": 25, "gst_applicable": true}},
+        {"key": "bounce", "label": "EMI bounce charge", "rule": {"flat_fee": 590}}
+      ],
+      "clauses": [
+        {"title": "Part-prepayment only after 6 EMIs", "severity": "flexibility_impact", "text": "Part-prepayment is allowed after 6 EMIs, up to 25% of the outstanding principal each year, with a 2% charge plus GST."},
+        {"title": "Processing fee is non-refundable", "severity": "cost_impact", "text": "The processing fee is deducted at disbursal and is not refunded if the loan is cancelled."}
+      ],
+      "documents": ["PAN", "Aadhaar or other address proof", "Last 3 salary slips", "Last 6 months' bank statements"]
+    },
+    {
+      "id": "vindhya-instant-personal",
+      "lender": "Vindhya Credit (sample)",
+      "product_name": "Instant Personal Loan",
+      "category": "personal",
+      "secured": false,
+      "purposes": ["personal", "medical", "travel", "other"],
+      "eligibility": {"employment": ["salaried"], "min_monthly_income": 20000, "age_min": 21, "age_max": 60, "credit_score_min": null, "collateral": "none"},
+      "pricing": {"interest_type": "fixed", "rate_min": 13.5, "rate_max": 24, "indicative_rate": 15.5},
+      "repayment": {"amount_min": 25000, "amount_max": 1000000, "tenure_min": 6, "tenure_max": 48},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 3, "min": 1999, "gst_applicable": true},
+        {"key": "documentation", "label": "Documentation charges", "basis": "flat", "value": 999, "gst_applicable": true},
+        {"key": "credit_insurance", "label": "Loan protection cover (bundled)", "basis": "percent_of_principal", "value": 1.2, "gst_applicable": false, "mandatory": true, "note": "Mandatory as a condition of the loan in the sample terms"}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": 750, "penal_rate_pa": 36, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 6, "charge_pct": 5, "on": "outstanding principal", "gst_applicable": true}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": false}}
+      ],
+      "clauses": [
+        {"title": "Bundled loan protection cover", "severity": "important", "text": "A loan protection cover of 1.2% of the loan amount is mandatory and is added to the upfront cost."},
+        {"title": "No part-prepayment", "severity": "flexibility_impact", "text": "Part-prepayment is not permitted; only full foreclosure after 6 EMIs with a 5% charge plus GST."},
+        {"title": "High penal interest", "severity": "cost_impact", "text": "Overdue EMIs attract penal interest of 36% p.a. plus a ₹750 fee and GST."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Latest salary slip", "Last 3 months' bank statements"]
+    },
+    {
+      "id": "nilgiri-salaried-personal",
+      "lender": "Nilgiri Bank (sample)",
+      "product_name": "Salaried Personal Loan",
+      "category": "personal",
+      "secured": false,
+      "purposes": ["personal", "medical", "wedding", "education", "home_renovation", "debt_consolidation", "other"],
+      "eligibility": {"employment": ["salaried"], "min_monthly_income": 50000, "age_min": 24, "age_max": 58, "credit_score_min": 750, "collateral": "none"},
+      "pricing": {"interest_type": "fixed", "rate_min": 10.75, "rate_max": 14, "indicative_rate": 11.25},
+      "repayment": {"amount_min": 100000, "amount_max": 4000000, "tenure_min": 12, "tenure_max": 72},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 1, "min": 4999, "max": 20000, "gst_applicable": true},
+        {"key": "documentation", "label": "Documentation charges", "basis": "flat", "value": 500, "gst_applicable": true}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": 400, "penal_rate_pa": 18, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 12, "charge_pct": 3, "on": "outstanding principal", "gst_applicable": true}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 12, "charge_pct": 2, "max_per_year_pct": 40, "gst_applicable": true}}
+      ],
+      "clauses": [
+        {"title": "Credit score requirement", "severity": "eligibility_condition", "text": "Requires a credit bureau score of 750 or more in the sample terms. VITTRM doesn't know your score, so this is marked unknown."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Form 16", "Last 3 salary slips", "Last 6 months' bank statements"]
+    },
+    {
+      "id": "satpura-home-advantage",
+      "lender": "Satpura Housing Finance (sample)",
+      "product_name": "Home Loan Advantage",
+      "category": "home",
+      "secured": true,
+      "purposes": ["home"],
+      "eligibility": {"employment": ["salaried"], "min_monthly_income": 40000, "age_min": 21, "age_max": 60, "credit_score_min": null, "collateral": "required", "collateral_types": ["property"], "max_ltv_pct": 80},
+      "pricing": {"interest_type": "floating", "rate_min": 8.4, "rate_max": 9.75, "indicative_rate": 8.65, "benchmark": "Repo-linked (illustrative)"},
+      "repayment": {"amount_min": 500000, "amount_max": 50000000, "tenure_min": 60, "tenure_max": 360},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 0.5, "min": 5000, "max": 25000, "gst_applicable": true},
+        {"key": "legal_valuation", "label": "Legal & valuation charges", "basis": "flat", "value": 7500, "gst_applicable": true},
+        {"key": "stamp_duty", "label": "Stamp duty & registration", "basis": "flat", "value": null, "note": "Depends on state and property value; not included"}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": null, "penal_rate_pa": 18, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 0, "charge_pct": 0, "on": "outstanding principal"}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 0, "charge_pct": 0}}
+      ],
+      "clauses": [
+        {"title": "Floating rate can be reset", "severity": "cost_impact", "text": "The rate is linked to an external benchmark and resets quarterly; your EMI or tenure can change."},
+        {"title": "Property is mortgaged", "severity": "eligibility_condition", "text": "The property is mortgaged to the lender until the loan is fully repaid. Up to 80% of property value can be financed."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Salary slips", "Form 16", "Property documents", "Bank statements"]
+    },
+    {
+      "id": "aravali-home-fixed",
+      "lender": "Aravali Bank (sample)",
+      "product_name": "Home Loan Fixed-3",
+      "category": "home",
+      "secured": true,
+      "purposes": ["home"],
+      "eligibility": {"employment": ["salaried"], "min_monthly_income": 60000, "age_min": 23, "age_max": 58, "credit_score_min": null, "collateral": "required", "collateral_types": ["property"], "max_ltv_pct": 75},
+      "pricing": {"interest_type": "fixed", "rate_min": 9.25, "rate_max": 10.1, "indicative_rate": 9.4, "note": "Fixed for the first 3 years, then converts to floating (illustrative)"},
+      "repayment": {"amount_min": 1000000, "amount_max": 30000000, "tenure_min": 60, "tenure_max": 300},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "flat", "value": 10000, "gst_applicable": true},
+        {"key": "legal_valuation", "label": "Legal & valuation charges", "basis": "flat", "value": null}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": 750, "penal_rate_pa": 24, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure during fixed period", "rule": {"allowed_after_months": 0, "charge_pct": 2, "on": "outstanding principal", "gst_applicable": true}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 12, "charge_pct": 2, "gst_applicable": true}}
+      ],
+      "clauses": [
+        {"title": "Rate converts to floating after 3 years", "severity": "cost_impact", "text": "After 36 months the loan moves to the lender's floating rate; the fixed rate shown applies only to the first 3 years."},
+        {"title": "Legal & valuation charges unknown", "severity": "important", "text": "Legal and valuation charges aren't stated in the sample terms, so the Real Cost excludes them."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Salary slips", "Form 16", "Property documents"]
+    },
+    {
+      "id": "narmada-vehicle-drive",
+      "lender": "Narmada Small Finance Bank (sample)",
+      "product_name": "Drive Car Loan",
+      "category": "vehicle",
+      "secured": true,
+      "purposes": ["vehicle"],
+      "eligibility": {"employment": ["salaried"], "min_monthly_income": 25000, "age_min": 21, "age_max": 60, "credit_score_min": null, "collateral": "required", "collateral_types": ["vehicle"], "max_ltv_pct": 90},
+      "pricing": {"interest_type": "fixed", "rate_min": 9.5, "rate_max": 13, "indicative_rate": 10.25},
+      "repayment": {"amount_min": 100000, "amount_max": 3000000, "tenure_min": 12, "tenure_max": 84},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 1, "min": 3000, "max": 10000, "gst_applicable": true},
+        {"key": "documentation", "label": "Documentation & RTO hypothecation", "basis": "flat", "value": 1500, "gst_applicable": true}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": 600, "penal_rate_pa": 24, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 6, "charge_pct": 5, "on": "outstanding principal", "gst_applicable": true}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 12, "charge_pct": 3, "gst_applicable": true}}
+      ],
+      "clauses": [
+        {"title": "Vehicle is hypothecated", "severity": "eligibility_condition", "text": "The car is hypothecated to the lender and the hypothecation must be removed from the RC after closure."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Salary slips", "Proforma invoice", "Bank statements"]
+    },
+    {
+      "id": "konkan-education-scholar",
+      "lender": "Konkan Finance (sample)",
+      "product_name": "Scholar Education Loan",
+      "category": "education",
+      "secured": false,
+      "purposes": ["education"],
+      "eligibility": {"employment": ["salaried"], "min_monthly_income": 25000, "age_min": 21, "age_max": 60, "credit_score_min": null, "collateral": "optional", "collateral_types": ["property", "fixed_deposit"]},
+      "pricing": {"interest_type": "floating", "rate_min": 10.5, "rate_max": 13.5, "indicative_rate": 11, "benchmark": "Lender's base rate (illustrative)"},
+      "repayment": {"amount_min": 100000, "amount_max": 4000000, "tenure_min": 12, "tenure_max": 120},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 1, "max": 10000, "gst_applicable": true}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": 500, "penal_rate_pa": 18, "gst_applicable": true}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 0, "charge_pct": 0, "on": "outstanding principal"}},
+        {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 0, "charge_pct": 0}}
+      ],
+      "clauses": [
+        {"title": "Lower rate with collateral", "severity": "important", "text": "Offering property or a fixed deposit as collateral may lower the rate in the sample terms; the indicative rate shown is unsecured."},
+        {"title": "Floating rate", "severity": "cost_impact", "text": "The rate is floating and can change over the tenure."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Admission letter", "Fee structure", "Co-borrower income proof"]
+    },
+    {
+      "id": "narmada-gold-quick",
+      "lender": "Narmada Small Finance Bank (sample)",
+      "product_name": "Gold Loan Quick",
+      "category": "gold",
+      "secured": true,
+      "purposes": ["personal", "medical", "wedding", "other"],
+      "eligibility": {"employment": ["salaried", "any"], "min_monthly_income": null, "age_min": 18, "age_max": 70, "credit_score_min": null, "collateral": "required", "collateral_types": ["gold"], "max_ltv_pct": 75},
+      "pricing": {"interest_type": "fixed", "rate_min": 9.5, "rate_max": 18, "indicative_rate": 10.5},
+      "repayment": {"amount_min": 10000, "amount_max": 2500000, "tenure_min": 3, "tenure_max": 24},
+      "charges": [
+        {"key": "processing_fee", "label": "Processing fee", "basis": "percent_of_principal", "value": 0.5, "min": 500, "gst_applicable": true},
+        {"key": "valuation", "label": "Gold valuation charge", "basis": "flat", "value": 350, "gst_applicable": true}
+      ],
+      "contingent": [
+        {"key": "late_payment", "label": "Late-payment charges", "rule": {"flat_fee": null, "penal_rate_pa": 24, "gst_applicable": false}},
+        {"key": "foreclosure", "label": "Foreclosure charges", "rule": {"allowed_after_months": 0, "charge_pct": 0, "on": "outstanding principal"}},
+        {"key": "auction", "label": "Auction on default", "rule": null}
+      ],
+      "clauses": [
+        {"title": "Gold can be auctioned on default", "severity": "important", "text": "If dues remain unpaid the pledged gold may be auctioned after notice. The auction terms aren't detailed in the sample data."},
+        {"title": "Loan capped at 75% of gold value", "severity": "eligibility_condition", "text": "You can borrow up to 75% of the assessed value of the pledged gold."}
+      ],
+      "documents": ["PAN", "Aadhaar", "Gold ornaments for valuation"]
+    }
+  ]
+}

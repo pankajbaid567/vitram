@@ -1,0 +1,26 @@
+# secrets & local data — never commit
+.env
+.env.*
+!.env.example
+backend/.data/
+*.key
+
+# Local OpenWA checkout and its paired-session runtime state.
+/OpenWA/
+
+# python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# node
+frontend/node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+.DS_Store
+
+# local audit notes — not for the public repo
+RESUME_AUDIT.md
+pitch-deck-screenshots/

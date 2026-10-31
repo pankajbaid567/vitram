@@ -1,0 +1,447 @@
+{
+  "meta": {
+    "source": "Official insurer product pages, download centres and product directories; curated by VITTRM for market discovery",
+    "last_updated": "2026-09-24",
+    "is_mock": false,
+    "selection_note": "Representative retail health and term insurance products. This is a discovery set, not an ordinal ranking."
+  },
+  "products": [
+    {
+      "id": "hdfc-optima-secure",
+      "insurer": "HDFC ERGO",
+      "product_name": "my:Optima Secure",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "family",
+        "restoration"
+      ],
+      "official_url": "https://www.hdfcergo.com/health-insurance/optima-secure",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "hdfc-optima-super-secure",
+      "insurer": "HDFC ERGO",
+      "product_name": "my:Optima Super Secure",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "higher cover",
+        "family"
+      ],
+      "official_url": "https://www.hdfcergo.com/health-insurance/optima-secure",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "hdfc-optima-select",
+      "insurer": "HDFC ERGO",
+      "product_name": "my:Optima Select",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "customisable",
+        "family"
+      ],
+      "official_url": "https://www.hdfcergo.com/health-insurance/optima-secure",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "hdfc-optima-lite",
+      "insurer": "HDFC ERGO",
+      "product_name": "my:Optima Lite",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "essential cover"
+      ],
+      "official_url": "https://www.hdfcergo.com/health-insurance/optima-secure",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "hdfc-optima-secure-global",
+      "insurer": "HDFC ERGO",
+      "product_name": "my:Optima Secure Global",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "global treatment",
+        "high cover"
+      ],
+      "official_url": "https://www.hdfcergo.com/health-insurance/optima-secure",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "niva-reassure-2",
+      "insurer": "Niva Bupa",
+      "product_name": "ReAssure 2.0",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "family",
+        "restoration"
+      ],
+      "official_url": "https://www.nivabupa.com/health-insurance-plans/reassure-family-floater.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "niva-aspire",
+      "insurer": "Niva Bupa",
+      "product_name": "Aspire",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "young families",
+        "customisable"
+      ],
+      "official_url": "https://www.nivabupa.com/health-insurance-plans/aspire.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "niva-health-companion",
+      "insurer": "Niva Bupa",
+      "product_name": "Health Companion",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "family",
+        "individual"
+      ],
+      "official_url": "https://www.nivabupa.com/health-insurance-plans/health-companion.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "niva-senior-first",
+      "insurer": "Niva Bupa",
+      "product_name": "Senior First",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "senior citizens"
+      ],
+      "official_url": "https://www.nivabupa.com/health-insurance-plans/senior-citizen-health-insurance.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "niva-health-recharge",
+      "insurer": "Niva Bupa",
+      "product_name": "Health Recharge",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "super top-up"
+      ],
+      "official_url": "https://www.nivabupa.com/health-insurance-plans/health-recharge.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "care-supreme",
+      "insurer": "Care Health Insurance",
+      "product_name": "Care Supreme",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "family",
+        "restoration"
+      ],
+      "official_url": "https://www.careinsurance.com/product/care-supreme",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "care-ultimate",
+      "insurer": "Care Health Insurance",
+      "product_name": "Ultimate Care",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "family",
+        "high cover"
+      ],
+      "official_url": "https://www.careinsurance.com/health-insurance/individual-health-insurance",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "care-advantage",
+      "insurer": "Care Health Insurance",
+      "product_name": "Care Advantage",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "high cover",
+        "global option"
+      ],
+      "official_url": "https://www.careinsurance.com/health-insurance/individual-health-insurance",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "care-ultimate-joy",
+      "insurer": "Care Health Insurance",
+      "product_name": "Ultimate Joy",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "maternity",
+        "newborn"
+      ],
+      "official_url": "https://www.careinsurance.com/health-insurance/individual-health-insurance",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "care-freedom",
+      "insurer": "Care Health Insurance",
+      "product_name": "Care Freedom",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "listed pre-existing diseases"
+      ],
+      "official_url": "https://www.careinsurance.com/policy-individual-health-insurance.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-super-star",
+      "insurer": "Star Health",
+      "product_name": "Super Star",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "unlimited cover option",
+        "family"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/super-star/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-comprehensive",
+      "insurer": "Star Health",
+      "product_name": "Star Comprehensive Insurance Policy",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "comprehensive",
+        "family"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/individuals/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-family-optima",
+      "insurer": "Star Health",
+      "product_name": "Family Health Optima Insurance Plan",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "family floater"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/individuals/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-assure",
+      "insurer": "Star Health",
+      "product_name": "Star Health Assure Insurance Policy",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "large family",
+        "restoration"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/star-assure/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-young-star",
+      "insurer": "Star Health",
+      "product_name": "Young Star Insurance Policy",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "young adults",
+        "family"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/youngstar/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-senior-red-carpet",
+      "insurer": "Star Health",
+      "product_name": "Senior Citizens Red Carpet Health Insurance Policy",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "senior citizens"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/senior-citizen-red-carpet-health-insurance-policy/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "star-super-surplus",
+      "insurer": "Star Health",
+      "product_name": "Super Surplus Insurance Policy",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "top-up cover"
+      ],
+      "official_url": "https://www.starhealth.in/health-insurance/individuals/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "icici-elevate",
+      "insurer": "ICICI Lombard",
+      "product_name": "Elevate",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "customisable",
+        "family"
+      ],
+      "official_url": "https://www.icicilombard.com/health-insurance/elevate-health-insurance",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "icici-golden-shield",
+      "insurer": "ICICI Lombard",
+      "product_name": "Golden Shield",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "senior citizens"
+      ],
+      "official_url": "https://www.icicilombard.com/health-insurance",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "icici-health-booster",
+      "insurer": "ICICI Lombard",
+      "product_name": "Health Booster",
+      "type": "health",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "super top-up"
+      ],
+      "official_url": "https://www.icicilombard.com/health-insurance",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "lic-digi-term",
+      "insurer": "LIC of India",
+      "product_name": "Digi Term",
+      "type": "term_life",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "online term protection"
+      ],
+      "official_url": "https://licindia.in/term-assurance-plans",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "lic-yuva-term",
+      "insurer": "LIC of India",
+      "product_name": "Yuva Term",
+      "type": "term_life",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "young adults",
+        "term protection"
+      ],
+      "official_url": "https://licindia.in/term-assurance-plans",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "lic-new-tech-term",
+      "insurer": "LIC of India",
+      "product_name": "New Tech-Term",
+      "type": "term_life",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "online term protection"
+      ],
+      "official_url": "https://www.licindia.in/tech-term",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "lic-new-jeevan-amar",
+      "insurer": "LIC of India",
+      "product_name": "New Jeevan Amar",
+      "type": "term_life",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "term protection"
+      ],
+      "official_url": "https://licindia.in/term-assurance-plans",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    },
+    {
+      "id": "lic-saral-jeevan-bima",
+      "insurer": "LIC of India",
+      "product_name": "Saral Jeevan Bima",
+      "type": "term_life",
+      "variant": "market reference",
+      "reference_only": true,
+      "best_for": [
+        "standard term cover"
+      ],
+      "official_url": "https://licindia.in/term-assurance-plans",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Read the current policy wording, customer information sheet and benefit illustration before purchase."
+    }
+  ]
+}

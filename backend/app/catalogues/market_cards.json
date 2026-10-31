@@ -1,0 +1,836 @@
+{
+  "meta": {
+    "source": "Official issuer product pages and product directories; curated by VITTRM for market discovery",
+    "last_updated": "2026-09-24",
+    "is_mock": false,
+    "selection_note": "Popular Indian cards across major issuers. This is a discovery set, not an ordinal ranking."
+  },
+  "products": [
+    {
+      "id": "sbi-cashback",
+      "issuer": "SBI Card",
+      "card_name": "CASHBACK SBI Card",
+      "reference_only": true,
+      "categories": [
+        "cashback",
+        "online shopping"
+      ],
+      "best_for": [
+        "cashback",
+        "online shopping"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/rewards/cashback-sbi-card.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-simplyclick",
+      "issuer": "SBI Card",
+      "card_name": "SimplyCLICK SBI Card",
+      "reference_only": true,
+      "categories": [
+        "online shopping"
+      ],
+      "best_for": [
+        "online shopping"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/shopping/simplyclick-sbi-card.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-simplysave",
+      "issuer": "SBI Card",
+      "card_name": "SimplySAVE SBI Card",
+      "reference_only": true,
+      "categories": [
+        "everyday spend"
+      ],
+      "best_for": [
+        "everyday spend"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/shopping/simplysave-sbi-card.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-elite",
+      "issuer": "SBI Card",
+      "card_name": "SBI Card ELITE",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "travel"
+      ],
+      "best_for": [
+        "premium",
+        "travel"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/lifestyle/sbi-card-elite.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-prime",
+      "issuer": "SBI Card",
+      "card_name": "SBI Card PRIME",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "rewards"
+      ],
+      "best_for": [
+        "premium",
+        "rewards"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/lifestyle/sbi-card-prime.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-pulse",
+      "issuer": "SBI Card",
+      "card_name": "SBI Card PULSE",
+      "reference_only": true,
+      "categories": [
+        "health",
+        "fitness"
+      ],
+      "best_for": [
+        "health",
+        "fitness"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/lifestyle/sbi-card-pulse.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-bpcl-octane",
+      "issuer": "SBI Card",
+      "card_name": "BPCL SBI Card OCTANE",
+      "reference_only": true,
+      "categories": [
+        "fuel"
+      ],
+      "best_for": [
+        "fuel"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/travel/bpcl-sbi-card-octane.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-irctc-platinum",
+      "issuer": "SBI Card",
+      "card_name": "IRCTC SBI Platinum Card",
+      "reference_only": true,
+      "categories": [
+        "rail travel"
+      ],
+      "best_for": [
+        "rail travel"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/travel/irctc-sbi-platinum-card.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-miles-elite",
+      "issuer": "SBI Card",
+      "card_name": "SBI Card MILES ELITE",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "air miles"
+      ],
+      "best_for": [
+        "travel",
+        "air miles"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/travel/sbi-card-miles-elite.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-miles-prime",
+      "issuer": "SBI Card",
+      "card_name": "SBI Card MILES PRIME",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "air miles"
+      ],
+      "best_for": [
+        "travel",
+        "air miles"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/travel/sbi-card-miles-prime.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-miles",
+      "issuer": "SBI Card",
+      "card_name": "SBI Card MILES",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "air miles"
+      ],
+      "best_for": [
+        "travel",
+        "air miles"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/travel/sbi-card-miles.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "sbi-tata-neu-infinity",
+      "issuer": "SBI Card",
+      "card_name": "Tata Neu Infinity SBI Card",
+      "reference_only": true,
+      "categories": [
+        "Tata Neu",
+        "rewards"
+      ],
+      "best_for": [
+        "Tata Neu",
+        "rewards"
+      ],
+      "official_url": "https://www.sbicard.com/en/personal/credit-cards/rewards/tata-neu-infinity-sbi-card.page",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-infinia",
+      "issuer": "HDFC Bank",
+      "card_name": "Infinia Credit Card Metal Edition",
+      "reference_only": true,
+      "categories": [
+        "super premium",
+        "travel"
+      ],
+      "best_for": [
+        "super premium",
+        "travel"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/infinia-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-diners-black",
+      "issuer": "HDFC Bank",
+      "card_name": "Diners Club Black Metal Edition",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "travel"
+      ],
+      "best_for": [
+        "premium",
+        "travel"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/diners-club-black-metal-edition",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-regalia-gold",
+      "issuer": "HDFC Bank",
+      "card_name": "Regalia Gold Credit Card",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "rewards"
+      ],
+      "best_for": [
+        "travel",
+        "rewards"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/regalia-gold-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-millennia",
+      "issuer": "HDFC Bank",
+      "card_name": "Millennia Credit Card",
+      "reference_only": true,
+      "categories": [
+        "cashback",
+        "online shopping"
+      ],
+      "best_for": [
+        "cashback",
+        "online shopping"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/millennia-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-moneyback-plus",
+      "issuer": "HDFC Bank",
+      "card_name": "MoneyBack+ Credit Card",
+      "reference_only": true,
+      "categories": [
+        "everyday spend"
+      ],
+      "best_for": [
+        "everyday spend"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/moneyback-plus",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-freedom",
+      "issuer": "HDFC Bank",
+      "card_name": "Freedom Credit Card",
+      "reference_only": true,
+      "categories": [
+        "entry level"
+      ],
+      "best_for": [
+        "entry level"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/freedom-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-tata-neu-infinity",
+      "issuer": "HDFC Bank",
+      "card_name": "Tata Neu Infinity HDFC Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "Tata Neu",
+        "UPI"
+      ],
+      "best_for": [
+        "Tata Neu",
+        "UPI"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/tata-neu-infinity-hdfc-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-tata-neu-plus",
+      "issuer": "HDFC Bank",
+      "card_name": "Tata Neu Plus HDFC Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "Tata Neu",
+        "UPI"
+      ],
+      "best_for": [
+        "Tata Neu",
+        "UPI"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/tata-neu-plus-hdfc-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-swiggy",
+      "issuer": "HDFC Bank",
+      "card_name": "Swiggy HDFC Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "food delivery",
+        "online shopping"
+      ],
+      "best_for": [
+        "food delivery",
+        "online shopping"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/swiggy-hdfc-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hdfc-indian-oil",
+      "issuer": "HDFC Bank",
+      "card_name": "IndianOil HDFC Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "fuel"
+      ],
+      "best_for": [
+        "fuel"
+      ],
+      "official_url": "https://www.hdfcbank.com/personal/pay/cards/credit-cards/indianoil-hdfc-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-atlas",
+      "issuer": "Axis Bank",
+      "card_name": "ATLAS Credit Card",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "air miles"
+      ],
+      "best_for": [
+        "travel",
+        "air miles"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/atlas-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-magnus",
+      "issuer": "Axis Bank",
+      "card_name": "Magnus Credit Card",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "travel"
+      ],
+      "best_for": [
+        "premium",
+        "travel"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/magnus-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-select",
+      "issuer": "Axis Bank",
+      "card_name": "SELECT Credit Card",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "lifestyle"
+      ],
+      "best_for": [
+        "premium",
+        "lifestyle"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/axis-bank-select-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-ace",
+      "issuer": "Axis Bank",
+      "card_name": "ACE Credit Card",
+      "reference_only": true,
+      "categories": [
+        "cashback",
+        "utilities"
+      ],
+      "best_for": [
+        "cashback",
+        "utilities"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/axis-bank-ace-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-airtel",
+      "issuer": "Axis Bank",
+      "card_name": "Airtel Axis Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "telecom",
+        "utilities"
+      ],
+      "best_for": [
+        "telecom",
+        "utilities"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/airtel-axis-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-flipkart",
+      "issuer": "Axis Bank",
+      "card_name": "Flipkart Axis Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "online shopping",
+        "cashback"
+      ],
+      "best_for": [
+        "online shopping",
+        "cashback"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/flipkart-axis-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-myzone",
+      "issuer": "Axis Bank",
+      "card_name": "MY ZONE Credit Card",
+      "reference_only": true,
+      "categories": [
+        "entertainment",
+        "lifestyle"
+      ],
+      "best_for": [
+        "entertainment",
+        "lifestyle"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/my-zone-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-neo",
+      "issuer": "Axis Bank",
+      "card_name": "NEO Credit Card",
+      "reference_only": true,
+      "categories": [
+        "entry level",
+        "online offers"
+      ],
+      "best_for": [
+        "entry level",
+        "online offers"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/neo-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-indianoil",
+      "issuer": "Axis Bank",
+      "card_name": "IndianOil Axis Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "fuel"
+      ],
+      "best_for": [
+        "fuel"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/indianoil-axis-bank-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "axis-rewards",
+      "issuer": "Axis Bank",
+      "card_name": "Axis Bank Rewards Credit Card",
+      "reference_only": true,
+      "categories": [
+        "rewards",
+        "everyday spend"
+      ],
+      "best_for": [
+        "rewards",
+        "everyday spend"
+      ],
+      "official_url": "https://www.axisbank.com/retail/cards/credit-card/axis-bank-rewards-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-emeralde-private",
+      "issuer": "ICICI Bank",
+      "card_name": "Emeralde Private Metal Credit Card",
+      "reference_only": true,
+      "categories": [
+        "super premium",
+        "travel"
+      ],
+      "best_for": [
+        "super premium",
+        "travel"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/emeralde-private-metal-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-sapphiro",
+      "issuer": "ICICI Bank",
+      "card_name": "Sapphiro Credit Card",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "lifestyle"
+      ],
+      "best_for": [
+        "premium",
+        "lifestyle"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/sapphiro-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-rubyx",
+      "issuer": "ICICI Bank",
+      "card_name": "Rubyx Credit Card",
+      "reference_only": true,
+      "categories": [
+        "lifestyle",
+        "rewards"
+      ],
+      "best_for": [
+        "lifestyle",
+        "rewards"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/rubyx-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-coral",
+      "issuer": "ICICI Bank",
+      "card_name": "Coral Credit Card",
+      "reference_only": true,
+      "categories": [
+        "everyday spend"
+      ],
+      "best_for": [
+        "everyday spend"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/coral-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-amazon-pay",
+      "issuer": "ICICI Bank",
+      "card_name": "Amazon Pay ICICI Bank Credit Card",
+      "reference_only": true,
+      "categories": [
+        "online shopping",
+        "cashback"
+      ],
+      "best_for": [
+        "online shopping",
+        "cashback"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/amazon-pay-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-makemytrip-signature",
+      "issuer": "ICICI Bank",
+      "card_name": "MakeMyTrip ICICI Bank Signature Credit Card",
+      "reference_only": true,
+      "categories": [
+        "travel"
+      ],
+      "best_for": [
+        "travel"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/makemytrip-signature-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-hpcl-super-saver",
+      "issuer": "ICICI Bank",
+      "card_name": "HPCL Super Saver Credit Card",
+      "reference_only": true,
+      "categories": [
+        "fuel",
+        "utilities"
+      ],
+      "best_for": [
+        "fuel",
+        "utilities"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/hpcl-super-saver-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "icici-platinum-chip",
+      "issuer": "ICICI Bank",
+      "card_name": "Platinum Chip Credit Card",
+      "reference_only": true,
+      "categories": [
+        "entry level"
+      ],
+      "best_for": [
+        "entry level"
+      ],
+      "official_url": "https://www.icicibank.com/personal-banking/cards/credit-card/platinum-chip-credit-card",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "amex-platinum",
+      "issuer": "American Express",
+      "card_name": "The Platinum Card",
+      "reference_only": true,
+      "categories": [
+        "super premium",
+        "travel"
+      ],
+      "best_for": [
+        "super premium",
+        "travel"
+      ],
+      "official_url": "https://www.americanexpress.com/in/credit-cards/platinum-card/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "amex-platinum-travel",
+      "issuer": "American Express",
+      "card_name": "Platinum Travel Credit Card",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "rewards"
+      ],
+      "best_for": [
+        "travel",
+        "rewards"
+      ],
+      "official_url": "https://www.americanexpress.com/in/credit-cards/platinum-travel-credit-card/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "amex-mrcc",
+      "issuer": "American Express",
+      "card_name": "Membership Rewards Credit Card",
+      "reference_only": true,
+      "categories": [
+        "rewards"
+      ],
+      "best_for": [
+        "rewards"
+      ],
+      "official_url": "https://www.americanexpress.com/in/credit-cards/membership-rewards-card/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "amex-smartearn",
+      "issuer": "American Express",
+      "card_name": "SmartEarn Credit Card",
+      "reference_only": true,
+      "categories": [
+        "entry level",
+        "online spend"
+      ],
+      "best_for": [
+        "entry level",
+        "online spend"
+      ],
+      "official_url": "https://www.americanexpress.com/in/credit-cards/smartearn-credit-card/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "amex-gold",
+      "issuer": "American Express",
+      "card_name": "Gold Card",
+      "reference_only": true,
+      "categories": [
+        "rewards",
+        "premium"
+      ],
+      "best_for": [
+        "rewards",
+        "premium"
+      ],
+      "official_url": "https://www.americanexpress.com/in/charge-cards/gold-card/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hsbc-live-plus",
+      "issuer": "HSBC India",
+      "card_name": "HSBC Live+ Credit Card",
+      "reference_only": true,
+      "categories": [
+        "cashback",
+        "dining"
+      ],
+      "best_for": [
+        "cashback",
+        "dining"
+      ],
+      "official_url": "https://www.hsbc.co.in/credit-cards/products/live-plus/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "hsbc-travelone",
+      "issuer": "HSBC India",
+      "card_name": "HSBC TravelOne Credit Card",
+      "reference_only": true,
+      "categories": [
+        "travel",
+        "air miles"
+      ],
+      "best_for": [
+        "travel",
+        "air miles"
+      ],
+      "official_url": "https://www.hsbc.co.in/credit-cards/products/travelone/",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "idfc-first-wealth",
+      "issuer": "IDFC FIRST Bank",
+      "card_name": "FIRST Wealth Credit Card",
+      "reference_only": true,
+      "categories": [
+        "premium",
+        "rewards"
+      ],
+      "best_for": [
+        "premium",
+        "rewards"
+      ],
+      "official_url": "https://www.idfcfirstbank.com/credit-card/wealth",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "idfc-first-millennia",
+      "issuer": "IDFC FIRST Bank",
+      "card_name": "FIRST Millennia Credit Card",
+      "reference_only": true,
+      "categories": [
+        "entry level",
+        "rewards"
+      ],
+      "best_for": [
+        "entry level",
+        "rewards"
+      ],
+      "official_url": "https://www.idfcfirstbank.com/credit-card/millennia",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    },
+    {
+      "id": "kotak-myntra",
+      "issuer": "Kotak Mahindra Bank",
+      "card_name": "Myntra Kotak Credit Card",
+      "reference_only": true,
+      "categories": [
+        "fashion",
+        "online shopping"
+      ],
+      "best_for": [
+        "fashion",
+        "online shopping"
+      ],
+      "official_url": "https://www.kotak.com/en/personal-banking/cards/credit-cards/myntra-credit-card.html",
+      "verified_at": "2026-09-24",
+      "verification_note": "Product identity and positioning reference. Check current issuer terms for fees, rewards, caps, exclusions and eligibility."
+    }
+  ]
+}

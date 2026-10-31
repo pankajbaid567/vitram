@@ -1,0 +1,312 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   VITTRM design system (plan.md §5 + M11 glass upgrade)
+   Brand: deep navy foundation · indigo interaction · marigold = Vitt Saathi only.
+   Glass is used selectively: floating chrome (top bar, tab bar, dialogs, sheets,
+   assistant) and hero overlays. Content cards stay near-opaque for legibility.
+   ========================================================================== */
+@theme {
+  /* brand & semantic colours */
+  --color-ink: #161d45;
+  --color-ink-2: #232b5c;
+  --color-navy-900: #0f1538;
+  --color-navy-800: #161d45;
+  --color-navy-700: #1f2860;
+  --color-indigo: #3443b5;
+  --color-indigo-dark: #27338f;
+  --color-indigo-soft: #e8eafb;
+  --color-indigo-300: #9aa4f0;
+  --color-marigold: #e7a02f;
+  --color-marigold-soft: #fdf1dc;
+  --color-marigold-deep: #8a5a0b;
+  --color-paper: #f3f4f8;
+  --color-surface: #ffffff;
+  --color-line: #dcdfe7;
+  --color-line-strong: #c3c8d6;
+  --color-muted: #555c7a;
+  --color-positive: #17744a;
+  --color-positive-soft: #e3f3ea;
+  --color-caution: #8f5209;
+  --color-caution-soft: #fbf0e0;
+  --color-critical: #b3261e;
+  --color-critical-soft: #fbe9e8;
+  /* lavender scale (canvas, soft fills) */
+  --color-lavender-50: #f4f5fe;
+  --color-lavender-100: #eaecfc;
+  --color-lavender-200: #dadef9;
+  --color-lavender-300: #c3c9f3;
+  --color-amber-soft: #fff4dc;
+  /* chart series (validated with the dataviz validator on #1B2352) */
+  --color-viz-in: #27a876;
+  --color-viz-out: #8f80f7;
+
+  --font-sans: "IBM Plex Sans", "IBM Plex Sans Devanagari", system-ui, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+
+  /* radii: controls → cards → panels → floating windows */
+  --radius-chip: 999px;
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-panel: 22px;
+  --radius-window: 28px;
+
+  /* motion */
+  --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root {
+  /* glass surfaces (light): opacity high enough to keep text ≥ 4.5:1 */
+  --glass-strong: rgb(255 255 255 / 0.86);
+  --glass: rgb(255 255 255 / 0.72);
+  --glass-soft: rgb(255 255 255 / 0.56);
+  --glass-dark: rgb(22 29 69 / 0.78);
+  --glass-border: rgb(255 255 255 / 0.75);
+  --glass-hairline: rgb(22 29 69 / 0.08);
+  --glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.9);
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 28px;
+
+  /* elevation: layered, navy-tinted, soft */
+  --elev-1: 0 1px 2px rgb(22 29 69 / 0.04), 0 2px 6px rgb(22 29 69 / 0.04);
+  --elev-2: 0 1px 2px rgb(22 29 69 / 0.04), 0 6px 20px rgb(22 29 69 / 0.07);
+  --elev-3: 0 2px 6px rgb(22 29 69 / 0.05), 0 16px 40px rgb(22 29 69 / 0.1);
+  --elev-4: 0 6px 16px rgb(22 29 69 / 0.08), 0 32px 80px rgb(22 29 69 / 0.2);
+  --glow-saathi: 0 8px 24px rgb(231 160 47 / 0.35);
+
+  /* layout & sizing */
+  --page-max: 1280px;
+  --page-gutter: clamp(1rem, 2.4vw, 2.5rem);
+  --section-gap: 2.25rem;
+  --control-h: 2.75rem;
+  --control-h-lg: 3rem;
+  --sidebar-w: 17.75rem;
+  --sidebar-w-collapsed: 5.25rem;
+
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 320ms;
+
+  --ring: 0 0 0 3px rgb(52 67 181 / 0.28);
+
+  --grad-navy: linear-gradient(155deg, #212a66 0%, #161d45 48%, #0f1538 100%);
+  --grad-sidebar: linear-gradient(180deg, #1f2870 0%, #161d52 42%, #10163f 100%);
+  --grad-active: linear-gradient(135deg, #4a5ad8 0%, #3443b5 100%);
+  --grad-lavender: linear-gradient(135deg, rgb(255 255 255 / 0.85) 0%, rgb(236 238 252 / 0.7) 100%);
+  --grad-amber-wash: linear-gradient(120deg, rgb(255 244 220 / 0.95) 0%, rgb(255 255 255 / 0.75) 60%);
+  --grad-danger-wash: linear-gradient(120deg, rgb(251 233 232 / 0.95) 0%, rgb(255 255 255 / 0.75) 70%);
+  --grad-indigo: linear-gradient(180deg, #3d4cc2 0%, #3443b5 55%, #2d3aa3 100%);
+  --grad-saathi: linear-gradient(145deg, #f3b84d 0%, #e7a02f 55%, #d98f1e 100%);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-lavender-100 text-ink font-sans antialiased;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  /* The canvas carries soft, fixed light sources so glass has something to refract.
+     One fixed layer, never animated (performance). */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(1100px 700px at 12% -12%, rgb(120 132 240 / 0.28), transparent 62%),
+      radial-gradient(900px 620px at 100% 0%, rgb(172 160 246 / 0.26), transparent 60%),
+      radial-gradient(900px 700px at 90% 100%, rgb(132 150 245 / 0.2), transparent 62%),
+      radial-gradient(700px 500px at 0% 100%, rgb(231 160 47 / 0.06), transparent 60%),
+      linear-gradient(180deg, #eef0fd 0%, #e7e9fb 55%, #e9eafb 100%);
+  }
+  h1, h2, h3, h4 {
+    line-height: 1.2;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-indigo);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-indigo-soft);
+  }
+  button, [role="button"], a, summary, label[for], select {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* App background (all signed-in and onboarding screens; login and sign-up keep the plain canvas).
+   One fixed layer, never animated. The soft fade at the top-left hides a mark in the source image's corner. */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(520px 380px at 0% 0%, rgb(233 235 251 / 0.97) 35%, rgb(233 235 251 / 0) 100%),
+    url("../assets/app-background.jpg") center / cover no-repeat,
+    #e9ebfb;
+}
+
+/* Login / sign-up: the same glass-shapes image, un-faded (the navy panel covers its top-left corner on desktop). */
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Scaled up and anchored right: the image's own caption lands bottom-right and its marked corner is cropped away. */
+  background: url("../assets/app-background.jpg") right top / auto 140% no-repeat, #e9ebfb;
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Trust marks: provenance states for material values (plan.md §5.1). */
+@utility hatch {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 4px, rgb(22 29 69 / 0.07) 4px 5px);
+}
+
+/* --- surfaces ------------------------------------------------------------ */
+
+/* Content card: near-opaque, hairline border, soft elevation. The default for data. */
+@utility surface-card {
+  background: linear-gradient(160deg, rgb(255 255 255 / 0.9) 0%, rgb(255 255 255 / 0.78) 100%);
+  border: 1px solid rgb(255 255 255 / 0.8);
+  box-shadow: var(--glass-highlight), 0 0 0 1px rgb(52 67 181 / 0.06), var(--elev-2);
+}
+/* Solid variant for dense data (tables, long forms) where translucency would hurt reading. */
+@utility surface-solid {
+  background: #fff;
+  border: 1px solid var(--glass-hairline);
+  box-shadow: var(--glass-highlight), var(--elev-1);
+}
+/* Soft tinted washes for callout cards (Saathi, emergency, danger zone). */
+@utility wash-amber {
+  background: var(--grad-amber-wash);
+  border: 1px solid rgb(231 160 47 / 0.28);
+  box-shadow: var(--glass-highlight), var(--elev-1);
+}
+@utility wash-danger {
+  background: var(--grad-danger-wash);
+  border: 1px solid rgb(179 38 30 / 0.2);
+  box-shadow: var(--glass-highlight), var(--elev-1);
+}
+@utility wash-positive {
+  background: linear-gradient(120deg, rgb(227 243 234 / 0.95) 0%, rgb(255 255 255 / 0.7) 70%);
+  border: 1px solid rgb(23 116 74 / 0.18);
+}
+@utility sidebar-surface {
+  background: var(--grad-sidebar);
+  color: white;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 18px 50px rgb(16 22 63 / 0.35);
+}
+
+/* Glass: translucent surfaces for floating chrome and overlays. */
+@utility glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), 0 0 0 1px var(--glass-hairline), var(--elev-2);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(160%);
+  backdrop-filter: blur(var(--blur-md)) saturate(160%);
+}
+@utility glass-strong {
+  background: var(--glass-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), 0 0 0 1px var(--glass-hairline), var(--elev-4);
+  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(170%);
+  backdrop-filter: blur(var(--blur-lg)) saturate(170%);
+}
+@utility glass-dark {
+  background: var(--glass-dark);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), var(--elev-3);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(140%);
+  backdrop-filter: blur(var(--blur-md)) saturate(140%);
+}
+/* Deep navy hero with a faint top highlight. */
+@utility surface-hero {
+  background: var(--grad-navy);
+  color: white;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), var(--elev-3);
+}
+@utility elev-1 { box-shadow: var(--elev-1); }
+@utility elev-2 { box-shadow: var(--elev-2); }
+@utility elev-3 { box-shadow: var(--elev-3); }
+@utility elev-4 { box-shadow: var(--elev-4); }
+
+/* Interactive card: lifts gently on hover, presses on click. */
+@utility lift {
+  transition: transform var(--dur) var(--ease-out-soft), box-shadow var(--dur) var(--ease-out-soft), border-color var(--dur);
+  &:hover { transform: translateY(-2px); box-shadow: var(--glass-highlight), var(--elev-3); }
+  &:active { transform: translateY(0); box-shadow: var(--glass-highlight), var(--elev-1); }
+}
+
+/* Browsers without backdrop-filter get solid, fully legible surfaces. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .glass-strong, .surface-card { background: rgb(255 255 255 / 0.98); }
+  .glass-dark { background: rgb(22 29 69 / 0.98); }
+}
+/* Windows high-contrast / forced colours: drop decoration, keep borders. */
+@media (forced-colors: active) {
+  .glass, .glass-strong, .glass-dark, .surface-card, .surface-solid, .surface-hero, .sidebar-surface, .wash-amber, .wash-danger { background: Canvas; color: CanvasText; border: 1px solid CanvasText; box-shadow: none; }
+}
+
+@keyframes saathi-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(231 160 47 / 0.55); }
+  100% { box-shadow: 0 0 0 14px rgb(231 160 47 / 0); }
+}
+@keyframes bar {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.listening { animation: saathi-pulse 1.4s ease-out infinite; }
+.speaking-bar { animation: bar 0.9s ease-in-out infinite; transform-origin: bottom; }
+.skeleton {
+  background: linear-gradient(90deg, #e9ebf2 0px, #f4f5f9 160px, #e9ebf2 320px);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+/* Entrance for floating windows only (dialogs, sheets, assistant) — communicates "this opened". */
+.window-in { animation: rise-in var(--dur-slow) var(--ease-out-soft) both; }
+/* Camera shutter flash in the document scanner. */
+@keyframes scan-flash { from { opacity: 0.85; } to { opacity: 0; } }
+.scan-flash { animation: scan-flash 260ms ease-out both; }
+.overlay-in { animation: fade-in var(--dur) ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .lift:hover { transform: none; }
+}

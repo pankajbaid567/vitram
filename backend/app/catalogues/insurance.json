@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "source": "VITTRM curated sample catalogue — fictional insurers with illustrative features and indicative premiums. Not live quotes; not a solicitation.",
+    "is_mock": true,
+    "last_updated": "2026-09-01"
+  },
+  "products": [
+    {
+      "id": "sahyadri-family-shield",
+      "insurer": "Sahyadri General Insurance (sample)",
+      "product_name": "Family Health Shield",
+      "type": "health",
+      "variant": "family_floater",
+      "eligibility": {"age_min": 18, "age_max": 65, "members": ["self", "spouse", "child"], "max_members": 6},
+      "coverage": {"sum_insured_options": [500000, 1000000, 2500000], "room_rent": "Single private room", "benefits": ["In-patient hospitalisation", "Pre-hospitalisation 60 days", "Post-hospitalisation 90 days", "Day-care procedures", "Ambulance up to ₹3,000", "Annual health check-up"]},
+      "restrictions": {"copay_pct": 0, "deductible": 0, "initial_waiting_days": 30, "ped_waiting_months": 36, "specific_disease_waiting_months": 24, "sub_limits": ["Cataract: ₹40,000 per eye"], "exclusions": ["Cosmetic treatment", "Self-inflicted injury", "Experimental treatment"]},
+      "premium": {"indicative": [{"sum_insured": 500000, "age_band": "18-35", "members": 2, "annual": 14800}, {"sum_insured": 1000000, "age_band": "18-35", "members": 2, "annual": 18900}, {"sum_insured": 1000000, "age_band": "36-45", "members": 2, "annual": 24600}, {"sum_insured": 1000000, "age_band": "18-35", "members": 3, "annual": 23500}], "binding": false},
+      "claims": {"cashless": true, "network_hospitals_note": "Network list not included in sample data", "reimbursement": true, "intimation": "Within 24 hours of emergency admission; 48 hours before planned admission"}
+    },
+    {
+      "id": "sahyadri-senior-care",
+      "insurer": "Sahyadri General Insurance (sample)",
+      "product_name": "Senior Care",
+      "type": "health",
+      "variant": "parents",
+      "eligibility": {"age_min": 56, "age_max": 80, "members": ["father", "mother", "parent"], "max_members": 2},
+      "coverage": {"sum_insured_options": [300000, 500000, 1000000], "room_rent": "Up to 1% of sum insured per day", "benefits": ["In-patient hospitalisation", "Pre-hospitalisation 30 days", "Post-hospitalisation 60 days", "Day-care procedures", "Domiciliary treatment"]},
+      "restrictions": {"copay_pct": 20, "deductible": 0, "initial_waiting_days": 30, "ped_waiting_months": 24, "specific_disease_waiting_months": 24, "sub_limits": ["Knee replacement: ₹1,50,000", "Cataract: ₹30,000 per eye"], "exclusions": ["Cosmetic treatment", "Dental unless due to accident"]},
+      "premium": {"indicative": [{"sum_insured": 500000, "age_band": "56-65", "members": 1, "annual": 27500}, {"sum_insured": 500000, "age_band": "66-75", "members": 1, "annual": 38900}, {"sum_insured": 1000000, "age_band": "56-65", "members": 1, "annual": 41200}], "binding": false},
+      "claims": {"cashless": true, "reimbursement": true, "intimation": "Within 24 hours of emergency admission"}
+    },
+    {
+      "id": "godavari-parents-plus",
+      "insurer": "Godavari Health Insurance (sample)",
+      "product_name": "Parents Plus",
+      "type": "health",
+      "variant": "parents",
+      "eligibility": {"age_min": 50, "age_max": 75, "members": ["father", "mother", "parent"], "max_members": 2},
+      "coverage": {"sum_insured_options": [500000, 1000000], "room_rent": "Single private room", "benefits": ["In-patient hospitalisation", "Pre-hospitalisation 30 days", "Post-hospitalisation 60 days", "Day-care procedures"]},
+      "restrictions": {"copay_pct": 10, "deductible": 0, "initial_waiting_days": 30, "ped_waiting_months": 12, "specific_disease_waiting_months": 24, "sub_limits": [], "exclusions": ["Cosmetic treatment", "Treatment outside India"]},
+      "premium": {"indicative": [{"sum_insured": 500000, "age_band": "56-65", "members": 1, "annual": 32400}, {"sum_insured": 1000000, "age_band": "56-65", "members": 1, "annual": 46800}], "binding": false},
+      "claims": {"cashless": true, "reimbursement": true, "intimation": "Within 48 hours of admission"}
+    },
+    {
+      "id": "godavari-young-health",
+      "insurer": "Godavari Health Insurance (sample)",
+      "product_name": "Young Health Individual",
+      "type": "health",
+      "variant": "individual",
+      "eligibility": {"age_min": 18, "age_max": 45, "members": ["self"], "max_members": 1},
+      "coverage": {"sum_insured_options": [500000, 1000000], "room_rent": "No room-rent limit", "benefits": ["In-patient hospitalisation", "Pre-hospitalisation 60 days", "Post-hospitalisation 180 days", "Day-care procedures", "Mental-health in-patient care"]},
+      "restrictions": {"copay_pct": 0, "deductible": 0, "initial_waiting_days": 30, "ped_waiting_months": 24, "specific_disease_waiting_months": 24, "sub_limits": [], "exclusions": ["Maternity", "Cosmetic treatment"]},
+      "premium": {"indicative": [{"sum_insured": 500000, "age_band": "18-35", "members": 1, "annual": 8200}, {"sum_insured": 1000000, "age_band": "18-35", "members": 1, "annual": 10900}, {"sum_insured": 1000000, "age_band": "36-45", "members": 1, "annual": 14700}], "binding": false},
+      "claims": {"cashless": true, "reimbursement": true, "intimation": "Within 24 hours of emergency admission"}
+    },
+    {
+      "id": "western-ghats-term-secure",
+      "insurer": "Western Ghats Life (sample)",
+      "product_name": "Term Secure",
+      "type": "term_life",
+      "variant": "term",
+      "eligibility": {"age_min": 18, "age_max": 60, "members": ["self"], "max_members": 1},
+      "coverage": {"sum_insured_options": [5000000, 10000000, 20000000], "policy_term_years": [20, 30, 40], "benefits": ["Lump-sum death benefit to nominee", "Optional terminal-illness acceleration"]},
+      "restrictions": {"exclusions": ["Suicide within 12 months of policy start (as per standard terms)"], "notes": ["Pure protection: no maturity or survival benefit"]},
+      "premium": {"indicative": [{"sum_insured": 10000000, "age_band": "25-30", "term_years": 30, "annual": 11800}, {"sum_insured": 10000000, "age_band": "31-35", "term_years": 30, "annual": 14600}, {"sum_insured": 20000000, "age_band": "31-35", "term_years": 30, "annual": 26900}], "binding": false},
+      "claims": {"documents": ["Death certificate", "Policy document", "Nominee ID and bank details"], "intimation": "As soon as possible after the event"}
+    },
+    {
+      "id": "kaveri-term-plus",
+      "insurer": "Kaveri Life Assurance (sample)",
+      "product_name": "Term Plus with Return of Premium",
+      "type": "term_life",
+      "variant": "term_rop",
+      "eligibility": {"age_min": 18, "age_max": 55, "members": ["self"], "max_members": 1},
+      "coverage": {"sum_insured_options": [5000000, 10000000], "policy_term_years": [20, 30], "benefits": ["Lump-sum death benefit", "Premiums returned if you survive the term"]},
+      "restrictions": {"exclusions": ["Suicide within 12 months of policy start"], "notes": ["Premium is much higher than a pure term plan for the same cover"]},
+      "premium": {"indicative": [{"sum_insured": 10000000, "age_band": "31-35", "term_years": 30, "annual": 31200}], "binding": false},
+      "claims": {"documents": ["Death certificate", "Policy document", "Nominee ID and bank details"]}
+    },
+    {
+      "id": "kaveri-endowment-savings",
+      "insurer": "Kaveri Life Assurance (sample)",
+      "product_name": "Savings Endowment",
+      "type": "traditional_life",
+      "variant": "endowment",
+      "eligibility": {"age_min": 18, "age_max": 55, "members": ["self"], "max_members": 1},
+      "coverage": {"sum_insured_options": [1000000], "policy_term_years": [15, 20], "benefits": ["Sum assured plus declared bonuses on maturity", "Death benefit during the term"]},
+      "restrictions": {"exclusions": ["Suicide within 12 months"], "notes": ["Bonuses are not guaranteed", "Surrender in early years returns less than premiums paid"]},
+      "premium": {"indicative": [{"sum_insured": 1000000, "age_band": "31-35", "term_years": 20, "annual": 52000}], "binding": false},
+      "claims": {"documents": ["Policy document", "Discharge form", "ID proof"]}
+    },
+    {
+      "id": "sahyadri-travel-global",
+      "insurer": "Sahyadri General Insurance (sample)",
+      "product_name": "Travel Global",
+      "type": "travel",
+      "variant": "single_trip",
+      "eligibility": {"age_min": 1, "age_max": 70, "members": ["self", "spouse", "child", "father", "mother", "parent"], "max_members": 6},
+      "coverage": {"sum_insured_options": [5000000], "benefits": ["Overseas medical emergencies", "Trip cancellation", "Baggage loss", "Passport loss"]},
+      "restrictions": {"deductible": 8000, "exclusions": ["Pre-existing conditions unless life-threatening", "Adventure sports"]},
+      "premium": {"indicative": [{"sum_insured": 5000000, "age_band": "18-35", "members": 1, "trip_days": 10, "single": 1450}], "binding": false},
+      "claims": {"cashless": true, "reimbursement": true, "intimation": "Contact the assistance helpline before treatment where possible"}
+    }
+  ]
+}

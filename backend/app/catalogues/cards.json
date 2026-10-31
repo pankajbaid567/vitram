@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+    "is_mock": true,
+    "last_updated": "2026-09-01"
+  },
+  "products": [
+    {
+      "id": "horizon-voyager",
+      "issuer": "Horizon Bank (sample)",
+      "card_name": "Voyager Travel Card",
+      "network": "Visa",
+      "fees": {"joining": 2500, "annual": 2500, "annual_waiver_spend": 300000, "gst_applicable": true},
+      "rules": {
+        "reward_currency": "miles",
+        "currency_name": "Voyager Miles",
+        "base_rate": {"earn_per_100": 2},
+        "category_rules": [
+          {"categories": ["travel"], "earn_per_100": 10, "cap": {"units": 5000, "period": "month"}, "cap_key": "travel",
+           "label": "10 Voyager Miles per ₹100 on flights, hotels and trains (up to 5,000 accelerated miles a month)."}
+        ],
+        "exclusions": {"categories": ["fuel", "rent", "insurance", "utilities"], "merchants": ["wallet load"]},
+        "min_txn_amount": 100,
+        "milestones": [
+          {"spend": 300000, "period": "year", "bonus": 10000, "label": "Milestone: spend ₹3,00,000 in a card year for 10,000 bonus miles and an annual-fee waiver."}
+        ],
+        "valuation": {"per_unit_inr": 0.5, "basis": "1:1 transfer to partner airline programmes (sample valuation)"},
+        "benefits": [
+          {"categories": ["travel"], "label": "4 complimentary domestic airport lounge visits a quarter."}
+        ]
+      },
+      "redemption": [
+        {"type": "airline_transfer", "label": "Transfer to partner airline programmes", "detail": "1 Voyager Mile → 1 partner airline mile; minimum 2,000 miles per transfer.", "value_per_unit_inr": 0.5},
+        {"type": "hotel_transfer", "label": "Transfer to partner hotel programmes", "detail": "2 Voyager Miles → 1 hotel point.", "value_per_unit_inr": null},
+        {"type": "travel_portal", "label": "Book flights and hotels on the bank's travel portal", "detail": "1 mile = ₹0.30 against bookings.", "value_per_unit_inr": 0.3},
+        {"type": "statement_credit", "label": "Statement credit", "detail": "1 mile = ₹0.20.", "value_per_unit_inr": 0.2}
+      ],
+      "expiry": "Miles expire 3 years after they are earned."
+    },
+    {
+      "id": "deccan-everyday-cashback",
+      "issuer": "Deccan Bank (sample)",
+      "card_name": "Everyday Cashback Card",
+      "network": "RuPay",
+      "fees": {"joining": 499, "annual": 499, "annual_waiver_spend": 100000, "gst_applicable": true},
+      "rules": {
+        "reward_currency": "cashback",
+        "currency_name": "cashback (₹)",
+        "base_rate": {"earn_per_100": 1},
+        "category_rules": [
+          {"categories": ["food_delivery", "groceries"], "earn_per_100": 5, "cap": {"units": 1000, "period": "month"}, "cap_key": "food_delivery",
+           "label": "5% cashback on food delivery and groceries (up to ₹1,000 a month)."},
+          {"categories": ["utilities"], "earn_per_100": 2, "cap": {"units": 300, "period": "month"}, "cap_key": "utilities",
+           "label": "2% cashback on bill payments (up to ₹300 a month)."}
+        ],
+        "exclusions": {"categories": ["fuel", "rent", "insurance", "emi"], "merchants": ["wallet load"]},
+        "min_txn_amount": null,
+        "milestones": [],
+        "valuation": null,
+        "benefits": []
+      },
+      "redemption": [
+        {"type": "statement_credit", "label": "Auto-credited to your statement", "detail": "Cashback is credited in the next statement cycle.", "value_per_unit_inr": 1}
+      ],
+      "expiry": "Cashback does not expire while the card is active."
+    },
+    {
+      "id": "coastal-shopper-points",
+      "issuer": "Coastal Bank (sample)",
+      "card_name": "Shopper Rewards Card",
+      "network": "Mastercard",
+      "fees": {"joining": 0, "annual": 999, "annual_waiver_spend": 150000, "gst_applicable": true},
+      "rules": {
+        "reward_currency": "points",
+        "currency_name": "Shopper Points",
+        "base_rate": {"earn_per_100": 2},
+        "category_rules": [
+          {"categories": ["ecommerce"], "earn_per_100": 10, "cap": {"units": 7500, "period": "month"}, "cap_key": "ecommerce",
+           "label": "5x Shopper Points (10 per ₹100) on online shopping, up to 7,500 bonus points a month."}
+        ],
+        "exclusions": {"categories": ["fuel", "rent"], "merchants": []},
+        "min_txn_amount": null,
+        "milestones": [],
+        "valuation": null,
+        "benefits": []
+      },
+      "redemption": [
+        {"type": "voucher", "label": "Shopping vouchers", "detail": "Redeem on the rewards catalogue; value varies by voucher.", "value_per_unit_inr": null},
+        {"type": "product_catalogue", "label": "Product catalogue", "detail": "Value varies by item.", "value_per_unit_inr": null}
+      ],
+      "expiry": "Points expire 2 years after they are earned."
+    },
+    {
+      "id": "aravali-fuel-plus",
+      "issuer": "Aravali Bank (sample)",
+      "card_name": "Fuel Plus Card",
+      "network": "Visa",
+      "fees": {"joining": 500, "annual": 500, "annual_waiver_spend": 50000, "gst_applicable": true},
+      "rules": {
+        "reward_currency": "points",
+        "currency_name": "Fuel Points",
+        "base_rate": {"earn_per_100": 1},
+        "category_rules": [
+          {"categories": ["fuel"], "earn_per_100": 13, "cap": {"units": 1300, "period": "month"}, "cap_key": "fuel",
+           "label": "13 Fuel Points per ₹100 at partner fuel stations (up to 1,300 a month)."}
+        ],
+        "exclusions": {"categories": ["rent", "insurance"], "merchants": []},
+        "min_txn_amount": null,
+        "milestones": [],
+        "valuation": {"per_unit_inr": 0.25, "basis": "redemption as fuel at partner stations (sample valuation)"},
+        "benefits": [{"categories": ["fuel"], "label": "1% fuel surcharge waiver on transactions between ₹400 and ₹4,000."}]
+      },
+      "redemption": [
+        {"type": "fuel", "label": "Free fuel at partner stations", "detail": "1 point = ₹0.25.", "value_per_unit_inr": 0.25}
+      ],
+      "expiry": "Points expire after 2 years."
+    }
+  ]
+}
