@@ -10,6 +10,8 @@ export interface Env {
   ASSETS: Fetcher
   /** Base URL of the API, e.g. https://vitram-api.onrender.com (no trailing slash). */
   API_ORIGIN: string
+  /** Optional: other free services to keep awake, comma-separated base URLs (e.g. the OpenWA gateway). */
+  KEEPALIVE_URLS?: string
 }
 
 const HOP_BY_HOP = ['connection', 'keep-alive', 'transfer-encoding', 'upgrade', 'proxy-authenticate', 'proxy-authorization', 'te', 'trailer']
@@ -36,6 +38,7 @@ export default {
 
   /** Cron: keep the API awake and let it report readiness. */
   async scheduled(_event: ScheduledController, env: Env): Promise<void> {
-    await fetch(new URL('/api/ready', env.API_ORIGIN)).catch(() => undefined)
+    const targets = [new URL('/api/ready', env.API_ORIGIN).toString(), ...(env.KEEPALIVE_URLS ?? '').split(',').map((u) => u.trim()).filter(Boolean)]
+    await Promise.all(targets.map((u) => fetch(u).catch(() => undefined)))
   },
 }
