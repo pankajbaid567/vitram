@@ -1,3 +1,4 @@
+import { usePreference } from '../../lib/preferences'
 import clsx from 'clsx'
 import { BarChart3, Table2 } from 'lucide-react'
 import { useState } from 'react'
@@ -29,7 +30,7 @@ function isPartial(k: string, start?: string, end?: string) {
 }
 
 export function CashFlowChart({ series, periodStart, periodEnd }: { series: Point[]; periodStart?: string; periodEnd?: string }) {
-  const [table, setTable] = useState(false)
+  const [table, setTable] = usePreference('cashflow-table', false)
   const [hover, setHover] = useState<number | null>(null)
   const data = series.slice(-6).map((p) => ({ ...p, partial: isPartial(p.month, periodStart, periodEnd) }))
   const max = niceMax(Math.max(...data.map((d) => Math.max(d.inflow, d.outflow)), 0))
@@ -45,7 +46,7 @@ export function CashFlowChart({ series, periodStart, periodEnd }: { series: Poin
             <li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-viz-in" aria-hidden />Money in</li>
             <li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-viz-out" aria-hidden />Money out</li>
           </ul>
-          <button type="button" onClick={() => setTable((t) => !t)} aria-pressed={table}
+          <button type="button" onClick={() => setTable(!table)} aria-pressed={table}
             className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-white/10 px-2.5 text-xs font-medium text-white/85 shadow-[inset_0_0_0_1px_rgb(255_255_255/0.12)] transition-colors hover:bg-white/15 hover:text-white">
             {table ? <BarChart3 className="size-3.5" aria-hidden /> : <Table2 className="size-3.5" aria-hidden />}{table ? 'Chart' : 'Table'}
           </button>

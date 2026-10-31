@@ -32,6 +32,7 @@ showing value, brand naming drift (the UI said VITTRM while the repo said VITRAM
 ## Improvement plan
 
 ### Done in this pass
+0. The chart/table choice on the dashboard is remembered per browser (`usePreference`, tested, safe when storage is blocked).
 1. Forecast form validation with field-level messages.
 2. Sample workspace offered above the sign-in and sign-up forms.
 3. Dashboard stat captions wrap to two lines instead of clipping.
@@ -43,10 +44,8 @@ showing value, brand naming drift (the UI said VITTRM while the repo said VITRAM
 1. **Quieter background.** The faint "YOUR MONEY / A BRIGHTER YOU" watermark crosses content on wide screens; it is baked into `frontend/src/assets/app-background.jpg`, so the fix is a clean export of that image without the text.
 
 ### P2
-1. Dashboard: lead with the single most urgent item (next EMI) and collapse the rest below.
-2. First-run checklist ("Set up VITRAM · 3 of 4") should be dismissible once complete and link to each step.
-3. Add skeleton states for the two slowest screens (loan results, insights).
-4. Table/chart toggle on the dashboard: remember the choice per user.
+Re-checked against the code: the dashboard already leads with the next due item, the setup checklist already
+hides when finished and links to the next step, and loan results and insights already show skeletons while loading.
 
 ### P3
 1. Hindi UI labels for the main navigation (the assistant already speaks Hindi and Hinglish).
