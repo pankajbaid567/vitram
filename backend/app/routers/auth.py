@@ -1,7 +1,5 @@
 import re
 import secrets
-import time
-from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request, Response
@@ -15,21 +13,18 @@ from app.db import get_db
 from app.deps import SESSION_COOKIE, current_user
 from app.errors import DomainError
 from app.models import AuthSession, AuthToken, Consent, PasswordReset, User
+from app.ratelimit import SlidingWindowLimiter
 from app.security import hash_password, new_session_token, token_id, verify_password
 from app.services import mailer
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-_attempts: dict[str, list[float]] = defaultdict(list)
-MAX_ATTEMPTS, WINDOW = 8, 300
+_limiter = SlidingWindowLimiter(limit=8, window_seconds=300)
 
 
 def _rate_limit(key: str) -> None:
-    now = time.time()
-    _attempts[key] = [t for t in _attempts[key] if now - t < WINDOW]
-    if len(_attempts[key]) >= MAX_ATTEMPTS:
+    if not _limiter.allow(key):
         raise DomainError("TOO_MANY_ATTEMPTS", "Too many sign-in attempts. Wait a few minutes and try again.", status_code=429)
-    _attempts[key].append(now)
 
 
 class SignupIn(BaseModel):
@@ -75,7 +70,7 @@ def start_session(db: Session, response: Response, user: User, request: Request)
     settings = get_settings()
     db.add(AuthSession(id=sid, user_id=user.id, expires_at=datetime.now(timezone.utc) + timedelta(days=settings.session_days)))
     response.set_cookie(
-        SESSION_COOKIE, token, httponly=True, samesite="lax", secure=request.url.scheme == "https",
+        SESSION_COOKIE, token, httponly=True, samesite="lax", secure=settings.cookie_secure(request.url.scheme),
         max_age=settings.session_days * 86400, path="/",
     )
 

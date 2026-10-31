@@ -5,7 +5,7 @@ from datetime import date, datetime, timezone
 from app.config import get_settings
 from app.db import SessionLocal
 from app.models import Emi, Reminder
-from app.services.channels import scheduler
+from app.services.channels import openwa, scheduler
 from app.services.saathi.orchestrator import fidelity_flags
 from tests.conftest import signup
 
@@ -78,7 +78,7 @@ def test_queued_whatsapp_cannot_send_after_consent_revoked(client, monkeypatch):
     monkeypatch.setattr(settings, "openwa_base_url", "http://openwa.test")
     monkeypatch.setattr(settings, "openwa_api_key", "test")
     monkeypatch.setattr(settings, "openwa_session_id", "session-1")
-    monkeypatch.setattr(scheduler.openwa, "send_text", lambda *a, **k: (_ for _ in ()).throw(AssertionError("sent after opt-out")))
+    monkeypatch.setattr(openwa, "send_text", lambda *a, **k: (_ for _ in ()).throw(AssertionError("sent after opt-out")))
     assert client.delete("/api/consents/whatsapp_reminders").status_code == 200
 
     db = SessionLocal()

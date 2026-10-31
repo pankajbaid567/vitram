@@ -17,13 +17,26 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
+# (table, column, is_json). SQLite stores JSON as text; PostgreSQL's json type has neither LIKE nor
+# REPLACE, so there the value is round-tripped through text.
+_COLUMNS = (("documents", "meta", True), ("messages", "content", False), ("messages", "cards", True))
+
+
+def statements(old: str, new: str, postgres: bool) -> list[str]:
+    """The UPDATEs that rewrite ``old`` to ``new`` (pure, so each dialect's SQL can be unit-tested)."""
+    out = []
+    for table, column, is_json in _COLUMNS:
+        as_text = f'CAST("{column}" AS TEXT)' if postgres and is_json else f'"{column}"'
+        replaced = f"REPLACE({as_text}, '{old}', '{new}')"
+        value = f"CAST({replaced} AS JSON)" if postgres and is_json else replaced
+        out.append(f'UPDATE "{table}" SET "{column}" = {value} WHERE {as_text} LIKE \'%{old}%\'')
+    return out
+
+
 def _replace(old: str, new: str) -> None:
-    for table, column in (("documents", "meta"), ("messages", "content"), ("messages", "cards")):
-        op.execute(
-            f'UPDATE "{table}" SET "{column}" = '
-            f'REPLACE("{column}", \'{old}\', \'{new}\') '
-            f'WHERE "{column}" LIKE \'%{old}%\''
-        )
+    postgres = op.get_bind().dialect.name == "postgresql"
+    for sql in statements(old, new, postgres):
+        op.execute(sql)
 
 
 def upgrade() -> None:

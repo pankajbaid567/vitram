@@ -2,7 +2,8 @@
 
 import re
 
-from app.services.saathi.orchestrator import fidelity_flags, inr
+from app.fmt import inr
+from app.services.saathi.orchestrator import fidelity_flags
 from app.services.saathi import router_offline as ro
 from app.services.saathi import tools as T
 

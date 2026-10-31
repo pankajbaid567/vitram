@@ -9,21 +9,23 @@ import asyncio
 import logging
 from datetime import date, datetime, time, timedelta, timezone
 
+from sqlalchemy import or_, update
 from sqlalchemy.orm import Session
 
-from app.config import get_settings
 from app.db import SessionLocal
 from app.deps import has_consent
 from app.models import Emi, Notification, Reminder, ReminderPreference, User, UserCard, UserPolicy
 from app.security import decrypt_str
 from app.services import obligations
-from app.services.channels import openwa
+from app.services.channels import gateway
 from app.fmt import inr
 
 log = logging.getLogger("vitram.reminders")
 IST = timezone(timedelta(hours=5, minutes=30))
 MAX_ATTEMPTS = 3
 POLICY_LEAD_DAYS = [30, 7]
+CLAIM_TTL = timedelta(minutes=5)  # a worker that dies mid-send releases its claim after this long
+BATCH_SIZE = 100
 
 
 def prefs_for(db: Session, user_id: str) -> ReminderPreference:
@@ -36,9 +38,43 @@ def prefs_for(db: Session, user_id: str) -> ReminderPreference:
     return p
 
 
+def whatsapp_block_reason(db: Session, user: User, prefs: ReminderPreference) -> str | None:
+    """Why this user can't be messaged on WhatsApp right now, or None when they can.
+
+    Every precondition is re-checked at send time: consent can be withdrawn (including
+    by replying STOP) after a reminder was queued.
+    """
+    if not prefs.whatsapp_enabled:
+        return "WhatsApp reminders are turned off."
+    if not user.phone_enc:
+        return "There is no mobile number on your account."
+    if not user.phone_verified_at:
+        return "Your mobile number isn't verified yet."
+    if not has_consent(db, user.id, "whatsapp_reminders"):
+        return "WhatsApp reminders aren't allowed on your account."
+    return None
+
+
 def whatsapp_allowed(db: Session, user: User, prefs: ReminderPreference) -> bool:
-    return bool(prefs.whatsapp_enabled and user.phone_enc and user.phone_verified_at
-                and has_consent(db, user.id, "whatsapp_reminders"))
+    return whatsapp_block_reason(db, user, prefs) is None
+
+
+def describe_dispatch(r: Reminder, block_reason: str | None) -> str:
+    """User-facing, truthful account of what just happened to a reminder.
+
+    Never says "sent on WhatsApp" unless the gateway accepted the message.
+    """
+    if r.channel == "in_app":
+        if block_reason is None:
+            return "Sent as an in-app notification."
+        return f"Sent as an in-app notification only. {block_reason}"
+    if r.status == "not_configured":
+        return "WhatsApp isn't connected in this environment, so nothing was sent on WhatsApp. The in-app notification was created."
+    if r.status == "failed":
+        return f"WhatsApp rejected the message: {r.last_error}. The in-app notification was created."
+    if r.status == "scheduled":
+        return f"WhatsApp didn't respond ({r.last_error}); VITTRM will retry. The in-app notification was created."
+    return "Sent on WhatsApp. Delivery status will update when WhatsApp confirms it."
 
 
 def reminder_text(item: dict, days_left: int) -> tuple[str, list[str]]:
@@ -107,6 +143,14 @@ def _item_for(db: Session, r: Reminder) -> dict | None:
 
 
 def dispatch(db: Session, r: Reminder) -> Reminder:
+    """Deliver one reminder. Always leaves it in a definite state and releases its claim."""
+    try:
+        return _dispatch(db, r)
+    finally:
+        r.claimed_at = None
+
+
+def _dispatch(db: Session, r: Reminder) -> Reminder:
     item = _item_for(db, r)
     if item is None:
         r.status = "cancelled"
@@ -123,35 +167,64 @@ def dispatch(db: Session, r: Reminder) -> Reminder:
     user = db.get(User, r.user_id)
     # A reminder may have been queued before consent was withdrawn (including
     # STOP on WhatsApp). Authorisation must be checked at the point of send.
-    if user is None or not whatsapp_allowed(db, user, prefs_for(db, r.user_id)):
+    if user is None or whatsapp_block_reason(db, user, prefs_for(db, r.user_id)):
         r.channel, r.status, r.sent_at = "in_app", "sent", datetime.now(timezone.utc)
         r.last_error = None
         return r
-    s = get_settings()
-    if not s.openwa_configured:
+    wa = gateway.whatsapp()
+    if not wa.configured():
         r.status = "not_configured"
-        r.last_error = "OpenWA connection is not configured"
+        r.last_error = "WhatsApp gateway is not configured"
         return r
     r.attempts += 1
     try:
-        mid = openwa.send_text(decrypt_str(user.phone_enc), text)
+        mid = wa.send_text(decrypt_str(user.phone_enc), text)
         r.status, r.provider_message_id, r.sent_at, r.last_error = "sent", mid, datetime.now(timezone.utc), None
-    except openwa.SendError as exc:
+    except gateway.SendError as exc:
         r.last_error = str(exc)[:300]
         if exc.retryable and r.attempts < MAX_ATTEMPTS:
+            r.status = "scheduled"  # back in the queue, after a growing delay
             r.schedule_at = datetime.now(timezone.utc) + timedelta(minutes=5 * r.attempts)
         else:
             r.status = "failed"
     return r
 
 
-def dispatch_due(db: Session) -> int:
-    now = datetime.now(timezone.utc)
-    due = db.query(Reminder).filter(Reminder.status == "scheduled", Reminder.schedule_at <= now).limit(100).all()
-    for r in due:
-        dispatch(db, r)
+def claim_due(db: Session, now: datetime | None = None, limit: int = BATCH_SIZE) -> list[Reminder]:
+    """Atomically claim due reminders so that concurrent workers never send the same one twice.
+
+    Each candidate is claimed with a single conditional ``UPDATE`` whose ``WHERE`` repeats the
+    eligibility test; the database serialises competing updates, so exactly one worker sees
+    ``rowcount == 1`` per reminder. The claim is committed *before* anything is sent. A claim
+    older than ``CLAIM_TTL`` belongs to a crashed worker and may be taken over.
+    """
+    now = now or datetime.now(timezone.utc)
+    stale = now - CLAIM_TTL
+    eligible = or_(Reminder.status == "scheduled", (Reminder.status == "sending") & (Reminder.claimed_at < stale))
+    ids = [row[0] for row in db.query(Reminder.id).filter(eligible, Reminder.schedule_at <= now)
+           .order_by(Reminder.schedule_at).limit(limit)]
+    claimed: list[str] = []
+    for rid in ids:
+        won = db.execute(update(Reminder).where(Reminder.id == rid, eligible)
+                         .values(status="sending", claimed_at=now)).rowcount
+        if won == 1:
+            claimed.append(rid)
     db.commit()
-    return len(due)
+    return [db.get(Reminder, rid) for rid in claimed]
+
+
+def dispatch_due(db: Session) -> int:
+    claimed = claim_due(db)
+    for r in claimed:
+        try:
+            dispatch(db, r)
+            db.commit()
+        except Exception:  # noqa: BLE001 - one bad reminder must not block the batch
+            db.rollback()
+            log.exception("reminder %s failed to dispatch", r.id)
+            r.status, r.claimed_at = "scheduled", None  # retried on the next tick
+            db.commit()
+    return len(claimed)
 
 
 async def reminder_loop(interval: int = 60) -> None:

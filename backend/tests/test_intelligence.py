@@ -1,9 +1,9 @@
 """M13 — statement intelligence, cash-flow estimate, goals, reminders per item, password reset, card benefits."""
 
-import io
 from datetime import date, timedelta
 
 import pytest
+from freezegun import freeze_time
 
 from app.config import get_settings
 from app.models import Goal
@@ -104,6 +104,7 @@ def test_scanned_statement_photo(client, monkeypatch):
 
 # --- cash-flow estimate -------------------------------------------------------------
 
+@freeze_time("2026-09-10 12:00:00")  # mid-month: salary (the 1st) is well after the ₹30,000 payment below
 def test_forecast_uses_only_confirmed_or_entered_data(user_client):
     c = user_client
     empty = c.get("/api/forecast?days=40").json()

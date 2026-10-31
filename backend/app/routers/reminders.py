@@ -158,7 +158,8 @@ def send_now(body: SendNowIn, user: User = Depends(current_user), db: Session = 
     else:
         due = obj.end_date or date.today()
     prefs = scheduler.prefs_for(db, user.id)
-    channel = "whatsapp" if scheduler.whatsapp_allowed(db, user, prefs) else "in_app"
+    block_reason = scheduler.whatsapp_block_reason(db, user, prefs)
+    channel = "in_app" if block_reason else "whatsapp"
     r = Reminder(user_id=user.id, object_type=body.object_type, object_id=body.object_id, channel=channel,
                  schedule_at=datetime.now(timezone.utc), due_date=due, template_key=f"manual_{datetime.now(timezone.utc):%H%M%S}")
     db.add(r)
@@ -166,15 +167,4 @@ def send_now(body: SendNowIn, user: User = Depends(current_user), db: Session = 
     scheduler.dispatch(db, r)
     audit(db, user.id, "reminder.sent_now", body.object_type, body.object_id, channel=channel, status=r.status)
     db.commit()
-    out = reminder_out(r)
-    if channel == "in_app" and prefs.whatsapp_enabled is False:
-        out["explanation"] = "Sent as an in-app notification. Turn on WhatsApp reminders in reminder settings to get it on WhatsApp."
-    elif r.status == "not_configured":
-        out["explanation"] = "WhatsApp isn't connected in this environment, so nothing was sent on WhatsApp. The in-app notification was created."
-    elif r.status == "failed":
-        out["explanation"] = f"WhatsApp rejected the message: {r.last_error}. The in-app notification was created."
-    elif r.status == "scheduled":
-        out["explanation"] = f"WhatsApp didn't respond ({r.last_error}); VITTRM will retry. The in-app notification was created."
-    else:
-        out["explanation"] = "Sent on WhatsApp. Delivery status will update when WhatsApp confirms it."
-    return out
+    return {**reminder_out(r), "explanation": scheduler.describe_dispatch(r, block_reason)}

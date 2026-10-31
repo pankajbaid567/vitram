@@ -3,7 +3,7 @@
 Verifies config construction (system instruction, function declarations with
 JSON schema), the manual function-calling loop, deterministic tool execution,
 the numeric-fidelity guard and fallback to Tool mode. It does NOT prove live
-API compatibility — that needs a real GEMINI_API_KEY (plan.md §7).
+API compatibility — that needs a real GEMINI_API_KEY (docs/spec/plan.md §7).
 """
 
 import pytest

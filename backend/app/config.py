@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     # Public HTTPS base URL of this API, needed for OpenWA/Twilio webhooks.
     public_api_url: str | None = None
     session_days: int = 7
+    # Force the session cookie's Secure flag on/off. Unset: on in production, otherwise follows the
+    # request scheme (behind a TLS-terminating proxy run uvicorn with --proxy-headers so that is correct).
+    session_cookie_secure: bool | None = None
     # Apply pending Alembic migrations at start-up (SQLite files are backed up first).
     auto_migrate: bool = True
     max_upload_mb: int = 15
@@ -50,6 +53,8 @@ class Settings(BaseSettings):
     # Model id for Gemini vision; falls back to GEMINI_MODEL. Never defaulted in code.
     gemini_vision_model: str | None = None
     ocr_max_pages: int = 30
+    # Upper bound for one on-device OCR run (a freshly compiled helper can be slow on its first launch).
+    ocr_timeout_seconds: int = 180
 
     # Outgoing email (password reset). Not configured → reset links can't be sent, and the UI says so.
     smtp_host: str | None = None
@@ -76,7 +81,7 @@ class Settings(BaseSettings):
     # Legacy setting accepted for installations already using SMTP_USER.
     smtp_user: str | None = None
 
-    # Assumption A9 in plan.md: GST rate on loan service fees, user-editable per calculation.
+    # Assumption A9 in docs/spec/plan.md: GST rate on loan service fees, user-editable per calculation.
     default_gst_on_fees_pct: float = 18.0
     # Catalogue freshness threshold (RD §26 "stale product catalogue").
     catalogue_stale_days: int = 90
@@ -96,6 +101,11 @@ class Settings(BaseSettings):
     @property
     def gemini_live_configured(self) -> bool:
         return bool(self.gemini_api_key and self.gemini_live_model)
+
+    def cookie_secure(self, request_scheme: str) -> bool:
+        if self.session_cookie_secure is not None:
+            return self.session_cookie_secure
+        return self.env == "production" or request_scheme == "https"
 
     @property
     def openwa_configured(self) -> bool:

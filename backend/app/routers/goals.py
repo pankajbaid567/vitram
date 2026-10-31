@@ -1,6 +1,5 @@
 """Financial goals (M13): targets and hand-recorded contributions. No money moves, no returns are assumed."""
 
-import math
 from datetime import date
 
 from fastapi import APIRouter, Depends

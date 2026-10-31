@@ -280,7 +280,6 @@ def test_calendar_respects_first_due_date(sample):
     from datetime import date
     first = date.fromisoformat(doc_emi["first_due_date"])
     before = first.replace(day=1)
-    import calendar as _c
     prev = (before.replace(month=before.month - 1) if before.month > 1 else before.replace(year=before.year - 1, month=12))
     cal = sample.get(f"/api/emis/calendar?month={prev:%Y-%m}").json()
     assert not any(i["object_id"] == doc_emi["id"] for i in cal["items"])

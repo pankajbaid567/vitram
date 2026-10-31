@@ -75,8 +75,8 @@ def test_legacy_current_schema_is_only_stamped(db):
         conn.execute(text("INSERT INTO users (id, email, password_hash, name, preferred_language, onboarding_step, is_sample, created_at) "
                           "VALUES ('u1','a@b.c','x','A','en','done',0,'2026-01-01')"))
     info = upgrade_to_head(engine, url)
-    # The current SQLAlchemy schema matches 0006; the following 0007 revision
-    # only rewrites generated product copy for the VITTRM brand.
+    # The detector recognises the schema as of 0006; later revisions (brand copy, reminder claims)
+    # are applied on top and are written to tolerate an already-current schema.
     assert info["stamped_legacy"] == "0006"
     assert current_revision(engine) == head_revision(alembic_config(url))
     assert info["backup"] and Path(info["backup"]).exists()
@@ -122,7 +122,44 @@ def test_rebase_old_local_0004_history_without_losing_user_data(db):
         command.stamp(cfg, "0004")
     info = upgrade_to_head(engine, url)
     assert info["rebased_from"] == "0004" and info["backup"] and Path(info["backup"]).exists()
-    assert current_revision(engine) == "0007"
+    assert current_revision(engine) == "0008"
     assert _schema_diff(engine) == []
     with engine.connect() as conn:
         assert conn.execute(text("SELECT email FROM users WHERE id='u1'")).scalar() == "a@b.c"
+
+
+def _brand_migration():
+    import importlib.util
+    path = Path(__file__).resolve().parent.parent / "migrations" / "versions" / "0007_vittrm_brand.py"
+    spec = importlib.util.spec_from_file_location("brand_0007", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_brand_rewrite_sql_is_valid_for_postgres_json_columns():
+    """Regression: PostgreSQL's json type has no LIKE/REPLACE, so JSON columns must be cast through text."""
+    mod = _brand_migration()
+    pg = mod.statements("VITRAM", "VITTRM", postgres=True)
+    lite = mod.statements("VITRAM", "VITTRM", postgres=False)
+    meta_pg = next(s for s in pg if '"meta"' in s)
+    assert 'CAST("meta" AS TEXT) LIKE' in meta_pg and "AS JSON)" in meta_pg
+    content_pg = next(s for s in pg if '"content"' in s)
+    assert "CAST" not in content_pg  # text columns need no cast
+    assert all("CAST" not in s for s in lite)  # SQLite stores JSON as text already
+
+
+def test_brand_rewrite_updates_existing_rows(db):
+    url, engine, _ = db
+    _upgrade(url, engine, "0006")
+    with engine.begin() as conn:
+        conn.execute(text("INSERT INTO users (id, email, password_hash, name, preferred_language, onboarding_step, is_sample, created_at) "
+                          "VALUES ('u1','a@b.c','x','A','en','done',0,'2026-01-01')"))
+        conn.execute(text("INSERT INTO conversations (id, user_id, context_type, channel, started_at) "
+                          "VALUES ('c1','u1','dashboard','web','2026-01-01')"))
+        conn.execute(text("""INSERT INTO messages (id, conversation_id, role, content, modality, cards, citations, tool_calls, flags, created_at)
+                             VALUES ('m1','c1','assistant','Welcome to VITRAM','text','[{"t":"VITRAM"}]','[]','[]','[]','2026-01-01')"""))
+    _upgrade(url, engine, "0007")
+    with engine.connect() as conn:
+        row = conn.execute(text("SELECT content, cards FROM messages WHERE id='m1'")).one()
+    assert row[0] == "Welcome to VITTRM" and "VITTRM" in str(row[1]) and "VITRAM" not in str(row[1])

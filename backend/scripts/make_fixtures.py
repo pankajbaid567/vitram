@@ -9,7 +9,7 @@ used for the capability demo (RD §30).
 
 import csv
 import random
-from datetime import date, timedelta
+from datetime import date
 from pathlib import Path
 
 from reportlab.lib.pagesizes import A4

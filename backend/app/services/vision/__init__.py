@@ -1,6 +1,6 @@
 """Document vision: OCR + layout for scanned PDFs, photos and receipts.
 
-One interface, three providers (plan.md M13):
+One interface, three providers (docs/spec/plan.md M13):
 - ``macos``  — Apple Vision on this machine via a small Swift helper. Documents never leave the device.
 - ``gemini`` — Gemini multimodal transcription. Only when OCR_PROVIDER=gemini is set explicitly,
                 because the document is then sent to Google.

@@ -1,7 +1,7 @@
 """Gemini adapter for Vitt Saathi chat and Live-voice session tokens.
 
 STATUS: implemented against the `google-genai` Python SDK interface but NOT
-verified in this environment — no GEMINI_API_KEY is configured (plan.md §7).
+verified in this environment — no GEMINI_API_KEY is configured (docs/spec/plan.md §7).
 Model ids come only from configuration (GEMINI_MODEL / GEMINI_LIVE_MODEL);
 nothing is hard-coded.
 """

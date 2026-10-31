@@ -96,7 +96,7 @@ def _read_macos(data: bytes, max_pages: int) -> OcrResult:
         os.fchmod(fd, 0o600)
         with os.fdopen(fd, "wb") as fh:
             fh.write(data)
-        r = subprocess.run([str(binary), name, str(max_pages)], capture_output=True, timeout=180)
+        r = subprocess.run([str(binary), name, str(max_pages)], capture_output=True, timeout=get_settings().ocr_timeout_seconds)
     except subprocess.TimeoutExpired as exc:
         raise VisionError("OCR_TIMEOUT", "Reading this document took too long. Try a smaller file or fewer pages.") from exc
     finally:

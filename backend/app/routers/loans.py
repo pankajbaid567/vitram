@@ -205,7 +205,7 @@ def calculate(body: CalcIn, user: User = Depends(current_user), db: Session = De
         try:
             out = what_if.prepayment(principal, rate, tenure, body.prepay_amount, body.after_month, body.mode, rule, gst)
         except ValueError as exc:
-            raise DomainError("INVALID_INPUT", str(exc), field="after_month")
+            raise DomainError("INVALID_INPUT", str(exc), field="after_month") from exc
         version = out["formula_version"]
     elif body.kind == "missed_payment":
         from app.services.finance.emi import emi as emi_fn

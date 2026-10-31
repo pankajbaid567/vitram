@@ -14,16 +14,9 @@ from urllib.parse import quote
 import httpx
 
 from app.config import get_settings
+from app.services.channels.gateway import InboundMessage, NotConfigured, SendError, StatusUpdate
 
-
-class NotConfigured(Exception):
-    pass
-
-
-class SendError(Exception):
-    def __init__(self, message: str, retryable: bool = True):
-        super().__init__(message)
-        self.retryable = retryable
+__all__ = ["NotConfigured", "SendError", "OpenWAGateway", "send_text", "verify_signature", "parse_webhook"]
 
 
 def _settings() -> tuple[str, str, str]:
@@ -85,12 +78,12 @@ def verify_signature(raw_body: bytes, header: str | None) -> bool:
     return hmac.compare_digest(expected, header[7:])
 
 
-def parse_webhook(payload: dict) -> tuple[list[dict], list[dict]]:
+def parse_webhook(payload: dict) -> tuple[list[InboundMessage], list[StatusUpdate]]:
     """Return normalized (inbound messages, delivery status updates)."""
     event = payload.get("event")
     data = payload.get("data") if isinstance(payload.get("data"), dict) else {}
-    messages: list[dict] = []
-    statuses: list[dict] = []
+    messages: list[InboundMessage] = []
+    statuses: list[StatusUpdate] = []
     if event == "message.received":
         sender = str(data.get("senderPhone") or data.get("from") or "")
         # A privacy @lid cannot safely be treated as a phone number. OpenWA can
@@ -102,15 +95,41 @@ def parse_webhook(payload: dict) -> tuple[list[dict], list[dict]]:
         button = data.get("button") if isinstance(data.get("button"), dict) else {}
         messages.append({
             "id": data.get("id"),
-            "from": re.sub(r"\D", "", sender),
-            "type": data.get("type"),
+            "sender": re.sub(r"\D", "", sender),
             "text": data.get("body") or button.get("text") or "",
             "is_group": bool(data.get("isGroup")) or data.get("kind") == "group",
         })
     elif event in ("message.ack", "message.failed"):
         statuses.append({
-            "id": data.get("messageId") or data.get("id"),
+            "message_id": data.get("messageId") or data.get("id"),
             "status": "failed" if event == "message.failed" else data.get("status"),
             "error": data.get("error") or data.get("reason"),
         })
     return messages, statuses
+
+
+class OpenWAGateway:
+    """:class:`~app.services.channels.gateway.WhatsAppGateway` backed by a self-hosted OpenWA.
+
+    Methods look up the module-level functions at call time so they stay patchable in tests.
+    """
+
+    name = "openwa"
+
+    def configured(self) -> bool:
+        return get_settings().openwa_configured
+
+    def webhook_configured(self) -> bool:
+        return get_settings().openwa_webhook_configured
+
+    def send_text(self, to_e164: str, body: str) -> str:
+        return send_text(to_e164, body)
+
+    def verify_signature(self, raw_body: bytes, header: str | None) -> bool:
+        return verify_signature(raw_body, header)
+
+    def session_matches(self, payload: dict) -> bool:
+        return payload.get("sessionId") == get_settings().openwa_session_id
+
+    def parse_webhook(self, payload: dict) -> tuple[list[InboundMessage], list[StatusUpdate]]:
+        return parse_webhook(payload)

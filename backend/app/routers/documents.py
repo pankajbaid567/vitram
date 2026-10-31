@@ -162,8 +162,8 @@ async def upload(
     elif type == "insurance_policy" and member_ids:
         try:
             ids = json.loads(member_ids)
-        except json.JSONDecodeError:
-            raise DomainError("INVALID_MEMBERS", "Couldn't read the selected family members.", field="member_ids")
+        except json.JSONDecodeError as exc:
+            raise DomainError("INVALID_MEMBERS", "Couldn't read the selected family members.", field="member_ids") from exc
         valid = {m.id for m in db.query(FamilyMember).filter(FamilyMember.user_id == user.id)} | {"self"}
         if not isinstance(ids, list) or any(i not in valid for i in ids):
             raise DomainError("INVALID_MEMBERS", "One of the selected family members wasn't found.", field="member_ids")
@@ -175,7 +175,7 @@ async def upload(
         try:
             data, mime = prepare_image(data, mime)
         except VisionError as exc:
-            raise DomainError(exc.code, exc.message, field="file")
+            raise DomainError(exc.code, exc.message, field="file") from exc
     key = storage.put(data)
     doc = Document(
         owner_user_id=user.id, type=type, display_name=_safe_name(file.filename, type), mime=mime, size_bytes=len(data),
@@ -240,8 +240,8 @@ def correct_fact(doc_id: str, fact_id: str, body: FactCorrection, user: User = D
         if isinstance(prior, (int, float)) and not isinstance(prior, bool):
             try:
                 f.value = float(str(body.value).replace(",", "").replace("₹", ""))
-            except ValueError:
-                raise DomainError("INVALID_NUMBER", "Enter a number.", field="value")
+            except ValueError as exc:
+                raise DomainError("INVALID_NUMBER", "Enter a number.", field="value") from exc
         else:
             f.value = body.value
     f.state = "confirmed"
@@ -266,8 +266,8 @@ def _apply_fact_to_links(db: Session, d: Document, f: DocumentFact) -> None:
         elif f.key in ("start_date", "end_date"):
             try:
                 setattr(p, f.key, date.fromisoformat(str(f.value)))
-            except ValueError:
-                raise DomainError("INVALID_DATE", "Enter the date as YYYY-MM-DD.", field="value")
+            except ValueError as exc:
+                raise DomainError("INVALID_DATE", "Enter the date as YYYY-MM-DD.", field="value") from exc
         elif f.key == "premium":
             p.premium = {**(p.premium or {}), "amount": f.value}
         elif f.key in ("sum_insured", "deductible", "room_rent_limit"):
@@ -282,8 +282,8 @@ def _apply_fact_to_links(db: Session, d: Document, f: DocumentFact) -> None:
         if f.key == "purchase_date":
             try:
                 f.value = date.fromisoformat(str(f.value)).isoformat()
-            except ValueError:
-                raise DomainError("INVALID_DATE", "Enter the date as YYYY-MM-DD.", field="value")
+            except ValueError as exc:
+                raise DomainError("INVALID_DATE", "Enter the date as YYYY-MM-DD.", field="value") from exc
         if f.key in ("merchant", "total", "purchase_date"):
             d.meta = {**(d.meta or {}), "receipt": {**((d.meta or {}).get("receipt") or {}), f.key: f.value}}
     elif d.type == "loan_document":

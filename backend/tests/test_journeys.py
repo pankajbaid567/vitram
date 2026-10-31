@@ -245,14 +245,14 @@ def test_whatsapp_inbound_emergency_and_stop(client, monkeypatch):
     client.post("/api/onboarding/phone/verification/check", json={"code": "123456"})
     client.post("/api/consents", json={"purpose": "whatsapp_reminders"})
     from app.db import SessionLocal
-    from app.routers.webhooks import handle_inbound
+    from app.services.channels.inbound import handle_inbound
     db = SessionLocal()
-    reply = handle_inbound(db, {"id": "m1", "from": "919123456780", "text": "I am in hospital, what do I do?"})
+    reply = handle_inbound(db, {"id": "m1", "sender": "919123456780", "text": "I am in hospital, what do I do?", "is_group": False})
     assert "policy" in reply.lower() and "/insurance/emergency" in reply
-    stop = handle_inbound(db, {"id": "m2", "from": "919123456780", "text": "STOP"})
+    stop = handle_inbound(db, {"id": "m2", "sender": "919123456780", "text": "STOP", "is_group": False})
     db.commit()
     assert "won't get" in stop
-    unknown = handle_inbound(db, {"id": "m3", "from": "919000000000", "text": "hi"})
+    unknown = handle_inbound(db, {"id": "m3", "sender": "919000000000", "text": "hi", "is_group": False})
     assert unknown is None
     db.close()
     assert "whatsapp_reminders" not in client.get("/api/auth/me").json()["consents"]
@@ -274,11 +274,11 @@ def test_openwa_parse():
     msgs, sts = openwa.parse_webhook({"event": "message.received", "data": {
         "id": "msg.1", "from": "9199@c.us", "type": "text", "body": "hello", "kind": "individual",
     }})
-    assert msgs[0]["text"] == "hello" and msgs[0]["from"] == "9199"
+    assert msgs[0]["text"] == "hello" and msgs[0]["sender"] == "9199"
     msgs, sts = openwa.parse_webhook({"event": "message.ack", "data": {
         "messageId": "msg.0", "status": "delivered",
     }})
-    assert not msgs and sts[0] == {"id": "msg.0", "status": "delivered", "error": None}
+    assert not msgs and sts[0] == {"message_id": "msg.0", "status": "delivered", "error": None}
 
 
 def test_openwa_send_text_contract(monkeypatch):
@@ -345,3 +345,24 @@ def test_csrf_origin_check(client_factory):
     c.headers["Origin"] = "https://evil.example"
     r = c.post("/api/auth/signup", json={"name": "x", "email": "e@x.com", "password": "12345678", "accept_terms": True})
     assert r.status_code == 403
+
+
+def test_hardening_headers_and_secure_cookie_policy(client, monkeypatch):
+    r = client.get("/api/health")
+    assert r.headers["x-frame-options"] == "DENY" and r.headers["x-content-type-options"] == "nosniff"
+    assert r.headers["content-security-policy"].startswith("default-src 'none'")
+    assert "strict-transport-security" not in r.headers  # plain HTTP
+    s = get_settings()
+    assert s.cookie_secure("http") is False and s.cookie_secure("https") is True
+    monkeypatch.setattr(s, "env", "production")
+    assert s.cookie_secure("http") is True  # production never issues a non-Secure cookie
+    monkeypatch.setattr(s, "session_cookie_secure", False)
+    assert s.cookie_secure("https") is False  # explicit override wins
+
+
+def test_csrf_rejects_foreign_origin_and_cookie_without_origin(client):
+    assert client.post("/api/auth/logout", headers={"Origin": "https://evil.example"}).status_code == 403
+    c2 = client
+    signup(c2)
+    c2.headers.pop("Origin", None)
+    assert c2.post("/api/auth/logout").status_code == 403

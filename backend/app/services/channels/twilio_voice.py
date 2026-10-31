@@ -3,7 +3,7 @@
 Creates an outbound call to the user; inline TwiML plays a short consented
 introduction and dials the team-controlled consultant number. No recording.
 Endpoint: POST https://api.twilio.com/2010-04-01/Accounts/{AccountSid}/Calls.json
-(verify against current Twilio docs when credentials are added — see plan.md §7).
+(verify against current Twilio docs when credentials are added — see docs/spec/plan.md §7).
 """
 
 from xml.sax.saxutils import escape
@@ -48,8 +48,8 @@ def create_call(to_e164: str, intro: str, status_callback: str | None) -> dict:
         try:
             body = r.json()
             raise CallError(f"{body.get('code', r.status_code)}: {body.get('message', 'call failed')}")
-        except ValueError:
-            raise CallError(f"HTTP {r.status_code}")
+        except ValueError as exc:
+            raise CallError(f"HTTP {r.status_code}") from exc
     body = r.json()
     return {"sid": body.get("sid"), "status": body.get("status")}
 

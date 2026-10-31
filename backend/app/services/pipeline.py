@@ -11,7 +11,6 @@ from datetime import date
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
-from app.deps import has_consent
 from app.models import (
     Document,
     DocumentChunk,

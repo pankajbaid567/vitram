@@ -137,7 +137,7 @@ def upgrade_to_head(engine: Engine, url: str | None = None) -> dict:
             cfg.attributes["connection"] = conn
             command.upgrade(cfg, "head")
     cfg.attributes.pop("connection", None)
-    return {"from": rebased or current if not legacy else legacy, "to": head, "stamped_legacy": legacy,
+    return {"from": legacy if legacy else rebased or current, "to": head, "stamped_legacy": legacy,
             "rebased_from": rebased, "backup": str(backup) if backup else None}
 
 

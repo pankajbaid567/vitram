@@ -13,12 +13,11 @@ from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.errors import DomainError
-from app.models import Conversation, Emi, FamilyMember, Message, User, UserPolicy
+from app.models import Conversation, FamilyMember, Message, User
 from app.services.saathi import faq, i18n
 from app.services.saathi import replies
 from app.services.saathi import router_offline as ro
 from app.services.saathi import tools as T
-from app.fmt import group, inr
 
 log = logging.getLogger("vitram.saathi")
 
