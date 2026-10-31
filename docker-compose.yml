@@ -1,0 +1,36 @@
+# Full stack: PostgreSQL + API + web. `cp .env.example .env`, set VITRAM_DATA_KEY, then `docker compose up --build`.
+# Generate a key:  python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vitram
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vitram}
+      POSTGRES_DB: vitram
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vitram"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://vitram:${POSTGRES_PASSWORD:-vitram}@db/vitram
+      VITRAM_DATA_KEY: ${VITRAM_DATA_KEY:?set VITRAM_DATA_KEY in .env (uploaded files are encrypted with it)}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:${WEB_PORT:-8080}}
+      FORWARDED_ALLOW_IPS: "*"   # the only thing that can reach this container is the web service on the compose network
+      SESSION_COOKIE_SECURE: "false"   # plain HTTP on localhost; remove once TLS is terminated in front
+    volumes: [appdata:/data]
+    depends_on:
+      db: {condition: service_healthy}
+
+  web:
+    build: ./frontend
+    ports: ["${WEB_PORT:-8080}:8080"]
+    depends_on: [backend]
+
+volumes:
+  pgdata:
+  appdata:
