@@ -139,10 +139,14 @@ def _check_openwa(s: Settings, network: bool) -> Check:
     if status not in ("ready", "connected", "working", "authenticated"):
         return Check(name, WARN, f"session status is {status!r}: pair the number in the OpenWA dashboard")
     hooks = _get(f"{base}/api/sessions/{s.openwa_session_id}/webhooks", headers=headers)
-    wanted = (s.public_api_url or "").rstrip("/") + "/api/webhooks/"
-    registered = hooks.status_code == 200 and any(str(h.get("url", "")).startswith(wanted) for h in (hooks.json() if isinstance(hooks.json(), list) else []))
-    return Check(name, OK if registered else WARN,
-                 f"session {status}; webhook {'registered' if registered else 'NOT registered: add ' + wanted + 'whatsapp with the shared secret'}")
+    urls = [str(h.get("url", "")) for h in (hooks.json() if hooks.status_code == 200 and isinstance(hooks.json(), list) else [])]
+    # OpenWA may run on the same machine (Docker → host.docker.internal) or reach a public URL: either is fine as long as it
+    # points at this app's webhook route, so judge the route, not the host.
+    ours = [u for u in urls if u.rstrip("/").endswith(("/api/webhooks/whatsapp", "/api/webhooks/openwa"))]
+    if not ours:
+        return Check(name, WARN, f"session {status}; no webhook points at /api/webhooks/whatsapp: register one with the shared secret")
+    host = ours[0].split("//", 1)[-1].split("/", 1)[0]
+    return Check(name, OK, f"session {status}; webhook registered → {host}")
 
 
 def check_twilio(s: Settings, network: bool) -> list[Check]:

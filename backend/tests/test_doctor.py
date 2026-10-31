@@ -91,7 +91,16 @@ def test_openwa_ready_session_with_registered_webhook(monkeypatch):
         return Resp(200, [{"url": "https://api.example.com/api/webhooks/whatsapp"}]) if url.endswith("/webhooks") else Resp(200, {"status": "ready"})
     monkeypatch.setattr(doctor, "_get", fake)
     c = by_name(doctor.run(s=settings(**OPENWA)))["WhatsApp (OpenWA, unofficial)"]
-    assert c.status == doctor.OK and "registered" in c.detail
+    assert c.status == doctor.OK and "webhook registered" in c.detail
+
+
+def test_openwa_webhook_may_point_at_the_local_machine_not_only_a_public_url(monkeypatch):
+    """OpenWA in Docker reaches this app at host.docker.internal; that is registered and fine."""
+    def fake(url, **kw):
+        return Resp(200, [{"url": "http://host.docker.internal:8765/api/webhooks/whatsapp"}]) if url.endswith("/webhooks") else Resp(200, {"status": "ready"})
+    monkeypatch.setattr(doctor, "_get", fake)
+    c = by_name(doctor.run(s=settings(**{**OPENWA, "public_api_url": "https://stale-tunnel.example"})))["WhatsApp (OpenWA, unofficial)"]
+    assert c.status == doctor.OK and "host.docker.internal:8765" in c.detail
 
 
 def test_openwa_unpaired_session_and_missing_webhook_are_warnings(monkeypatch):
@@ -100,7 +109,7 @@ def test_openwa_unpaired_session_and_missing_webhook_are_warnings(monkeypatch):
     assert c.status == doctor.WARN and "pair" in c.detail
     monkeypatch.setattr(doctor, "_get", lambda url, **kw: Resp(200, []) if url.endswith("/webhooks") else Resp(200, {"status": "ready"}))
     c = by_name(doctor.run(s=settings(**OPENWA)))["WhatsApp (OpenWA, unofficial)"]
-    assert c.status == doctor.WARN and "NOT registered" in c.detail
+    assert c.status == doctor.WARN and "no webhook points at" in c.detail
 
 
 # --- Twilio / Gemini / SMTP -----------------------------------------------------------------------------

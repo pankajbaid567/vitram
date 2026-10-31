@@ -53,15 +53,30 @@ under *Not verified* rather than claimed; [`GO_LIVE.md`](GO_LIVE.md) is the orde
 | Gemini | Tool loop bounded, unknown tools refused, cooldown after failure, numeric-fidelity replacement, ephemeral voice tokens never expose the API key, the insurance prompt carries no banking data |
 | `python -m app.doctor` | Each probe against mocked responses; secrets never in the output, even when a provider echoes one |
 
+## Verified live (2026-11-01, real credentials and a real phone)
+
+Run by the author with the OpenWA gateway paired to a spare number and one controlled recipient. Nothing was sent to anyone else.
+
+| What | Observed |
+|---|---|
+| Gemini | The doctor's read-only probe confirmed the configured model is available. (A live chat turn, languages and voice are still unchecked.) |
+| Twilio Verify | A real SMS code was sent, entered, and accepted; the number became *verified*. Account (Trial) and Verify service probes passed |
+| OpenWA | QR pairing worked; the session reached `ready`; the signed webhook test reached this app (`200`) |
+| Reminder over WhatsApp | A "Send now" reminder arrived with the exact composed text and moved `sent → delivered → read` from real receipts |
+| Inbound question | "Mother is in hospital, which policy applies?" was answered on WhatsApp: Senior Care, ₹5,00,000, 20 % co-pay, 24-hour notice, helpline and the "can't promise approval" line |
+| Safety gates | A message from the number *before* it was verified was ignored; after `STOP`, consent was revoked, nothing stayed queued on WhatsApp, and "Send now" stayed in-app and said so |
+
+Found while doing it: the pre-existing OpenWA webhook pointed at another local project's port (it was repointed), and the doctor wrongly warned when the webhook targets `host.docker.internal` instead of a public URL (fixed).
+
 ## Not verified
 
 These need hardware, a paired number, a provider key or a hosting account. [`GO_LIVE.md`](GO_LIVE.md) gives the order and the expected result of each.
 
 | Item | Why |
 |---|---|
-| Real WhatsApp send / delivery / inbound / `STOP` (Meta or OpenWA) | Needs a verified business and approved template (Meta) or a paired spare number (OpenWA), plus a public HTTPS webhook URL |
-| Gemini chat, languages, function calling, Live voice, vision OCR | Needs a key (and a microphone for voice); adapter tested with fakes |
-| Twilio Verify SMS and consultation calls | Needs credentials and a controlled number |
+| WhatsApp through the **Meta Cloud API** (OpenWA is verified live, above) | Needs a verified business, an approved template and a public HTTPS webhook URL; the `.env` has Meta values, so `WHATSAPP_PROVIDER=meta` + `python -m app.doctor` is the next test |
+| Gemini chat turns, Hindi/Hinglish, function calling, Live voice, vision OCR | The key and model are confirmed reachable; conversation quality, voice (microphone) and OCR are unchecked |
+| Twilio consultation *calls* | Needs `CONSULTANT_PHONE_NUMBER` and a public callback URL (Verify SMS is verified live, above) |
 | SMTP verification / reset e-mail | Needs credentials; tested with a fake mailer |
 | Camera scanner on a phone; screen-reader pass | Needs a camera / assistive technology |
 | Render and Fly.io blueprints (`deploy/`) | Configuration only; the container images and compose stack they are based on *are* verified |
