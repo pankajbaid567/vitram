@@ -27,26 +27,26 @@ showing value, brand naming drift (the UI said VITTRM while the repo said VITRAM
 - Genuine defect found and fixed: **Forecast → Add expected payment** posted an empty form and showed a raw server
   message ("String should have at least 1 character"). It now validates first and says what is missing.
 - Settings → *Allow* on WhatsApp reminders correctly returns "Add your mobile number first" when no number is saved.
-  It works as designed; see P1-3 for making it actionable.
+  It works as designed, and now shows an inline notice linking to the profile.
 
 ## Improvement plan
 
-### P0 (done in this pass)
+### Done in this pass
 1. Forecast form validation with field-level messages.
+2. Sample workspace offered above the sign-in and sign-up forms.
+3. Dashboard stat captions wrap to two lines instead of clipping.
+4. Touch targets raised to 36px on phones (source links, policy field actions, EMI row action).
+5. Missing-phone consent error now shows an inline notice linking to the profile.
+6. One product name, VITRAM, in the UI, docs and generated copy (migration `0011`).
 
-### P1 (next)
-1. **Show value before sign-up.** Put "Open sample workspace" next to the headline on /welcome, not under the form.
-2. **Quieter background.** The faint "YOUR MONEY / A BRIGHTER YOU" watermark crosses content on wide screens; it is baked into `frontend/src/assets/app-background.jpg`, so the fix is a clean export of that image without the text.
-3. **Make permission errors actionable.** "Add your mobile number first" should link to the profile field.
-4. **Truncated stat captions** on the dashboard cards; allow two lines instead of clipping.
-5. **Tap targets.** 20 controls under 32px on the emergency screen at 390px (relationship chips, small links); raise to 40px.
+### P1 (remaining)
+1. **Quieter background.** The faint "YOUR MONEY / A BRIGHTER YOU" watermark crosses content on wide screens; it is baked into `frontend/src/assets/app-background.jpg`, so the fix is a clean export of that image without the text.
 
 ### P2
-1. ~~One brand name across UI, repo and docs~~ Done: VITRAM everywhere (migration `0011` rewrites stored copy).
-2. Dashboard: lead with the single most urgent item (next EMI) and collapse the rest below.
-3. First-run checklist ("Set up VITRAM · 3 of 4") should be dismissible once complete and link to each step.
-4. Add skeleton states for the two slowest screens (loan results, insights).
-5. Table/chart toggle on the dashboard: remember the choice per user.
+1. Dashboard: lead with the single most urgent item (next EMI) and collapse the rest below.
+2. First-run checklist ("Set up VITRAM · 3 of 4") should be dismissible once complete and link to each step.
+3. Add skeleton states for the two slowest screens (loan results, insights).
+4. Table/chart toggle on the dashboard: remember the choice per user.
 
 ### P3
 1. Hindi UI labels for the main navigation (the assistant already speaks Hindi and Hinglish).

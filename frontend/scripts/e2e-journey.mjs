@@ -131,10 +131,11 @@ await step('insurance emergency mode finds the uploaded policy', async () => {
   await b.waitFor('a policy that may apply', `/May apply|Family Health Shield/.test(document.body.innerText)`)
 })
 
-await step('reminder settings explain why WhatsApp is off', async () => {
+await step('reminder settings state whether WhatsApp is available', async () => {
   await b.go('/settings/reminders')
   await expectText('WhatsApp')
-  await expectText("isn't connected")
+  // Either the honest "not connected" notice, or (when this environment has a provider) a working switch.
+  await b.waitFor('the WhatsApp state', `/isn't connected/.test(document.body.innerText) || /I agree to WhatsApp messages|on WhatsApp/i.test(document.body.innerText)`)
 })
 
 await step('ask Vitt Saathi a question and get an answer', async () => {
