@@ -23,7 +23,7 @@ from app.models import (
     UserLoan,
     UserPolicy,
 )
-from app.services import profile_engine, storage
+from app.services import ai_extraction, profile_engine, storage
 from app.services.extractors.common import Extraction
 from app.services.extractors.card import extract_card
 from app.services.extractors.insurance import extract_policy
@@ -195,6 +195,9 @@ def _process_pdf_document(db: Session, doc: Document, data: bytes) -> None:
                 f.confidence = round(f.confidence * OCR_CONFIDENCE_FACTOR * ocr_conf, 3)
     else:
         ex = extract_policy(pages) if doc.type == "insurance_policy" else extract_loan(pages)
+        ai = ai_extraction.augment(db, doc, pages, ex)  # optional; fills gaps only, every value quoted from its page
+        if ai:
+            doc.meta = {**(doc.meta or {}), "ai_extraction": ai}
         if ocr_conf is not None:
             for f in ex.facts:
                 f.confidence = round(f.confidence * OCR_CONFIDENCE_FACTOR * ocr_conf, 3)

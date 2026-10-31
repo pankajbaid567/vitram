@@ -8,6 +8,7 @@ must set the Gemini model ids that are available at build time.
 
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlparse
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -32,6 +33,10 @@ class Settings(BaseSettings):
     # Public HTTPS base URL of this API, needed for OpenWA/Twilio webhooks.
     public_api_url: str | None = None
     session_days: int = 7
+    log_format: str = "text"            # text | json
+    rate_limit_backend: str = "memory"  # memory (per process) | database (shared across workers)
+    # Run the reminder loop inside the API process. Set false when a dedicated `python -m app.worker` runs it.
+    run_scheduler: bool = True
     # Force the session cookie's Secure flag on/off. Unset: on in production, otherwise follows the
     # request scheme (behind a TLS-terminating proxy run uvicorn with --proxy-headers so that is correct).
     session_cookie_secure: bool | None = None
@@ -45,6 +50,10 @@ class Settings(BaseSettings):
     # Bound provider waits so chat can fall back to Tool mode instead of
     # leaving the user on an endless spinner. Gemini rejects deadlines <10s.
     gemini_timeout_ms: int = 10_000
+    # Let the model *propose* policy/loan fields from document text. Off by default: it sends document text to Google.
+    # Each proposal is verified against a verbatim quotation on its page (services/ai_extraction.py) and needs the user's consent.
+    ai_extraction: bool = False
+    ai_extraction_max_chars: int = 60_000
     # Gemini Live (in-app real-time voice)
     gemini_live_model: str | None = None
 
@@ -101,6 +110,14 @@ class Settings(BaseSettings):
     # Catalogue freshness threshold (RD §26 "stale product catalogue").
     catalogue_stale_days: int = 90
 
+    @field_validator("rate_limit_backend", mode="before")
+    @classmethod
+    def _normalise_backend(cls, v):
+        v = (v or "memory").strip().lower() if isinstance(v, str) or v is None else v
+        if v not in ("memory", "database"):
+            raise ValueError("RATE_LIMIT_BACKEND must be 'memory' or 'database'")
+        return v
+
     @field_validator("whatsapp_provider", mode="before")
     @classmethod
     def _normalise_provider(cls, v):
@@ -109,6 +126,36 @@ class Settings(BaseSettings):
         if v not in ("openwa", "meta"):
             raise ValueError("WHATSAPP_PROVIDER must be 'openwa' or 'meta'")
         return v
+
+    def production_problems(self) -> list[str]:
+        """Misconfigurations that must stop a production start (empty list = fine)."""
+        if self.env != "production":
+            return []
+        problems = []
+        if not self.vitram_data_key:
+            problems.append("VITRAM_DATA_KEY is required: uploaded files are encrypted with it, and a generated development key would be lost on redeploy.")
+        host = urlparse(self.app_origin).hostname or ""
+        if not self.app_origin.startswith("https://") and host not in ("localhost", "127.0.0.1"):
+            problems.append(f"APP_ORIGIN must be an https:// URL (got {self.app_origin!r}); it gates cross-site requests and builds deep links.")
+        if self.session_cookie_secure is False and host not in ("localhost", "127.0.0.1"):
+            problems.append("SESSION_COOKIE_SECURE=false is only acceptable on localhost.")
+        return problems
+
+    def production_warnings(self) -> list[str]:
+        """Things that work but deserve a second look (reported by `python -m app.doctor`)."""
+        warnings = []
+        if self.env == "production" and self.whatsapp_provider == "openwa":
+            warnings.append("WHATSAPP_PROVIDER=openwa is an unofficial gateway with a ban risk; use 'meta' for a real launch.")
+        if self.env == "production" and self.is_sqlite:
+            warnings.append("SQLite is the development database; use PostgreSQL in production.")
+        if self.env == "production" and self.auto_migrate:
+            warnings.append("AUTO_MIGRATE=true applies migrations at start-up; prefer a backed-up `alembic upgrade head` release step.")
+        return warnings
+
+    def assert_production_ready(self) -> None:
+        problems = self.production_problems()
+        if problems:
+            raise RuntimeError("Refusing to start in production:\n  - " + "\n  - ".join(problems))
 
     @property
     def is_sqlite(self) -> bool:

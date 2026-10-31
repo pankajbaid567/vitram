@@ -12,7 +12,7 @@ from app.deps import current_user
 from app.errors import DomainError, NotFound
 from app.models import CardProduct, Document, FinancialProfile, User, UserCard
 from app.security import looks_like_full_card_number
-from app.services import calculations, profile_engine
+from app.services import calculations, card_spend, profile_engine
 from app.services.card_import import apply_reviewed
 from app.services.catalogue import catalogue_meta
 from app.services.finance.rewards import FORMULA_VERSION, best_for_spend, estimate_card
@@ -76,7 +76,7 @@ class CardIn(BaseModel):
 
 def _card_dict(c: UserCard) -> dict:
     return {"id": c.id, "name": c.nickname, "rules": (c.catalogue.data.get("rules") if c.catalogue else None),
-            "cycle_spend": c.cycle_spend or {}}
+            "cycle_spend": card_spend.effective_cycle_spend(c)}
 
 
 def card_out(c: UserCard) -> dict:
@@ -90,7 +90,8 @@ def card_out(c: UserCard) -> dict:
         "due_date": c.due_date.isoformat() if c.due_date else None,
         "annual_fee": (data.get("fees") or {}).get("annual"), "fees": data.get("fees"),
         "reward_currency": rules.get("reward_currency"), "reward_unit": rules.get("currency_name"),
-        "points": c.points, "cycle_spend": c.cycle_spend or {}, "user_benefits": c.user_benefits or [],
+        "points": c.points, "cycle_spend": c.cycle_spend or {}, "imported_spend": c.imported_spend,
+        "effective_cycle_spend": card_spend.effective_cycle_spend(c), "user_benefits": c.user_benefits or [],
         "has_rules": bool(rules), "catalogue": catalogue_meta(cat) if cat else None,
         "source_document_id": c.source_document_id,
         "source_fields": c.source_fields or [],
@@ -201,6 +202,43 @@ def import_card_document(card_id: str, body: CardImportIn, user: User = Depends(
     profile_engine.build_profile(db, user)
     db.commit()
     return {"card": card_out(card), "imported_fields": imported}
+
+
+class SpendIn(BaseModel):
+    document_id: str
+    replace_existing: bool = False
+
+
+def _doc_for(db: Session, user: User, doc_id: str) -> Document:
+    doc = db.query(Document).filter(Document.id == doc_id, Document.owner_user_id == user.id).first()
+    if not doc:
+        raise NotFound("Document")
+    return doc
+
+
+@router.get("/{card_id}/spend-reconciliation")
+def preview_spend(card_id: str, document_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Preview which confirmed statement purchases would count toward this card's reward estimate."""
+    return card_spend.preview(db, _doc_for(db, user, document_id), _get(db, user, card_id))
+
+
+@router.post("/{card_id}/spend-reconciliation")
+def apply_spend(card_id: str, body: SpendIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    card = _get(db, user, card_id)
+    doc = _doc_for(db, user, body.document_id)
+    imported = card_spend.apply(db, doc, card, replace_existing=body.replace_existing)
+    audit(db, user.id, "card.spend_reconciled", "card", card.id, document_id=doc.id, rows=imported["rows"])
+    db.commit()
+    return {"card": card_out(card), "imported_spend": imported}
+
+
+@router.delete("/{card_id}/spend-reconciliation")
+def undo_spend(card_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    card = _get(db, user, card_id)
+    removed = card_spend.clear(card)
+    audit(db, user.id, "card.spend_reconciliation_undone", "card", card.id)
+    db.commit()
+    return {"card": card_out(card), "removed": removed}
 
 
 @router.post("")

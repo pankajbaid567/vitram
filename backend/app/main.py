@@ -8,13 +8,11 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.db import init_db
-from app.errors import DomainError, domain_error_handler
 from app.deps import SESSION_COOKIE
-from app.security import RedactingFilter
+from app.errors import DomainError, domain_error_handler
+from app.observability import configure_logging, new_request_id, request_id_var
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-for h in logging.getLogger().handlers:
-    h.addFilter(RedactingFilter())
+configure_logging(get_settings().log_format)
 log = logging.getLogger("vitram")
 
 UNSAFE = {"POST", "PUT", "PATCH", "DELETE"}
@@ -23,14 +21,18 @@ CSRF_EXEMPT_PREFIXES = ("/api/webhooks/",)
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
+    settings = get_settings()
+    settings.assert_production_ready()   # refuse to start misconfigured rather than fail on the first request
     init_db()
     from app.services.catalogue import load_catalogues
     from app.services.channels.scheduler import reminder_loop
 
     load_catalogues()
-    task = asyncio.create_task(reminder_loop())
+    # The reminder loop can live in this process (default) or in a dedicated worker: RUN_SCHEDULER=false + `python -m app.worker`.
+    task = asyncio.create_task(reminder_loop()) if settings.run_scheduler else None
     yield
-    task.cancel()
+    if task:
+        task.cancel()
 
 
 app = FastAPI(title="VITTRM API", version="0.1.0", lifespan=lifespan)
@@ -69,14 +71,30 @@ def _harden(request: Request, response: Response) -> None:
         h.setdefault("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
 
 
+def _internal_error(request_id: str) -> JSONResponse:
+    body = {"error": {"code": "INTERNAL_ERROR", "message": "Something went wrong on our side. Try again, and quote this reference if it persists.",
+                      "request_id": request_id}}
+    return JSONResponse(body, status_code=500)
+
+
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
-    if (blocked := _csrf_violation(request, get_settings().app_origin)) is not None:
-        _harden(request, blocked)
-        return blocked
-    response = await call_next(request)
-    _harden(request, response)
-    return response
+    rid = new_request_id(request.headers.get("x-request-id"))
+    token = request_id_var.set(rid)
+    try:
+        if (blocked := _csrf_violation(request, get_settings().app_origin)) is not None:
+            response = blocked
+        else:
+            try:
+                response = await call_next(request)
+            except Exception:  # noqa: BLE001 - last line of defence: log with the request id, never leak internals
+                log.exception("unhandled error on %s %s", request.method, request.url.path)
+                response = _internal_error(rid)
+        response.headers["X-Request-ID"] = rid
+        _harden(request, response)
+        return response
+    finally:
+        request_id_var.reset(token)
 
 
 @app.get("/api/health")
@@ -101,13 +119,14 @@ def _include_routers() -> None:
         loans,
         notifications,
         onboarding,
+        ops,
         profile,
         reminders,
         webhooks,
     )
 
     for module in (auth, onboarding, family, documents, profile, dashboard, loans, cards, emis, insurance,
-                   consultations, reminders, notifications, ai, webhooks, demo, insights, goals):
+                   consultations, reminders, notifications, ai, webhooks, demo, insights, goals, ops):
         app.include_router(module.router, prefix="/api")
 
 

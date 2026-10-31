@@ -32,6 +32,50 @@ const TYPE_ICON: Record<DocumentRow['type'], { icon: ReactNode; tone: 'indigo' |
   card_document: { icon: <FileText />, tone: 'indigo' },
 }
 
+/** Count the purchases the user has *confirmed* on a card statement toward one card's reward estimate (preview first, undoable). */
+function SpendReconcile({ doc, card }: { doc: DocumentRow; card: any }) {
+  const qc = useQueryClient()
+  const toast = useToast()
+  const key = ['spend-preview', card.id, doc.id]
+  const preview = useQuery({ queryKey: key, queryFn: () => get<any>(`/cards/${card.id}/spend-reconciliation?document_id=${doc.id}`) })
+  const done = () => { qc.invalidateQueries({ queryKey: ['cards'] }); qc.invalidateQueries({ queryKey: key }) }
+  const apply = useMutation({
+    mutationFn: () => post(`/cards/${card.id}/spend-reconciliation`, { document_id: doc.id, replace_existing: true }),
+    onSuccess: () => { done(); toast({ title: 'Purchases now count toward this card’s reward estimate', tone: 'positive' }) },
+    onError: (e) => toast({ title: errorMessage(e), tone: 'critical' }),
+  })
+  const undo = useMutation({
+    mutationFn: () => del(`/cards/${card.id}/spend-reconciliation`),
+    onSuccess: () => { done(); toast({ title: 'Statement purchases no longer counted', tone: 'positive' }) },
+    onError: (e) => toast({ title: errorMessage(e), tone: 'critical' }),
+  })
+  const counted = card.imported_spend?.document_id === doc.id
+  if (preview.isLoading) return <Skeleton className="h-16 w-full" />
+  if (preview.isError) return <ErrorState error={preview.error} onRetry={() => preview.refetch()} />
+  const p = preview.data
+  return (
+    <div className="space-y-3">
+      {p.counted_rows.length === 0
+        ? <p className="text-sm text-caution">No purchase rows are confirmed yet. Confirm the ones that are right above; unconfirmed rows are never counted.</p>
+        : <>
+          <ul className="divide-y divide-line rounded-xl border border-line text-sm">
+            {p.counted_rows.map((r: any) => (
+              <li key={r.fact_id} className="flex items-center justify-between gap-3 px-3 py-2">
+                <span className="min-w-0 truncate">{r.merchant} <span className="text-muted">· {r.category_label}</span></span>
+                <span className="num shrink-0 font-medium">{inr(r.amount)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-sm text-muted">Total {inr(p.total)} across {Object.keys(p.by_category).length} categories. {p.unconfirmed_rows > 0 && `${p.unconfirmed_rows} unconfirmed row(s) are not counted.`}</p>
+        </>}
+      <div className="flex flex-wrap gap-2">
+        <Button disabled={p.counted_rows.length === 0 || counted} loading={apply.isPending} onClick={() => apply.mutate()}>{counted ? 'Counted' : 'Count these purchases'}</Button>
+        {counted && <Button variant="secondary" loading={undo.isPending} onClick={() => undo.mutate()}>Undo</Button>}
+      </div>
+    </div>
+  )
+}
+
 function FactsSheet({ doc, onClose }: { doc: DocumentRow | null; onClose: () => void }) {
   const qc = useQueryClient()
   const toast = useToast()
@@ -100,6 +144,15 @@ function FactsSheet({ doc, onClose }: { doc: DocumentRow | null; onClose: () => 
               <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={confirmReplace} onChange={(e) => setConfirmReplace(e.target.checked)} className="mt-1" />I agree to replace the selected card’s values with these confirmed document facts.</label>
               <Button disabled={!selectedCardMatches || !confirmReplace || linkCard.isPending} loading={linkCard.isPending} onClick={() => linkCard.mutate()}>Import reviewed facts</Button>
             </>}
+        </div>}
+        {doc?.type === 'card_document' && confirmedLast4 && matchingCards.length > 0 && <div className="mt-5 space-y-3 border-t border-line pt-4">
+          <h3 className="font-semibold">Count confirmed purchases toward rewards</h3>
+          <p className="text-sm text-muted">Only the purchases you confirmed above are used, grouped by category, to work out how much of a monthly reward cap is already used. Your own entries are never overwritten, and you can undo this.</p>
+          <Field label="Saved card"><Select value={selectedCard} onChange={(e) => setSelectedCard(e.target.value)}>
+            <option value="">Choose a card</option>
+            {matchingCards.map((c: any) => <option key={c.id} value={c.id}>{c.nickname} · ending {c.last4}</option>)}
+          </Select></Field>
+          {selectedCardMatches && <SpendReconcile doc={doc} card={matchingCards.find((c: any) => c.id === selectedCard)} />}
         </div>}
       </>)}
     </Sheet>

@@ -154,3 +154,70 @@ def test_reminder_settings_say_why_whatsapp_is_not_active(client_factory):
     off = client_factory()
     off.post("/api/demo/workspace")
     assert off.get("/api/reminders").json()["preferences"]["whatsapp_blocked_reason"] == "WhatsApp reminders are turned off."
+
+
+def test_racing_workers_send_each_reminder_exactly_once(client_factory, monkeypatch):
+    """Four workers drain the same queue at once: every reminder goes out once, none twice, none lost."""
+    import threading
+
+    from app.models import User
+    from app.services.channels import phone_verify
+
+    c = client_factory()
+    c.post("/api/demo/workspace")
+    monkeypatch.setattr(phone_verify, "start", lambda _p: True)
+    monkeypatch.setattr(phone_verify, "check", lambda _p, _c: True)
+    phone = "9" + "".join(random.choice("0123456789") for _ in range(9))
+    c.patch("/api/onboarding/about", json={"phone": phone})
+    c.post("/api/onboarding/phone/verification")
+    c.post("/api/onboarding/phone/verification/check", json={"code": "123456"})
+    c.post("/api/consents", json={"purpose": "whatsapp_reminders"})
+    c.put("/api/reminders/preferences", json={"days_before": [3], "on_due_date": True, "send_hour": 9, "whatsapp_enabled": True, "include": ["emi"]})
+    emi = c.get("/api/emis").json()["emis"][0]["id"]
+    uid = c.get("/api/auth/me").json()["id"]
+
+    sent, lock = [], threading.Lock()
+
+    class Counting:
+        def configured(self): return True
+        def send_reminder(self, to, text, params):
+            with lock:
+                sent.append(to)
+            return f"mid-{len(sent)}"
+    monkeypatch.setattr(scheduler.gateway, "whatsapp", lambda: Counting())
+
+    db = SessionLocal()
+    try:
+        db.query(Reminder).filter(Reminder.user_id == uid).delete()
+        ids = []
+        for i in range(24):
+            r = Reminder(user_id=uid, object_type="emi", object_id=emi, channel="whatsapp", status="scheduled",
+                         schedule_at=datetime.now(timezone.utc) - timedelta(minutes=1), due_date=date.today(), template_key=f"race_{i}")
+            db.add(r)
+            db.flush()
+            ids.append(r.id)
+        db.commit()
+    finally:
+        db.close()
+
+    def worker():
+        s = SessionLocal()
+        try:
+            while scheduler.dispatch_due(s):
+                pass
+        finally:
+            s.close()
+
+    threads = [threading.Thread(target=worker) for _ in range(4)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+
+    assert len(sent) == 24, f"expected one send per reminder, got {len(sent)}"
+    db = SessionLocal()
+    try:
+        rows = db.query(Reminder).filter(Reminder.id.in_(ids)).all()
+        assert {r.status for r in rows} == {"sent"} and all(r.claimed_at is None for r in rows)
+        assert len({r.provider_message_id for r in rows}) == 24, "every reminder has its own provider message id"
+        assert db.get(User, uid) is not None
+    finally:
+        db.close()

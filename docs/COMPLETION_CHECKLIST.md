@@ -21,25 +21,25 @@ Each item has an acceptance test ("done when"). `[ ]` open · `[x]` done and ver
   - settings `WHATSAPP_PROVIDER=meta|openwa`, token, phone-number id, app secret, verify token, template; startup validation;
   - *Done when:* contract tests with mocked HTTP cover send, template vs. free text, signature accept/reject, verification challenge, status mapping, error mapping (retryable vs. not); the same inbound/STOP/idempotency behaviour passes for both providers via a shared parametrised test.
 - [x] **1.2 Provider-neutral webhook routes** (`/api/webhooks/whatsapp` plus the existing `/openwa` kept for compatibility); docs updated.
-- [ ] **1.3 Bounded AI extraction for policies and loan documents** (spec D2/D3): when Gemini and consent are present, extract structured facts, then **reject any value whose text isn't found on the cited page**; heuristic facts and user corrections always win; conflicts are surfaced. *Done when:* tests with a fake model prove: valid facts accepted, hallucinated values dropped, corrections preserved, injection text ignored, failure falls back to heuristics.
-- [ ] **1.4 Card statement reconciliation** (spec D4): user-confirmed purchase rows map to categories and feed *cycle spend / reward estimates* with provenance, reversible; unconfirmed rows never count. *Done when:* API tests cover confirm, reject, undo, and ranking changes.
+- [x] **1.3 Bounded AI extraction for policies and loan documents** (spec D2/D3): when Gemini and consent are present, extract structured facts, then **reject any value whose text isn't found on the cited page**; heuristic facts and user corrections always win; conflicts are surfaced. *Done when:* tests with a fake model prove: valid facts accepted, hallucinated values dropped, corrections preserved, injection text ignored, failure falls back to heuristics.
+- [x] **1.4 Card statement reconciliation** (spec D4): user-confirmed purchase rows map to categories and feed *cycle spend / reward estimates* with provenance, reversible; unconfirmed rows never count. *Done when:* API tests cover confirm, reject, undo, and ranking changes.
 - [x] **1.5 Privacy controls beyond "delete my data":** `GET /api/profile/export` (full JSON export) and `DELETE /api/auth/account` (removes the login too, revokes sessions, deletes files, writes an audit line without personal data). *Done when:* tests prove another user's data is untouched and storage objects are gone.
 - [x] **1.6 Response-contract audit** (spec Q1): one test walks every journey route and asserts currency, precision, citations present for material facts, catalogue `is_mock`/date labels, calculation `formula_version` and inputs. *Done when:* the test fails if any route drops them.
 - [x] **1.7 Calculation snapshots** (spec S7): every calculator route persists a `CalculationRun` (inputs, outputs, version) and the assistant cites its id. *Done when:* a test enumerates the routes.
 - [x] **1.8 Reminder settings explain themselves:** the preferences API returns *why* WhatsApp is off (the same reason the dispatcher uses); the settings screen shows it.
-- [ ] **1.9 `lang` metadata** on Hindi/Hinglish text (spec accessibility gap) and Devanagari font fallback checked.
+- [x] **1.9 `lang` metadata** on Hindi/Hinglish text (spec accessibility gap) and Devanagari font fallback checked.
 
 ## Phase 2 — Operability and system design
 
-- [ ] **2.1 Dedicated worker process:** `python -m app.worker` runs the reminder loop; `RUN_SCHEDULER=false` disables it in the API; compose gets a `worker` service. *Done when:* a test starts one worker and one "API" and a reminder is sent once.
-- [ ] **2.2 Health and readiness:** `/api/health` (liveness) and `/api/ready` (database reachable, migrations at head, scheduler heartbeat recent). *Done when:* readiness goes false when the DB is unreachable (tested).
-- [ ] **2.3 Request IDs and structured logs:** `X-Request-ID` in and out, JSON logs option, redaction preserved. *Done when:* a test shows the id in the response and log record, and no PII.
-- [ ] **2.4 Global error handler:** unexpected exceptions return the stable error shape with a request id and never leak internals. *Done when:* a forced error test passes.
-- [ ] **2.5 Fail-fast production config:** the app refuses to start in `ENV=production` without `VITRAM_DATA_KEY`, an `https` `APP_ORIGIN`, and with `AUTO_MIGRATE` guidance; clear message. *Done when:* tested.
-- [ ] **2.6 Shared rate limiting** that holds across workers (database-backed limiter behind the same interface, selected by setting). *Done when:* two limiter instances on one database share counts (tested).
-- [ ] **2.7 `python -m app.doctor`:** a read-only self-check that reports, per integration, *configured?* and *reachable?* (Gemini model list, OpenWA session status, Meta webhook config, Twilio Verify service lookup, SMTP connect, database, migrations) with secrets never printed. This is the tool you run when integrating.
-- [ ] **2.8 PostgreSQL backup/restore** script and documented rehearsal (`pg_dump`/restore), tested in the container.
-- [ ] **2.9 Performance guardrails:** indexes reviewed for the hot queries (transactions by user/date, reminders by status/schedule, facts by document); a smoke test that a 12-month statement processes within a bound.
+- [x] **2.1 Dedicated worker process:** `python -m app.worker` runs the reminder loop; `RUN_SCHEDULER=false` disables it in the API; compose gets a `worker` service. *Done when:* a test starts one worker and one "API" and a reminder is sent once.
+- [x] **2.2 Health and readiness:** `/api/health` (liveness) and `/api/ready` (database reachable, migrations at head, scheduler heartbeat recent). *Done when:* readiness goes false when the DB is unreachable (tested).
+- [x] **2.3 Request IDs and structured logs:** `X-Request-ID` in and out, JSON logs option, redaction preserved. *Done when:* a test shows the id in the response and log record, and no PII.
+- [x] **2.4 Global error handler:** unexpected exceptions return the stable error shape with a request id and never leak internals. *Done when:* a forced error test passes.
+- [x] **2.5 Fail-fast production config:** the app refuses to start in `ENV=production` without `VITRAM_DATA_KEY`, an `https` `APP_ORIGIN`, and with `AUTO_MIGRATE` guidance; clear message. *Done when:* tested.
+- [x] **2.6 Shared rate limiting** that holds across workers (database-backed limiter behind the same interface, selected by setting). *Done when:* two limiter instances on one database share counts (tested).
+- [x] **2.7 `python -m app.doctor`:** a read-only self-check that reports, per integration, *configured?* and *reachable?* (Gemini model list, OpenWA session status, Meta webhook config, Twilio Verify service lookup, SMTP connect, database, migrations) with secrets never printed. This is the tool you run when integrating.
+- [x] **2.8 PostgreSQL backup/restore** script and documented rehearsal (`pg_dump`/restore), tested in the container.
+- [x] **2.9 Performance guardrails:** indexes reviewed for the hot queries (transactions by user/date, reminders by status/schedule, facts by document); a smoke test that a 12-month statement processes within a bound.
 
 ## Phase 3 — Quality and tests
 

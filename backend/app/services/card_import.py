@@ -77,7 +77,9 @@ def _clear_card_imported(card: UserCard) -> None:
 
 def clear_linked_values(db: Session, doc_id: str) -> int:
     """Remove values whose sole provenance is a document being re-read/deleted."""
+    from app.services import card_spend
+
     cards = db.query(UserCard).filter(UserCard.source_document_id == doc_id).all()
     for card in cards:
         _clear_card_imported(card)
-    return len(cards)
+    return len(cards) + card_spend.clear_for_document(db, doc_id)

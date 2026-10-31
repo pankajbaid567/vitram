@@ -14,6 +14,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
@@ -143,6 +144,7 @@ class Document(Base):
 
 class DocumentFact(Base):
     __tablename__ = "document_facts"
+    __table_args__ = (Index("ix_document_facts_doc_key", "document_id", "key"),)  # fact lookups by key
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     document_id: Mapped[str] = _fk("documents.id")
     user_id: Mapped[str] = _fk("users.id")
@@ -192,7 +194,10 @@ class RecurringGroup(Base):
 
 class Transaction(Base):
     __tablename__ = "transactions"
-    __table_args__ = (UniqueConstraint("bank_account_id", "fingerprint", name="uq_txn_fingerprint"),)
+    __table_args__ = (
+        UniqueConstraint("bank_account_id", "fingerprint", name="uq_txn_fingerprint"),
+        Index("ix_transactions_user_date", "user_id", "txn_date"),   # statement views and every profile rebuild
+    )
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     user_id: Mapped[str] = _fk("users.id")
     bank_account_id: Mapped[str] = _fk("bank_accounts.id")
@@ -289,6 +294,8 @@ class UserCard(Base):
     points: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     # Month-to-date category spend used for cap tracking, user-provided or imported.
     cycle_spend: Mapped[dict] = mapped_column(JSON, default=dict)
+    # Purchases reconciled from a confirmed card statement, kept apart from the user's own entries (services/card_spend.py).
+    imported_spend: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     source_document_id: Mapped[str | None] = _fk("documents.id", nullable=True, ondelete="SET NULL")
     source_fields: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
@@ -365,6 +372,7 @@ class PolicyMember(Base):
 
 class Reminder(Base):
     __tablename__ = "reminders"
+    __table_args__ = (Index("ix_reminders_status_schedule", "status", "schedule_at"),)  # the dispatcher's "what is due?" scan
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     user_id: Mapped[str] = _fk("users.id")
     object_type: Mapped[str] = mapped_column(String(20))  # emi | card | policy
@@ -475,6 +483,23 @@ class AuditEvent(Base):
     object_id: Mapped[str | None] = mapped_column(String(60), nullable=True)
     meta: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class WorkerHeartbeat(Base):
+    """Last time a background loop (e.g. the reminder dispatcher) completed a pass, so `/api/ready` can see a stalled worker."""
+
+    __tablename__ = "worker_heartbeats"
+    name: Mapped[str] = mapped_column(String(40), primary_key=True)
+    beat_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class RateLimitHit(Base):
+    """One attempt against a rate-limited action; lets the limit hold across several API processes (app/ratelimit.py)."""
+
+    __tablename__ = "rate_limit_hits"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    key: Mapped[str] = mapped_column(String(240), index=True)
+    hit_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 
 class WebhookEvent(Base):

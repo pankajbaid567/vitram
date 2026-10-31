@@ -14,17 +14,14 @@ from app.db import get_db
 from app.deps import SESSION_COOKIE, current_user
 from app.errors import DomainError
 from app.models import AuthSession, AuthToken, Consent, PasswordReset, User
-from app.ratelimit import SlidingWindowLimiter
+from app.ratelimit import limiter
 from app.security import hash_password, new_session_token, token_id, verify_password
 from app.services import mailer, privacy
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-_limiter = SlidingWindowLimiter(limit=8, window_seconds=300)
-
-
 def _rate_limit(key: str) -> None:
-    if not _limiter.allow(key):
+    if not limiter("auth", limit=8, window_seconds=300).allow(key):
         raise DomainError("TOO_MANY_ATTEMPTS", "Too many sign-in attempts. Wait a few minutes and try again.", status_code=429)
 
 

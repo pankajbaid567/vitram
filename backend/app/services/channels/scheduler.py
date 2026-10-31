@@ -12,9 +12,10 @@ from datetime import date, datetime, time, timedelta, timezone
 from sqlalchemy import or_, update
 from sqlalchemy.orm import Session
 
+from app import ratelimit
 from app.db import SessionLocal
 from app.deps import has_consent
-from app.models import Emi, Notification, Reminder, ReminderPreference, User, UserCard, UserPolicy
+from app.models import Emi, Notification, Reminder, ReminderPreference, User, UserCard, UserPolicy, WorkerHeartbeat
 from app.security import decrypt_str
 from app.services import obligations
 from app.services.channels import gateway
@@ -236,9 +237,29 @@ async def reminder_loop(interval: int = 60) -> None:
         await asyncio.sleep(interval)
 
 
+def beat(db: Session, name: str = "reminders") -> None:
+    """Record that this loop completed a pass (read by `/api/ready` and `app.doctor`)."""
+    row = db.get(WorkerHeartbeat, name)
+    if row is None:
+        db.add(WorkerHeartbeat(name=name, beat_at=datetime.now(timezone.utc)))
+    else:
+        row.beat_at = datetime.now(timezone.utc)
+    db.commit()
+
+
+def heartbeat_age(db: Session, name: str = "reminders") -> timedelta | None:
+    row = db.get(WorkerHeartbeat, name)
+    if row is None:
+        return None
+    at = row.beat_at if row.beat_at.tzinfo else row.beat_at.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) - at
+
+
 def _tick() -> None:
     db = SessionLocal()
     try:
         dispatch_due(db)
+        beat(db)
+        ratelimit.purge_expired()
     finally:
         db.close()

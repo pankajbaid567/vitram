@@ -20,11 +20,28 @@ services:
       DATABASE_URL: postgresql+psycopg://vitram:${POSTGRES_PASSWORD:-vitram}@db/vitram
       VITRAM_DATA_KEY: ${VITRAM_DATA_KEY:?set VITRAM_DATA_KEY in .env (uploaded files are encrypted with it)}
       APP_ORIGIN: ${APP_ORIGIN:-http://localhost:${WEB_PORT:-8080}}
+      RUN_SCHEDULER: "false"     # reminders are sent by the dedicated worker below
+      RATE_LIMIT_BACKEND: database   # one limit across API replicas
       FORWARDED_ALLOW_IPS: "*"   # the only thing that can reach this container is the web service on the compose network
       SESSION_COOKIE_SECURE: "false"   # plain HTTP on localhost; remove once TLS is terminated in front
     volumes: [appdata:/data]
     depends_on:
       db: {condition: service_healthy}
+
+  worker:
+    build: ./backend
+    command: ["python", "-m", "app.worker"]
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://vitram:${POSTGRES_PASSWORD:-vitram}@db/vitram
+      VITRAM_DATA_KEY: ${VITRAM_DATA_KEY:?set VITRAM_DATA_KEY in .env}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:${WEB_PORT:-8080}}
+      RATE_LIMIT_BACKEND: database
+    volumes: [appdata:/data]
+    depends_on:
+      backend: {condition: service_healthy}   # the API owns migrations; the worker starts after it is up
+    healthcheck:
+      disable: true   # no HTTP port: liveness is the reminder heartbeat (GET /api/ready on the API reports it)
 
   web:
     build: ./frontend

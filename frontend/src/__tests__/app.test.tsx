@@ -44,8 +44,46 @@ describe('Documents & data page', () => {
   it('opens the facts sheet for a document', async () => {
     mockApi({ '/auth/me': user, '/documents': documents, '/documents/d1/facts': { document: documents[0], facts: [] }, '/ai/status': {}, '/dashboard': dashboard })
     at('/documents')
-    await userEvent.click(await screen.findByRole('button', { name: /view|review|open/i }))
-    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Review values' }))
+    expect(await screen.findByText('Values VITTRM extracted, with where each came from.')).toBeInTheDocument()
+  })
+})
+
+describe('Card statement spend reconciliation', () => {
+  const cardDoc = { ...documents[0], id: 'd2', type: 'card_document', type_label: 'Card document', display_name: 'card_statement.pdf' }
+  const fact = (key: string, value: unknown, extra = {}) => ({ id: `f-${key}`, fact_type: 'card', key, label: key, value, unit: null, state: 'extracted', confidence: 0.7, user_verified: false,
+    citation: { document_id: 'd2', document_name: 'card_statement.pdf', page: 1, section: 'Card statement', snippet: key, fact_key: key, confidence: 0.7, user_verified: false }, ...extra })
+  const preview = { currency: 'INR', counted_rows: [{ fact_id: 'f-p1', date: '2026-09-20', merchant: 'SWIGGY', amount: 1000, category: 'food_delivery', category_label: 'Food & delivery', page: 1 }],
+    by_category: { food_delivery: 1000 }, total: 1000, unconfirmed_rows: 2, rejected_rows: 0 }
+
+  it('previews the confirmed purchases and offers to count them', async () => {
+    mockApi({
+      '/auth/me': user, '/dashboard': dashboard, '/ai/status': {}, '/documents': [cardDoc],
+      '/documents/d2/facts': { document: cardDoc, facts: [fact('last4', '4821', { user_verified: true })] },
+      '/cards': { cards: [{ id: 'c1', nickname: 'Voyager', last4: '4821', imported_spend: null }] },
+      '/cards/c1/spend-reconciliation': preview,
+    })
+    at('/documents')
+    await userEvent.click(await screen.findByRole('button', { name: 'Review values' }))
+    expect(await screen.findByText('Count confirmed purchases toward rewards')).toBeInTheDocument()
+    await userEvent.selectOptions(screen.getAllByLabelText('Saved card').pop()!, 'c1')
+    expect(await screen.findByText(/SWIGGY/)).toBeInTheDocument()
+    expect(screen.getByText(/2 unconfirmed row\(s\) are not counted/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Count these purchases' })).toBeEnabled()
+  })
+
+  it('says so when nothing is confirmed yet', async () => {
+    mockApi({
+      '/auth/me': user, '/dashboard': dashboard, '/ai/status': {}, '/documents': [cardDoc],
+      '/documents/d2/facts': { document: cardDoc, facts: [fact('last4', '4821', { user_verified: true })] },
+      '/cards': { cards: [{ id: 'c1', nickname: 'Voyager', last4: '4821', imported_spend: null }] },
+      '/cards/c1/spend-reconciliation': { ...preview, counted_rows: [], by_category: {}, total: 0 },
+    })
+    at('/documents')
+    await userEvent.click(await screen.findByRole('button', { name: 'Review values' }))
+    await userEvent.selectOptions((await screen.findAllByLabelText('Saved card')).pop()!, 'c1')
+    expect(await screen.findByText(/No purchase rows are confirmed yet/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Count these purchases' })).toBeDisabled()
   })
 })
 
