@@ -1,0 +1,15 @@
+# Fly.io: the nginx web image, proxying /api to the API app over Fly's private network. CONFIG ONLY.
+#   fly launch --no-deploy --copy-config --config deploy/fly.web.toml --name vitram-web
+#   cd frontend && fly deploy --config ../deploy/fly.web.toml
+app = "vitram-web"
+primary_region = "bom"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  API_UPSTREAM = "vitram-api.internal:8000"
+
+[http_service]
+  internal_port = 8080
+  force_https = true

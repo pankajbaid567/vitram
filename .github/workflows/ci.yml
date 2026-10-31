@@ -40,6 +40,9 @@ jobs:
       - name: Lint
         if: matrix.db == 'sqlite'
         run: uv run ruff check .
+      - name: API reference is current
+        if: matrix.db == 'sqlite'
+        run: uv run python scripts/export_openapi.py --check
       - name: Test (SQLite, with coverage gate)
         if: matrix.db == 'sqlite'
         run: uv run pytest -q --cov=app --cov-report=term --cov-fail-under=80

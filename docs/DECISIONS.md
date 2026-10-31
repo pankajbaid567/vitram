@@ -47,3 +47,26 @@ Short architecture decision records: what was decided, why, and what it costs. N
 
 **Decision.** OCR defaults to Apple Vision through a small Swift helper, so scans never leave the machine. Cloud OCR (Gemini) is available only when explicitly configured and with the user's AI-processing consent. Extracted values from scans are marked low-confidence and require review.
 **Consequences.** Offline OCR is macOS-only; Linux deployments need the opt-in cloud provider or no scan support (the app says so plainly instead of returning empty results).
+
+## ADR-0009: Run the reminder loop in a separate worker, and make readiness honest
+
+**Context.** The reminder dispatcher ran inside the web process. That couples sending to HTTP deploys and gives operators no way to see a stalled loop.
+**Decision.** `python -m app.worker` runs the same loop with no HTTP; `RUN_SCHEDULER=false` turns it off in the API. Each pass writes a row to `worker_heartbeats`. `/api/ready` returns `503` only for things that make *the API* unfit to serve (database down, schema behind the code) and *reports* the loop's state (`ok`/`stale`/`never_ran`) for alerting.
+**Consequences.** API and worker scale and restart independently; a dead worker is visible rather than silent, without taking the API out of rotation. Running both in one process still works for development.
+
+## ADR-0010: AI proposes, code verifies, deterministic extraction wins
+
+**Context.** Pattern matching misses fields; a model can find them but can also invent them, and a document can contain instructions aimed at it.
+**Decision.** The model only proposes `{key, value, page, quote}` for an allow-list of fields. A proposal is accepted only if the quote is verbatim on the cited page, supports the value, and is not injection-shaped. Accepted values fill gaps; they never overwrite a deterministic fact, and disagreements surface as warnings. Off by default (it sends text to Google), gated by operator setting *and* the user's consents, and every failure degrades to pattern matching.
+**Consequences.** Higher recall with the same safety property as the rest of the system: nothing shown to the user is unsourced.
+
+## ADR-0011: Rate limits behind one interface, two backends
+
+**Decision.** `ratelimit.limiter()` returns an in-memory sliding window (default, zero infrastructure, bounded memory) or a database-backed one (`RATE_LIMIT_BACKEND=database`) that records an attempt before counting it, so concurrent requests can be over-refused at the margin but never over-admitted, the safe direction for a brute-force guard.
+**Consequences.** Single-process deployments need nothing; scaled-out ones flip one setting. A Redis backend would be a third implementation of the same two-method interface.
+
+## ADR-0012: Confirmed statement purchases feed rewards through a separate, reversible record
+
+**Context.** Card-statement purchase rows are low-confidence extractions, but they are exactly what a reward cap needs ("how much of this month's cap is used?").
+**Decision.** Only user-confirmed rows count; they are grouped by category into `UserCard.imported_spend` (with document provenance) rather than overwriting the user's own `cycle_spend`. Reward maths uses the sum. The import is previewable, undoable, withdrawn when the statement is deleted or re-read, and replacing one statement with another needs explicit consent.
+**Consequences.** Manual and imported figures never silently mix; every number can be traced to a statement row the user approved.

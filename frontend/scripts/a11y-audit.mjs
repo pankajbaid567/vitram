@@ -7,19 +7,21 @@
 //   node scripts/a11y-audit.mjs [--base http://127.0.0.1:5173] [--json report.json]
 //   CHROME=/path/to/chrome node scripts/a11y-audit.mjs
 import { spawn } from 'node:child_process'
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 const args = process.argv.slice(2)
 const BASE = args[args.indexOf('--base') + 1] && args.includes('--base') ? args[args.indexOf('--base') + 1] : 'http://127.0.0.1:5173'
 const JSON_OUT = args.includes('--json') ? args[args.indexOf('--json') + 1] : null
-const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const CHROME = [process.env.CHROME, '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable',
+  '/usr/bin/chromium', '/usr/bin/chromium-browser'].filter(Boolean).find((p) => existsSync(p))
+if (!CHROME) { console.error('No Chrome/Chromium found. Set CHROME=/path/to/chrome'); process.exit(2) }
 const AXE = readFileSync(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8')
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 const port = 9400 + Math.floor(Math.random() * 400)
-const chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${port}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'a11y-'))}`,
+const chrome = spawn(CHROME, ['--headless=new', '--no-sandbox', `--remote-debugging-port=${port}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'a11y-'))}`,
   '--no-first-run', '--no-default-browser-check', 'about:blank'], { stdio: 'ignore' })
 let ws, opened
 for (let i = 0; i < 60 && !ws; i++) {

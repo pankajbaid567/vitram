@@ -9,27 +9,8 @@ import re
 import pytest
 
 from app.main import app
+from app.public_routes import PUBLIC
 from tests.conftest import signup
-
-# Routes that are legitimately reachable without a session, with the reason they are safe.
-PUBLIC = {
-    ("GET", "/api/health"): "liveness",
-    ("GET", "/api/ready"): "readiness",
-    ("POST", "/api/auth/signup"): "creates an account",
-    ("POST", "/api/auth/login"): "signs in (rate limited)",
-    ("POST", "/api/auth/logout"): "idempotent; clears the caller's own cookie",
-    ("POST", "/api/auth/password-reset/request"): "non-enumerating by design",
-    ("POST", "/api/auth/password-reset/confirm"): "authorised by a single-use token",
-    ("GET", "/api/auth/password-reset/status"): "reports whether e-mail is configured",
-    ("POST", "/api/auth/email-verification/confirm"): "authorised by a single-use token",
-    ("POST", "/api/demo/workspace"): "creates a labelled sample account",
-    ("GET", "/api/demo/fixtures"): "lists generated sample files",
-    ("GET", "/api/demo/fixtures/{name}"): "downloads a generated sample file",
-    ("GET", "/api/webhooks/whatsapp"): "provider handshake, authorised by a verify token",
-    ("POST", "/api/webhooks/whatsapp"): "authorised by the provider signature",
-    ("POST", "/api/webhooks/twilio"): "authorised by the provider signature",
-}
-
 
 def api_routes():
     """Every documented operation, from the app's own OpenAPI schema (the routers are mounted lazily)."""

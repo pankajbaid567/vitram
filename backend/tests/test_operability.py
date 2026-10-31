@@ -143,3 +143,13 @@ def test_schema_behind_the_code_is_not_ready(client, monkeypatch):
 def test_the_scheduler_flag_defaults_on_and_the_worker_module_imports():
     from app import worker
     assert get_settings().run_scheduler is True and callable(worker.main)
+
+
+@pytest.mark.parametrize("given,expected", [
+    ("postgres://u:p@host:5432/db", "postgresql+psycopg://u:p@host:5432/db"),
+    ("postgresql://u:p@host/db", "postgresql+psycopg://u:p@host/db"),
+    ("postgresql+psycopg://u:p@host/db", "postgresql+psycopg://u:p@host/db"),
+    ("sqlite:///x.db", "sqlite:///x.db"),
+])
+def test_platform_database_urls_are_normalised(given, expected):
+    assert Settings(database_url=given).database_url == expected

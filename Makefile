@@ -1,5 +1,7 @@
 # Common tasks. `make help` lists them.
 .DEFAULT_GOAL := help
+# The browser scripts need a global WebSocket: built in on Node 22+, behind a flag on Node 20.
+NODE_FLAGS := $(shell node -e "process.exit(typeof WebSocket === 'undefined' ? 0 : 1)" 2>/dev/null && echo --experimental-websocket)
 .PHONY: help install api web test test-backend test-frontend lint e2e a11y ci ci-linux fixtures up down audit
 
 help:  ## Show this help
@@ -28,10 +30,10 @@ lint:  ## Ruff, oxlint and the TypeScript compiler
 	cd frontend && npm run lint && npm run typecheck
 
 e2e:  ## Browser smoke test (needs `make api` and a built `npm run preview` on :5173, plus Chrome)
-	cd frontend && node scripts/e2e.mjs
+	cd frontend && node $(NODE_FLAGS) scripts/e2e.mjs
 
 a11y:  ## Accessibility audit (same prerequisites as e2e)
-	cd frontend && node scripts/a11y-audit.mjs
+	cd frontend && node $(NODE_FLAGS) scripts/a11y-audit.mjs
 
 audit:  ## Known-vulnerability scan of both dependency trees
 	cd backend && uv export --frozen --no-hashes --no-dev --extra ai --extra postgres --no-emit-project > /tmp/vitram-requirements.txt && uvx pip-audit -r /tmp/vitram-requirements.txt --no-deps --disable-pip

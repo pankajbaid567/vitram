@@ -110,6 +110,16 @@ class Settings(BaseSettings):
     # Catalogue freshness threshold (RD §26 "stale product catalogue").
     catalogue_stale_days: int = 90
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def _driver_url(cls, v):
+        """Hosts (Render, Heroku, Fly) hand out `postgres://` or `postgresql://`; SQLAlchemy needs the driver named."""
+        if isinstance(v, str):
+            for prefix in ("postgres://", "postgresql://"):
+                if v.startswith(prefix):
+                    return "postgresql+psycopg://" + v[len(prefix):]
+        return v
+
     @field_validator("rate_limit_backend", mode="before")
     @classmethod
     def _normalise_backend(cls, v):

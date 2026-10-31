@@ -8,7 +8,8 @@ npm run dev          # http://localhost:5173, proxies /api to http://127.0.0.1:8
                      # API on another port?  API_PROXY_TARGET=http://127.0.0.1:8001 npm run dev
 npm test             # Vitest + Testing Library (jsdom)
 npm run typecheck && npm run lint && npm run build
-node --experimental-websocket scripts/a11y-audit.mjs   # axe on every route + keyboard checks (needs the stack running and local Chrome; Node 22 needs no flag)
+make a11y            # axe on every route + keyboard checks (needs the stack running and Chrome)
+make e2e             # drive the demo path in Chrome and assert (same prerequisites)
 ```
 
 ## Structure

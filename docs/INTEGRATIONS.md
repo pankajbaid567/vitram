@@ -1,6 +1,6 @@
 # Integration runbook
 
-Every integration is optional and off by default: without credentials the app shows an honest *not configured* state. All secrets belong in the gitignored repository-root `.env` or a deployment secret manager. Never paste them into tickets, screenshots, logs, or this file.
+After configuring anything, run `cd backend && uv run python -m app.doctor` (read-only checks; never prints a secret). Every integration is optional and off by default: without credentials the app shows an honest *not configured* state. All secrets belong in the gitignored repository-root `.env` or a deployment secret manager. Never paste them into tickets, screenshots, logs, or this file.
 
 ## Gemini: Vitt Saathi and scanned PDFs
 
