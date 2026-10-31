@@ -43,9 +43,18 @@ _SYN = {
 }
 
 
+def _stem(tok: str) -> str:
+    """Strip a plural 's' so "periods" matches "period" (deliberately minimal; no 'ies'/'ing' rules)."""
+    return tok[:-1] if len(tok) > 3 and tok.endswith("s") and not tok.endswith("ss") else tok
+
+
 def tokenize(text: str) -> list[str]:
     toks = re.findall(r"[a-z0-9\-]+", text.lower())
-    return [t for t in toks if t not in _STOP and len(t) > 1]
+    return [_stem(t) for t in toks if t not in _STOP and len(t) > 1]
+
+
+_SYN = {_stem(k): v for k, v in _SYN.items()}
+LABEL_BOOST = 2.0  # a query that names a field ("waiting period") should find that field first
 
 
 def _expand(tokens: list[str]) -> list[str]:
@@ -95,13 +104,21 @@ def search(db: Session, user_id: str, query: str, document_ids: list[str] | None
         .filter(DocumentFact.user_id == user_id, DocumentFact.document_id.in_(docs), DocumentFact.key != "_terms")
         .all()
     )
+    # Words in the file name ("senior care") let a question name the document it is about.
+    name_tokens = {i: tokenize(re.sub(r"[_.]", " ", d.display_name.rsplit(".", 1)[0])) for i, d in docs.items()}
     items = []
     for c in chunks:
-        items.append(("chunk", c, tokenize(f"{c.section or ''} {c.text}")))
+        items.append(("chunk", c, tokenize(f"{c.section or ''} {c.text}") + name_tokens[c.document_id]))
     for f in facts:
         val = f.value if isinstance(f.value, str) else " ".join(map(str, f.value)) if isinstance(f.value, list) else str(f.value)
-        items.append(("fact", f, tokenize(f"{f.label} {f.section or ''} {val} {f.snippet or ''}")))
+        items.append(("fact", f, tokenize(f"{f.label} {f.section or ''} {val} {f.snippet or ''}") + name_tokens[f.document_id]))
     scores = _bm25(q, [t for _, _, t in items])
+    qset = set(q)
+    for i, (kind, obj, _) in enumerate(items):
+        if kind == "fact":  # boost facts whose *label* the question mentions
+            label = set(tokenize(obj.label))
+            if label:
+                scores[i] *= 1 + LABEL_BOOST * len(label & qset) / len(label)
     ranked = sorted(zip(scores, items), key=lambda x: -x[0])
     results = []
     seen = set()
