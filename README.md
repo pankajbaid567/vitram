@@ -1,5 +1,7 @@
 # VITRAM
 
+[![CI](https://github.com/pankajbaid567/vitram/actions/workflows/ci.yml/badge.svg)](https://github.com/pankajbaid567/vitram/actions/workflows/ci.yml)
+
 An AI-assisted financial companion for salaried people in India: **loans, cards, EMIs and insurance** from one financial profile built out of your own bank statements and documents, with **Vitt Saathi (वित्त साथी)** as the single assistant.
 
 > The app's on-screen brand is **VITTRM**; VITRAM is the project name.

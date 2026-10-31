@@ -29,6 +29,7 @@ dev = ["pytest>=8", "pytest-cov>=5", "reportlab>=4", "freezegun>=1.5", "ruff>=0.
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["real_ocr: uses the real Apple Vision helper (macOS with Swift only)"]
 pythonpath = ["."]
 
 [tool.ruff]

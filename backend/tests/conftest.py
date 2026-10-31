@@ -60,3 +60,26 @@ def sample(client_factory):
     r = c.post("/api/demo/workspace")
     assert r.status_code == 200, r.text
     return c
+
+
+@pytest.fixture(autouse=True)
+def _host_independent_ocr(monkeypatch, request):
+    """Tests must behave the same on macOS and Linux CI.
+
+    Pretend on-device OCR exists and default it to "a blank page: no text found"; tests that care install their own
+    fake via ``monkeypatch.setattr(pipeline, "read_document", ...)``. The one test that exercises the real
+    Apple Vision helper opts out with ``@pytest.mark.real_ocr`` (and is skipped where Swift is unavailable).
+    """
+    if request.node.get_closest_marker("real_ocr"):
+        return
+    from app.services import pipeline
+    from app.services.vision import VisionError, providers
+
+    monkeypatch.setattr(providers, "_macos_available", lambda: True)
+
+    def blank_page(data, mime, max_pages=None):
+        if providers.active_provider() == "none":  # a test that turned OCR off must see it off
+            raise VisionError("OCR_NOT_CONFIGURED", "Reading scans and photos isn't set up on this server.")
+        raise VisionError("NO_TEXT_FOUND", "No readable text was found. Retake the photo in good light, flat and in focus.")
+
+    monkeypatch.setattr(pipeline, "read_document", blank_page)

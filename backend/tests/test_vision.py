@@ -77,7 +77,7 @@ def test_auto_never_picks_cloud(monkeypatch):
     monkeypatch.setattr(s, "gemini_api_key", "k")
     monkeypatch.setattr(s, "gemini_model", "m")
     monkeypatch.setattr(s, "ocr_provider", "auto")
-    monkeypatch.setattr(platform, "system", lambda: "Linux")
+    monkeypatch.setattr(providers, "_macos_available", lambda: False)  # a machine without Apple Vision
     assert providers.active_provider() == "none"
     monkeypatch.setattr(s, "ocr_provider", "gemini")
     assert providers.active_provider() == "gemini"
@@ -254,6 +254,7 @@ def test_document_chat_summarises_one_document_only(sample, monkeypatch):
 
 # --- the real thing (on-device Apple Vision) ------------------------------------------------------
 
+@pytest.mark.real_ocr
 @pytest.mark.skipif(platform.system() != "Darwin" or not shutil.which("swiftc") or not FONT.exists(),
                     reason="needs macOS with Swift and a system font")
 def test_real_on_device_ocr_reads_a_photo_of_a_receipt(monkeypatch):
