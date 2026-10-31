@@ -15,18 +15,18 @@ Each item has an acceptance test ("done when"). `[ ]` open · `[x]` done and ver
 
 ## Phase 1 — Close the specification gaps
 
-- [ ] **1.1 Meta WhatsApp Cloud API adapter** (the spec's locked decision) behind the existing `WhatsAppGateway` port:
+- [x] **1.1 Meta WhatsApp Cloud API adapter** (the spec's locked decision) behind the existing `WhatsAppGateway` port:
   - send: template message for business-initiated reminders (configurable template name/language), free text only inside the 24-hour reply window;
   - webhook: `GET` verification challenge (`hub.verify_token`), `POST` signature check (`X-Hub-Signature-256`, HMAC-SHA256 over raw bytes), parse messages + statuses;
   - settings `WHATSAPP_PROVIDER=meta|openwa`, token, phone-number id, app secret, verify token, template; startup validation;
   - *Done when:* contract tests with mocked HTTP cover send, template vs. free text, signature accept/reject, verification challenge, status mapping, error mapping (retryable vs. not); the same inbound/STOP/idempotency behaviour passes for both providers via a shared parametrised test.
-- [ ] **1.2 Provider-neutral webhook routes** (`/api/webhooks/whatsapp` plus the existing `/openwa` kept for compatibility); docs updated.
+- [x] **1.2 Provider-neutral webhook routes** (`/api/webhooks/whatsapp` plus the existing `/openwa` kept for compatibility); docs updated.
 - [ ] **1.3 Bounded AI extraction for policies and loan documents** (spec D2/D3): when Gemini and consent are present, extract structured facts, then **reject any value whose text isn't found on the cited page**; heuristic facts and user corrections always win; conflicts are surfaced. *Done when:* tests with a fake model prove: valid facts accepted, hallucinated values dropped, corrections preserved, injection text ignored, failure falls back to heuristics.
 - [ ] **1.4 Card statement reconciliation** (spec D4): user-confirmed purchase rows map to categories and feed *cycle spend / reward estimates* with provenance, reversible; unconfirmed rows never count. *Done when:* API tests cover confirm, reject, undo, and ranking changes.
-- [ ] **1.5 Privacy controls beyond "delete my data":** `GET /api/profile/export` (full JSON export) and `DELETE /api/auth/account` (removes the login too, revokes sessions, deletes files, writes an audit line without personal data). *Done when:* tests prove another user's data is untouched and storage objects are gone.
-- [ ] **1.6 Response-contract audit** (spec Q1): one test walks every journey route and asserts currency, precision, citations present for material facts, catalogue `is_mock`/date labels, calculation `formula_version` and inputs. *Done when:* the test fails if any route drops them.
-- [ ] **1.7 Calculation snapshots** (spec S7): every calculator route persists a `CalculationRun` (inputs, outputs, version) and the assistant cites its id. *Done when:* a test enumerates the routes.
-- [ ] **1.8 Reminder settings explain themselves:** the preferences API returns *why* WhatsApp is off (the same reason the dispatcher uses); the settings screen shows it.
+- [x] **1.5 Privacy controls beyond "delete my data":** `GET /api/profile/export` (full JSON export) and `DELETE /api/auth/account` (removes the login too, revokes sessions, deletes files, writes an audit line without personal data). *Done when:* tests prove another user's data is untouched and storage objects are gone.
+- [x] **1.6 Response-contract audit** (spec Q1): one test walks every journey route and asserts currency, precision, citations present for material facts, catalogue `is_mock`/date labels, calculation `formula_version` and inputs. *Done when:* the test fails if any route drops them.
+- [x] **1.7 Calculation snapshots** (spec S7): every calculator route persists a `CalculationRun` (inputs, outputs, version) and the assistant cites its id. *Done when:* a test enumerates the routes.
+- [x] **1.8 Reminder settings explain themselves:** the preferences API returns *why* WhatsApp is off (the same reason the dispatcher uses); the settings screen shows it.
 - [ ] **1.9 `lang` metadata** on Hindi/Hinglish text (spec accessibility gap) and Devanagari font fallback checked.
 
 ## Phase 2 — Operability and system design

@@ -115,6 +115,8 @@ class OpenWAGateway:
     """
 
     name = "openwa"
+    signature_header = "x-openwa-signature"
+    idempotency_header = "x-openwa-idempotency-key"
 
     def configured(self) -> bool:
         return get_settings().openwa_configured
@@ -125,8 +127,14 @@ class OpenWAGateway:
     def send_text(self, to_e164: str, body: str) -> str:
         return send_text(to_e164, body)
 
+    def send_reminder(self, to_e164: str, text: str, params: list[str]) -> str:
+        return send_text(to_e164, text)  # no templates on this gateway: the rendered text is sent as is
+
     def verify_signature(self, raw_body: bytes, header: str | None) -> bool:
         return verify_signature(raw_body, header)
+
+    def verify_subscription(self, query: dict) -> str | None:
+        return None  # OpenWA has no subscription handshake
 
     def session_matches(self, payload: dict) -> bool:
         return payload.get("sessionId") == get_settings().openwa_session_id

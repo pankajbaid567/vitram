@@ -87,7 +87,7 @@ def test_dispatch_releases_the_claim_and_requeues_retryable_failures(client, mon
 
         class Down:
             def configured(self): return True
-            def send_text(self, *_): raise gateway.SendError("engine down", retryable=True)
+            def send_reminder(self, *_): raise gateway.SendError("engine down", retryable=True)
 
         monkeypatch.setattr(scheduler, "whatsapp_block_reason", lambda *a: None)
         monkeypatch.setattr(scheduler, "decrypt_str", lambda _: "+919999999999")
@@ -144,3 +144,13 @@ def test_openwa_is_the_default_gateway_and_satisfies_the_port():
     assert isinstance(wa, openwa.OpenWAGateway) and wa.name == "openwa"
     for member in ("configured", "webhook_configured", "send_text", "verify_signature", "session_matches", "parse_webhook"):
         assert callable(getattr(wa, member))
+
+
+def test_reminder_settings_say_why_whatsapp_is_not_active(client_factory):
+    c, _ = _sample_with_phone(client_factory)   # WhatsApp enabled + consent, but the phone is not verified
+    prefs = c.get("/api/reminders").json()["preferences"]
+    assert prefs["whatsapp_enabled"] and prefs["whatsapp_provider"] in ("openwa", "meta")
+    assert "isn't verified" in prefs["whatsapp_blocked_reason"]
+    off = client_factory()
+    off.post("/api/demo/workspace")
+    assert off.get("/api/reminders").json()["preferences"]["whatsapp_blocked_reason"] == "WhatsApp reminders are turned off."

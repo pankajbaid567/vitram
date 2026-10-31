@@ -10,9 +10,9 @@ from app.audit import audit
 from app.db import get_db
 from app.deps import current_user
 from app.errors import DomainError, NotFound
-from app.models import CalculationRun, CardProduct, Document, FinancialProfile, User, UserCard
+from app.models import CardProduct, Document, FinancialProfile, User, UserCard
 from app.security import looks_like_full_card_number
-from app.services import profile_engine
+from app.services import calculations, profile_engine
 from app.services.card_import import apply_reviewed
 from app.services.catalogue import catalogue_meta
 from app.services.finance.rewards import FORMULA_VERSION, best_for_spend, estimate_card
@@ -110,11 +110,12 @@ def _get(db: Session, user: User, card_id: str) -> UserCard:
 
 @router.get("/catalogue")
 def catalogue(db: Session = Depends(get_db), user: User = Depends(current_user)):
-    return {"products": [{"id": r.id, "issuer": r.issuer, "card_name": r.card_name, "network": r.data.get("network"),
+    return {"currency": "INR", "products": [{"id": r.id, "issuer": r.issuer, "card_name": r.card_name, "network": r.data.get("network"),
                           "annual_fee": (r.data.get("fees") or {}).get("annual"),
                           "reward_unit": (r.data.get("rules") or {}).get("currency_name"),
                           "categories": r.data.get("categories", []), "best_for": r.data.get("best_for", []),
                           "official_url": r.data.get("official_url"), "reference_only": r.data.get("reference_only", False),
+                          "verified_at": r.data.get("verified_at"),
                           "catalogue": catalogue_meta(r)}
                          for r in db.query(CardProduct).order_by(CardProduct.issuer)]}
 
@@ -286,11 +287,11 @@ def best(body: SpendIn, user: User = Depends(current_user), db: Session = Depend
     result = best_for_spend([_card_dict(c) for c in cards], body.amount, category, body.merchant)
     result["category_inferred"] = inferred
     result["category_label"] = CATEGORIES.get(category or "other")
-    db.add(CalculationRun(user_id=user.id, kind="cards.best_for_spend", inputs=body.model_dump(),
-                          outputs={"ranked": [r["card_id"] for r in result["ranked"]]}, formula_version=FORMULA_VERSION))
+    run_id = calculations.record(db, user.id, "cards.best_for_spend", body.model_dump(),
+                                 {"ranked": [r["card_id"] for r in result["ranked"]]}, FORMULA_VERSION)
     audit(db, user.id, "recommendation.card", None, None, category=category)
     db.commit()
-    return {"currency": "INR", **result}
+    return {"currency": "INR", "calculation_id": run_id, **result}
 
 
 @router.get("/insights/categories")

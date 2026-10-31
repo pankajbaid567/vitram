@@ -8,11 +8,11 @@ Short architecture decision records: what was decided, why, and what it costs. N
 **Decision.** All money-critical numbers come from pure, versioned functions in `services/finance`. The assistant calls them as allow-listed tools and may only narrate the results. Any ₹ amount in a model reply that does not match a tool output to the paise causes the reply to be replaced with a safe message. Without a model, a deterministic "Tool mode" gives the same answers.
 **Consequences.** Slightly less fluent answers; in exchange the calculator, the UI cards and the chat can never disagree, and the engine is unit-testable without any provider.
 
-## ADR-0002: WhatsApp behind a gateway port; OpenWA for development, Meta Cloud API for production
+## ADR-0002: WhatsApp behind a gateway port: Meta Cloud API for production, OpenWA for development
 
-**Context.** The product spec locks the *official* Meta WhatsApp Cloud API (template-approved business messaging). Obtaining Meta business verification and templates blocks development, so a self-hosted gateway (OpenWA) was integrated instead. OpenWA is **unofficial**: it drives WhatsApp through reverse-engineered clients, and its own documentation states there is "always a non-zero risk of account restriction or ban".
-**Decision.** Application code depends only on the `WhatsAppGateway` protocol (`services/channels/gateway.py`). OpenWA is the one adapter and is documented as a **dev/demo gateway**, to be used only with a dedicated number. The production path is a Meta Cloud API adapter implementing the same protocol (an earlier Meta adapter existed before the switch; it should be re-implemented against the port, and needs Meta template approval).
-**Consequences.** Swapping providers touches one module and one factory function; tests already exercise the port. Until a Meta adapter exists, WhatsApp must not be presented as a production channel.
+**Context.** The product spec locks the *official* Meta WhatsApp Cloud API (template-approved business messaging). Meta business verification and template approval take time, so a self-hosted gateway (OpenWA) was integrated first to build and demo the flows. OpenWA is **unofficial**: it drives WhatsApp through reverse-engineered clients, and its own documentation states there is "always a non-zero risk of account restriction or ban".
+**Decision.** Application code depends only on the `WhatsAppGateway` protocol (`services/channels/gateway.py`). Two adapters implement it and `WHATSAPP_PROVIDER` selects one: `meta_cloud.py` (official; reminders are approved *template* messages, replies are free text inside the 24-hour window, webhooks signed with `X-Hub-Signature-256` and subscribed through the `GET` handshake) and `openwa.py` (dev/demo only, dedicated number). One shared parametrised test suite runs the same webhook scenarios against both.
+**Consequences.** Switching provider is configuration. Production must use `meta` and needs an approved template (`docs/INTEGRATIONS.md`). Both adapters are verified against mocked HTTP only until live credentials are used (`docs/STATUS.md`).
 
 ## ADR-0003: Consent is re-checked at the moment of sending
 

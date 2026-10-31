@@ -1,14 +1,18 @@
 """WhatsApp gateway port.
 
 The rest of the backend (reminder dispatch, inbound webhooks) depends on the
-:class:`WhatsAppGateway` protocol, never on a vendor module. Today the only
-adapter is :mod:`app.services.channels.openwa`, a self-hosted *unofficial*
-gateway suited to development and demos. An adapter for Meta's official WhatsApp
-Cloud API would implement the same protocol and be returned by :func:`whatsapp`
-without touching the scheduler or the webhook router.
+:class:`WhatsAppGateway` protocol, never on a vendor module. Two adapters implement it:
+
+* :mod:`~app.services.channels.meta_cloud`: Meta's **official** WhatsApp Cloud API (production; the
+  specification's locked decision). Business-initiated reminders use an approved template.
+* :mod:`~app.services.channels.openwa`: a self-hosted *unofficial* gateway for development and demos.
+
+``WHATSAPP_PROVIDER`` picks one; callers never know which.
 """
 
 from typing import Protocol, TypedDict
+
+from app.config import get_settings
 
 
 class NotConfigured(Exception):
@@ -38,24 +42,40 @@ class StatusUpdate(TypedDict):
 
 class WhatsAppGateway(Protocol):
     name: str
+    signature_header: str            # request header carrying the webhook signature (lower-case)
+    idempotency_header: str | None   # request header carrying a provider event id, when the provider has one
 
     def configured(self) -> bool: ...
 
     def webhook_configured(self) -> bool: ...
 
     def send_text(self, to_e164: str, body: str) -> str:
-        """Send a plain-text message; return the provider's message id."""
+        """Free-form message (a reply). Returns the provider's message id."""
+
+    def send_reminder(self, to_e164: str, text: str, params: list[str]) -> str:
+        """Business-initiated reminder. ``text`` is the rendered message; ``params`` are its
+        template variables (item, amount, date) for providers that require an approved template."""
 
     def verify_signature(self, raw_body: bytes, header: str | None) -> bool: ...
 
+    def verify_subscription(self, query: dict) -> str | None:
+        """One-time webhook handshake (``GET``). Returns the challenge to echo, or None to refuse."""
+
     def session_matches(self, payload: dict) -> bool:
-        """True when a (validly signed) webhook belongs to *this* deployment's session."""
+        """True when a (validly signed) webhook belongs to *this* deployment's number/session."""
 
     def parse_webhook(self, payload: dict) -> tuple[list[InboundMessage], list[StatusUpdate]]: ...
 
 
 def whatsapp() -> WhatsAppGateway:
-    """Return the configured WhatsApp gateway adapter."""
-    from app.services.channels import openwa
+    """Return the adapter selected by ``WHATSAPP_PROVIDER``."""
+    provider = (get_settings().whatsapp_provider or "openwa").lower()
+    if provider == "meta":
+        from app.services.channels.meta_cloud import MetaCloudGateway
 
-    return openwa.OpenWAGateway()
+        return MetaCloudGateway()
+    if provider == "openwa":
+        from app.services.channels import openwa
+
+        return openwa.OpenWAGateway()
+    raise NotConfigured(f"Unknown WHATSAPP_PROVIDER {provider!r}; use 'meta' or 'openwa'.")

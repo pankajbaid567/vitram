@@ -9,6 +9,7 @@ must set the Gemini model ids that are available at build time.
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
@@ -64,6 +65,20 @@ class Settings(BaseSettings):
     smtp_from: str | None = None
     smtp_starttls: bool = True
 
+    # Which WhatsApp gateway adapter to use: "openwa" (unofficial, development/demo) or "meta" (official Cloud API).
+    whatsapp_provider: str = "openwa"
+
+    # Meta WhatsApp Cloud API (the specification's production channel). Names match the usual Meta env vars.
+    whatsapp_token: str | None = None            # system-user access token (bearer)
+    whatsapp_phone_number_id: str | None = None  # the sending number's id (not the number itself)
+    whatsapp_app_secret: str | None = None       # signs inbound webhooks (X-Hub-Signature-256)
+    whatsapp_verify_token: str | None = None     # shared secret for the one-time webhook subscription handshake
+    whatsapp_graph_version: str = "v21.0"
+    # Business-initiated messages must use an approved template with three body variables: {{1}} item, {{2}} amount, {{3}} date.
+    whatsapp_reminder_template: str | None = None
+    whatsapp_template_language: str = "en"
+    whatsapp_timeout_seconds: float = 15.0
+
     # Self-hosted OpenWA WhatsApp gateway
     openwa_base_url: str | None = None
     openwa_api_key: str | None = None
@@ -85,6 +100,15 @@ class Settings(BaseSettings):
     default_gst_on_fees_pct: float = 18.0
     # Catalogue freshness threshold (RD §26 "stale product catalogue").
     catalogue_stale_days: int = 90
+
+    @field_validator("whatsapp_provider", mode="before")
+    @classmethod
+    def _normalise_provider(cls, v):
+        """Blank means the default; anything unknown fails at start-up rather than at the first send."""
+        v = (v or "openwa").strip().lower() if isinstance(v, str) or v is None else v
+        if v not in ("openwa", "meta"):
+            raise ValueError("WHATSAPP_PROVIDER must be 'openwa' or 'meta'")
+        return v
 
     @property
     def is_sqlite(self) -> bool:
@@ -116,9 +140,17 @@ class Settings(BaseSettings):
         return bool(self.openwa_session_id and self.openwa_webhook_secret and len(self.openwa_webhook_secret) >= 16)
 
     @property
+    def meta_configured(self) -> bool:
+        return bool(self.whatsapp_token and self.whatsapp_phone_number_id and self.whatsapp_reminder_template)
+
+    @property
+    def meta_webhook_configured(self) -> bool:
+        return bool(self.whatsapp_phone_number_id and self.whatsapp_app_secret and self.whatsapp_verify_token)
+
+    @property
     def whatsapp_configured(self) -> bool:
-        """Channel-level name retained for API/UI compatibility."""
-        return self.openwa_configured
+        """Can the *selected* WhatsApp provider send? (channel-level name kept for API/UI compatibility)."""
+        return self.meta_configured if self.whatsapp_provider == "meta" else self.openwa_configured
 
     @property
     def twilio_configured(self) -> bool:

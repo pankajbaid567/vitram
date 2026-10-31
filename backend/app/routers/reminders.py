@@ -37,11 +37,14 @@ def _prefs_out(db: Session, user: User) -> dict:
     p = scheduler.prefs_for(db, user.id)
     s = get_settings()
     return {
+        # Why WhatsApp isn't active right now (None when it is): the same check the dispatcher uses at send time.
+        "whatsapp_blocked_reason": scheduler.whatsapp_block_reason(db, user, p),
+        "whatsapp_provider": s.whatsapp_provider,
         "days_before": p.days_before, "on_due_date": p.on_due_date, "send_hour": p.send_hour,
         "whatsapp_enabled": p.whatsapp_enabled, "include": p.include,
         "phone_masked": user.phone_masked, "phone_verified": bool(user.phone_verified_at),
         "whatsapp_consent": bool(has_consent(db, user.id, "whatsapp_reminders")),
-        "whatsapp_configured": s.openwa_configured,
+        "whatsapp_configured": s.whatsapp_configured,
         "policy_lead_days": scheduler.POLICY_LEAD_DAYS,
     }
 

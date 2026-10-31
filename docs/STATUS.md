@@ -56,7 +56,7 @@ These need hardware, a paired number or a provider key. Steps are in [`INTEGRATI
 
 ## Known limits
 
-- Loan, card and insurance catalogues are **fictional sample data**, labelled as such. Nothing here is a lender, insurer, broker or adviser.
+- All *priced* catalogue data is **fictional sample data**; the real-institution card and insurance lists are **reference-only** (name, official link, verification date; no fees or benefits). Both are labelled, and a contract test enforces it. Nothing here is a lender, insurer, broker or adviser.
 - WhatsApp uses an *unofficial* gateway suitable for development only (ADR-0002).
 - Offline OCR is macOS-only. Login throttling is per process (ADR note in `ratelimit.py`).
 - Retrieval is keyword-based, not semantic.

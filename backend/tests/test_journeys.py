@@ -335,7 +335,7 @@ def test_openwa_ack_updates_reminder_once(client, monkeypatch):
 
     db = SessionLocal()
     assert db.get(Reminder, reminder_id).status == "delivered"
-    assert db.query(WebhookEvent).filter(WebhookEvent.provider == "openwa_status",
+    assert db.query(WebhookEvent).filter(WebhookEvent.provider == "whatsapp_status",
                                          WebhookEvent.external_id == "ack-1").count() == 1
     db.close()
 

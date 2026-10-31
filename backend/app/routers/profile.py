@@ -2,7 +2,10 @@
 
 from typing import Literal
 
+from datetime import date
+
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -11,7 +14,7 @@ from app.db import get_db
 from app.deps import current_user
 from app.errors import DomainError, NotFound
 from app.models import Document, ProfileOverride, RecurringGroup, Transaction, User
-from app.services import profile_engine, storage
+from app.services import privacy, profile_engine, storage
 from app.services.statements.categorizer import CATEGORIES
 
 router = APIRouter(tags=["profile"])
@@ -203,3 +206,12 @@ def delete_all(body: DeleteAllIn, user: User = Depends(current_user), db: Sessio
     audit(db, user.id, "profile.deleted_all")
     db.commit()
     return {"ok": True}
+
+
+@router.get("/profile/export")
+def export_my_data(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Download everything we hold about the signed-in user as JSON (data portability, RD §23.1)."""
+    data = privacy.export_user(db, user)
+    audit(db, user.id, "profile.exported")
+    db.commit()
+    return JSONResponse(data, headers={"Content-Disposition": f'attachment; filename="vitram-export-{date.today():%Y%m%d}.json"'})

@@ -499,8 +499,8 @@ export function ReminderSettings() {
         <ReminderItems data={q.data} />
         <Panel className="flex flex-col gap-4 p-5">
           <h2 className="font-semibold">WhatsApp</h2>
-          {!p.whatsapp_configured && <Callout tone="caution" title="WhatsApp isn't connected in this environment">You can turn it on, but messages won't be sent until the OpenWA session is connected. You'll still get every reminder in VITTRM.</Callout>}
-          {p.whatsapp_consent && !p.phone_verified && <Callout tone="caution" title="Verify your mobile number first">WhatsApp delivery stays off until you complete the SMS check in <Link to="/profile" className="text-indigo underline">My profile</Link>. Reminders still appear in VITTRM.</Callout>}
+          {!p.whatsapp_configured && <Callout tone="caution" title="WhatsApp isn't connected in this environment">You can turn it on, but messages won't be sent until a WhatsApp provider is connected. You'll still get every reminder in VITTRM.</Callout>}
+          {p.whatsapp_enabled && p.whatsapp_blocked_reason && <Callout tone="caution" title="WhatsApp is on, but not active yet">{p.whatsapp_blocked_reason}{!p.phone_verified && p.whatsapp_consent && <> Finish the SMS check in <Link to="/profile" className="text-indigo underline">My profile</Link>.</>} Reminders still appear in VITTRM.</Callout>}
           {p.whatsapp_consent ? (
             <Checkbox checked={p.whatsapp_enabled} onChange={(e) => setLocal({ ...p, whatsapp_enabled: e.target.checked })}
               label={`Send reminders to ${user?.phone_masked ?? 'my number'} on WhatsApp`} description="Messages show the item, due date and amount only — no account numbers. Reply STOP any time." />

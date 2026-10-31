@@ -23,13 +23,23 @@ router = APIRouter(prefix="/webhooks", tags=["webhooks"])
 log = logging.getLogger("vitram.webhooks")
 
 
-@router.post("/openwa")
+@router.get("/whatsapp")
+def whatsapp_subscribe(request: Request):
+    """Subscription handshake (Meta). Echo ``hub.challenge`` only if the verify token matches."""
+    challenge = gateway.whatsapp().verify_subscription(dict(request.query_params))
+    if challenge is None:
+        return PlainTextResponse("Forbidden", status_code=403)
+    return PlainTextResponse(challenge)
+
+
+@router.post("/whatsapp")
+@router.post("/openwa", include_in_schema=False)  # original path, kept so existing gateway configs keep working
 async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
     wa = gateway.whatsapp()
     if not wa.webhook_configured():
-        raise DomainError("INTEGRATION_NOT_CONFIGURED", "OpenWA webhook secret is not configured.", status_code=503)
+        raise DomainError("INTEGRATION_NOT_CONFIGURED", "The WhatsApp webhook secret is not configured.", status_code=503)
     raw = await request.body()
-    if not wa.verify_signature(raw, request.headers.get("x-openwa-signature")):
+    if not wa.verify_signature(raw, request.headers.get(wa.signature_header)):
         return PlainTextResponse("Invalid signature", status_code=401)
     try:
         payload = await request.json()
@@ -38,15 +48,15 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
     if not wa.session_matches(payload):
         # A validly signed webhook can still be wired to the wrong VITTRM deployment.
         # Acknowledge and drop it so the gateway does not retry forever.
-        log.warning("Ignoring gateway event for a different session")
+        log.warning("Ignoring gateway event for a different session or number")
         return PlainTextResponse("", status_code=204)
 
     messages, statuses = wa.parse_webhook(payload)
-    event_key = request.headers.get("x-openwa-idempotency-key") or payload.get("idempotencyKey")
+    event_key = (request.headers.get(wa.idempotency_header) if wa.idempotency_header else None) or payload.get("idempotencyKey")
 
     for st in statuses:
         key = event_key or (f"{st['message_id']}:{st['status']}" if st.get("message_id") else None)
-        if not key or not first_time(db, "openwa_status", key):
+        if not key or not first_time(db, "whatsapp_status", key):
             continue
         reminder = db.query(Reminder).filter(Reminder.provider_message_id == st["message_id"]).first()
         if reminder:
@@ -54,9 +64,9 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
 
     for msg in messages:
         key = event_key or msg.get("id")
-        if not key or not first_time(db, "openwa_message", key):
+        if not key or not first_time(db, "whatsapp_message", key):
             continue
-        # One verified person per number: never answer into a group or an unresolved @lid identity.
+        # One verified person per number: never answer into a group or an unresolved identity.
         if msg["is_group"] or not msg["sender"]:
             continue
         reply = inbound.handle_inbound(db, msg)

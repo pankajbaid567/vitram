@@ -13,8 +13,8 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import current_user
 from app.errors import DomainError, NotFound
-from app.models import CalculationRun, Emi, ProfileOverride, RecurringGroup, User
-from app.services import obligations, profile_engine, slices
+from app.models import Emi, ProfileOverride, RecurringGroup, User
+from app.services import calculations, obligations, profile_engine, slices
 from app.services.channels import scheduler
 from app.services.finance import emi as emi_math
 from app.services.finance import what_if
@@ -271,11 +271,11 @@ def emi_what_if(emi_id: str, body: WhatIfIn, user: User = Depends(current_user),
             out = what_if.rate_change(bal, e.rate, e.remaining_count, body.new_rate_pct, body.hold)
             if e.rate_type == "fixed":
                 out["notes"].append("This EMI is recorded as fixed-rate; a rate change may not apply to it.")
-    db.add(CalculationRun(user_id=user.id, kind=f"emi.{body.kind}", inputs={"emi_id": e.id, **body.model_dump()},
-                          outputs={k: v for k, v in out.items() if k != "inputs"}, formula_version=out["formula_version"]))
+    run_id = calculations.record(db, user.id, f"emi.{body.kind}", {"emi_id": e.id, **body.model_dump()},
+                                 {k: v for k, v in out.items() if k != "inputs"}, out["formula_version"])
     audit(db, user.id, "calculation.run", "emi", e.id, kind=body.kind)
     db.commit()
-    return {"currency": "INR", "precision": 2, "emi": emi_out(e, db), "result": out}
+    return {"currency": "INR", "precision": 2, "calculation_id": run_id, "emi": emi_out(e, db), "result": out}
 
 
 class EmiOption(BaseModel):
@@ -314,7 +314,6 @@ def explore_new_emi(body: NewEmiIn, user: User = Depends(current_user), db: Sess
         notes.append("Processing fee not entered for some options, so their total cost excludes it.")
     if any(o.rate == 0 for o in body.options):
         notes.append("'No-cost' EMIs often recover interest through a discount you don't get or a processing fee; enter the fee to compare fairly.")
-    db.add(CalculationRun(user_id=user.id, kind="emi.explore", inputs=body.model_dump(),
-                          outputs={"count": len(rows)}, formula_version=what_if.FORMULA_VERSION))
+    run_id = calculations.record(db, user.id, "emi.explore", body.model_dump(), {"count": len(rows)}, what_if.FORMULA_VERSION)
     db.commit()
-    return {"currency": "INR", "options": rows, "notes": notes, "profile_used": s}
+    return {"currency": "INR", "calculation_id": run_id, "options": rows, "notes": notes, "profile_used": s}

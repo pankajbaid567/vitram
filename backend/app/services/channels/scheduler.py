@@ -156,7 +156,7 @@ def _dispatch(db: Session, r: Reminder) -> Reminder:
         r.status = "cancelled"
         return r
     days_left = (r.due_date - date.today()).days
-    text, _ = reminder_text(item, max(days_left, 0))
+    text, params = reminder_text(item, max(days_left, 0))
     # In-app copy is always kept (RD §26: keep in-app reminder on WhatsApp failure).
     dedupe = f"rem:{r.object_type}:{r.object_id}:{r.due_date}:{r.template_key}"
     if not db.query(Notification).filter(Notification.user_id == r.user_id, Notification.dedupe_key == dedupe).first():
@@ -178,7 +178,7 @@ def _dispatch(db: Session, r: Reminder) -> Reminder:
         return r
     r.attempts += 1
     try:
-        mid = wa.send_text(decrypt_str(user.phone_enc), text)
+        mid = wa.send_reminder(decrypt_str(user.phone_enc), text, params)
         r.status, r.provider_message_id, r.sent_at, r.last_error = "sent", mid, datetime.now(timezone.utc), None
     except gateway.SendError as exc:
         r.last_error = str(exc)[:300]

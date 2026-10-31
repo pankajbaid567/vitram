@@ -1,5 +1,6 @@
 import re
 import secrets
+from typing import Literal
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Request, Response
@@ -15,7 +16,7 @@ from app.errors import DomainError
 from app.models import AuthSession, AuthToken, Consent, PasswordReset, User
 from app.ratelimit import SlidingWindowLimiter
 from app.security import hash_password, new_session_token, token_id, verify_password
-from app.services import mailer
+from app.services import mailer, privacy
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -160,6 +161,22 @@ def login(body: LoginIn, request: Request, response: Response, db: Session = Dep
     audit(db, user.id, "auth.login")
     db.commit()
     return user_out(user, db)
+
+
+class DeleteAccountIn(BaseModel):
+    password: str = Field(default="", max_length=200)
+    confirm: Literal["DELETE"]
+
+
+@router.post("/account/delete")
+def delete_my_account(body: DeleteAccountIn, response: Response, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Permanently delete the account and all of its data. Needs the password (sample workspaces have none)."""
+    _rate_limit(f"delete-account|{user.id}")
+    if not user.is_sample and not verify_password(body.password, user.password_hash):
+        raise DomainError("INVALID_CREDENTIALS", "That password doesn't match.", field="password", status_code=403)
+    privacy.delete_account(db, user)
+    response.delete_cookie(SESSION_COOKIE, path="/")
+    return {"ok": True}
 
 
 @router.post("/logout")

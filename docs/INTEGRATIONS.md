@@ -10,20 +10,34 @@ Safe smoke test: use a sample workspace and a fictional document. Ask a loan, ca
 
 Verification on 2026-09-23: the configured text model returned a response, the configured Live model returned audio over a WebSocket, the app's chat endpoint completed one tool-using turn on a fictional sample workspace, and OCR recovered an expected number from a fictional one-page image-only PDF. These narrow probes do not verify browser microphone capture/playback, voice interruption, multilingual financial safety, or real-document extraction quality.
 
-## WhatsApp gateway (OpenWA, development only)
+## WhatsApp: two adapters behind one port
 
-> **Read first.** The product specification calls for the *official* Meta WhatsApp Cloud API. This repository ships an adapter for [OpenWA](https://github.com/rmyndharis/OpenWA), a third-party, MIT-licensed, self-hosted gateway, **not included here** (clone it separately). OpenWA is *unofficial*: it connects through reverse-engineered clients, and its own README says there is always a non-zero risk of the WhatsApp account being restricted or banned. Use it **only with a dedicated test number**, never a personal or business number, and do not present it as a production channel (see [ADR-0002](DECISIONS.md)). The application talks to it only through the `WhatsAppGateway` port, so a Meta Cloud API adapter can replace it without touching callers.
+`WHATSAPP_PROVIDER` selects the adapter; the scheduler and webhook code never know which (see [ADR-0002](DECISIONS.md)). Webhook URL for **both**: `{PUBLIC_API_URL}/api/webhooks/whatsapp` (the original `/api/webhooks/openwa` still works).
 
-Start OpenWA with its SQLite-friendly `.env.minimal` configuration, pair the dedicated number in the OpenWA dashboard, then create an operator API key scoped to that one session.
+### Production: Meta WhatsApp Cloud API (`WHATSAPP_PROVIDER=meta`)
 
-When running the backend in Docker Compose, `OPENWA_BASE_URL` must be reachable *from the container*, e.g. `http://host.docker.internal:2785`, not `127.0.0.1`.
+1. In Meta Business Suite, verify the business and add a phone number. Note the **phone number id** and create a **system-user token** with `whatsapp_business_messaging` and `whatsapp_business_management`.
+2. Create a message template, category **Utility**, language `en` (or set `WHATSAPP_TEMPLATE_LANGUAGE`), body exactly:
+   `VITTRM reminder: {{1}} of {{2}} is due {{3}}.`
+   Business-initiated reminders can only be sent as an *approved* template; free text works only as a reply within 24 hours of the user's message.
+3. Set `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_APP_SECRET` (App settings → Basic), `WHATSAPP_VERIFY_TOKEN` (any long random string you choose) and `WHATSAPP_REMINDER_TEMPLATE` (the template's name).
+4. In the app's WhatsApp → Configuration, set the callback URL to `{PUBLIC_API_URL}/api/webhooks/whatsapp` and the same verify token; Meta calls it once with a `GET` challenge. Subscribe to the **messages** field.
+5. Run `python -m app.doctor` and a controlled test with an opted-in, verified number (sequence below).
+
+Signatures are `X-Hub-Signature-256` (HMAC-SHA256 of the raw body with the app secret). Meta sends no idempotency header, so message and status ids are the de-duplication keys.
+
+### Development only: OpenWA (`WHATSAPP_PROVIDER=openwa`)
+
+> **Read first.** [OpenWA](https://github.com/rmyndharis/OpenWA) is a third-party, MIT-licensed, self-hosted gateway, **not included here**. It is *unofficial*: it connects through reverse-engineered clients, and its own README says there is always a non-zero risk of the WhatsApp account being restricted or banned. Use it **only with a dedicated test number**, never a personal or business number, and do not present it as a production channel.
+
+Start OpenWA with its SQLite-friendly `.env.minimal` configuration, pair the dedicated number in the OpenWA dashboard, then create an operator API key scoped to that one session. When running the backend in Docker Compose, `OPENWA_BASE_URL` must be reachable *from the container*, e.g. `http://host.docker.internal:2785`, not `127.0.0.1`.
 
 Set `OPENWA_BASE_URL`, `OPENWA_API_KEY`, `OPENWA_SESSION_ID`, `OPENWA_WEBHOOK_SECRET`, and `PUBLIC_API_URL`. The API key is bearer-equivalent and must stay server-side. Use HTTPS outside localhost and keep redirects disabled so the key cannot be forwarded to another host. The webhook secret must be at least 16 characters.
 
 Register this webhook in the paired OpenWA session:
 
 ```text
-URL:    {PUBLIC_API_URL}/api/webhooks/openwa
+URL:    {PUBLIC_API_URL}/api/webhooks/whatsapp
 Events: message.received, message.ack, message.failed
 Secret: the exact OPENWA_WEBHOOK_SECRET value
 Retries: 3

@@ -412,12 +412,18 @@ export function Settings() {
   const ai = useQuery({ queryKey: ['ai-status'], queryFn: () => get<any>('/ai/status') })
   const [confirm, setConfirm] = useState('')
   const [delOpen, setDelOpen] = useState(false)
+  const [accOpen, setAccOpen] = useState(false)
+  const [accPw, setAccPw] = useState('')
   const toggle = useMutation({
     mutationFn: ({ purpose, on }: any) => (on ? post('/consents', { purpose }) : del(`/consents/${purpose}`)),
     onSuccess: (_d, v: any) => { qc.invalidateQueries({ queryKey: ['consents'] }); refresh(); toast({ title: v.on ? 'Permission allowed' : 'Permission withdrawn', tone: 'positive' }) },
     onError: (e) => toast({ title: errorMessage(e), tone: 'critical' }),
   })
   const wipe = useMutation({ mutationFn: () => post('/profile/delete-all', { confirm: 'DELETE' }), onSuccess: () => { qc.clear(); refresh(); navigate('/') } })
+  const removeAccount = useMutation({
+    mutationFn: () => post('/auth/account/delete', { password: accPw, confirm: 'DELETE' }),
+    onSuccess: () => { qc.clear(); refresh(); navigate('/welcome') },
+  })
   const reset = useQuery({ queryKey: ['reset-status'], queryFn: () => get<{ email_configured: boolean }>('/auth/password-reset/status') })
   const vision = ai.data?.vision
   const services = [
@@ -500,7 +506,30 @@ export function Settings() {
           </div>
           <Button variant="danger" onClick={() => { setConfirm(''); setDelOpen(true) }}>Delete all data</Button>
         </section>
+
+        <Panel className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-[1.05rem] font-semibold">Your data, your copy</h2>
+            <p className="mt-1 text-[0.95rem] text-muted">Download everything VITTRM holds about you as a JSON file: profile, transactions, extracted facts, cards, EMIs, policies, reminders and conversations. Passwords and uploaded files are not included.</p>
+          </div>
+          <Button variant="secondary" onClick={() => window.location.assign('/api/profile/export')}>Download my data</Button>
+        </Panel>
+
+        <section className="wash-danger flex flex-col gap-4 rounded-[var(--radius-panel)] p-5 sm:flex-row sm:items-center sm:p-6" aria-labelledby="delete-account">
+          <div className="min-w-0 flex-1">
+            <h2 id="delete-account" className="text-[1.05rem] font-semibold text-critical">Delete my account</h2>
+            <p className="mt-1 text-[0.95rem] text-ink/75">Permanently removes your login and everything under it. This can't be undone.</p>
+          </div>
+          <Button variant="danger" onClick={() => { setAccPw(''); setConfirm(''); setAccOpen(true) }}>Delete account</Button>
+        </section>
       </div>
+      <ConfirmDialog open={accOpen} onOpenChange={setAccOpen} title="Delete your account?" confirmLabel="Delete my account" busy={removeAccount.isPending}
+        description="Your login, files and all data are erased immediately. We can't recover them."
+        confirmDisabled={confirm !== 'DELETE' || (!user?.is_sample && accPw.length === 0)} onConfirm={() => removeAccount.mutate()}>
+        {!user?.is_sample && <Field label="Your password"><Input type="password" value={accPw} onChange={(e) => setAccPw(e.target.value)} autoComplete="current-password" /></Field>}
+        <Field label="Type DELETE to confirm" className="mt-3"><Input value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="off" /></Field>
+        {removeAccount.isError && <p role="alert" className="mt-3 text-sm text-critical">{errorMessage(removeAccount.error)}</p>}
+      </ConfirmDialog>
       <ConfirmDialog open={delOpen} onOpenChange={setDelOpen} title="Delete all your data?" confirmLabel="Delete everything" busy={wipe.isPending}
         description="This can't be undone. Nothing is deleted until you type DELETE and press the button."
         confirmDisabled={confirm !== 'DELETE'} onConfirm={() => wipe.mutate()}>

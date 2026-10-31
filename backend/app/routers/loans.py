@@ -11,9 +11,9 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import current_user
 from app.errors import DomainError, NotFound
-from app.models import CalculationRun, Document, DocumentFact, LoanProduct, User, UserLoan
+from app.models import Document, DocumentFact, LoanProduct, User, UserLoan
 from app.routers.documents import fact_out, get_doc
-from app.services import slices
+from app.services import calculations, slices
 from app.services.catalogue import catalogue_meta
 from app.services.finance import what_if
 from app.services.finance.emi import schedule
@@ -77,10 +77,10 @@ def run_recommend(db: Session, user: User, intent: LoanIntent) -> dict:
     prof = _profile_for(db, user, intent)
     result = rec.recommend([r.data for r in rows], metas, intent.model_dump(), prof, get_settings().default_gst_on_fees_pct)
     audit(db, user.id, "loan.recommend", "loan_intent", None, purpose=intent.purpose, results=len(result["results"]))
-    db.add(CalculationRun(user_id=user.id, kind="loan.recommend", inputs={"intent": intent.model_dump(), "profile": prof},
-                          outputs={"ranked": [r["product_id"] for r in result["results"]]}, formula_version=rec.FORMULA_VERSION))
+    run_id = calculations.record(db, user.id, "loan.recommend", {"intent": intent.model_dump(), "profile": prof},
+                                 {"ranked": [r["product_id"] for r in result["results"]]}, rec.FORMULA_VERSION)
     db.commit()
-    return {"currency": "INR", **result}
+    return {"currency": "INR", "calculation_id": run_id, **result}
 
 
 @router.post("/recommend")
@@ -123,9 +123,11 @@ def compare(body: CompareIn, user: User = Depends(current_user), db: Session = D
             "tenure_months": e["tenure_months"],
             "catalogue": metas[r.id],
         })
+    run_id = calculations.record(db, user.id, "loan.compare", {"intent": body.intent.model_dump(), "product_ids": body.product_ids},
+                                 {"products": [{"id": e["product_id"], "emi": e["price"]["monthly_emi"]} for e in evals]}, rec.FORMULA_VERSION)
     audit(db, user.id, "loan.compare", None, None, products=body.product_ids)
     db.commit()
-    return {"currency": "INR", "intent": body.intent.model_dump(), "profile_used": prof, "products": evals}
+    return {"currency": "INR", "calculation_id": run_id, "intent": body.intent.model_dump(), "profile_used": prof, "products": evals}
 
 
 class CalcIn(BaseModel):
@@ -228,11 +230,11 @@ def calculate(body: CalcIn, user: User = Depends(current_user), db: Session = De
     out["terms_source"] = t["source"]
     if t.get("catalogue"):
         out["catalogue"] = t["catalogue"]
-    db.add(CalculationRun(user_id=user.id, kind=f"loan.{body.kind}", inputs=body.model_dump(),
-                          outputs={k: v for k, v in out.items() if k != "schedule"}, formula_version=version))
-    audit(db, user.id, "calculation.run", "calculation", None, kind=body.kind)
+    run_id = calculations.record(db, user.id, f"loan.{body.kind}", body.model_dump(),
+                                 {k: v for k, v in out.items() if k != "schedule"}, version)
+    audit(db, user.id, "calculation.run", "calculation", run_id, kind=body.kind)
     db.commit()
-    return {"currency": "INR", "precision": 2, "result": out}
+    return {"currency": "INR", "precision": 2, "calculation_id": run_id, "result": out}
 
 
 @router.get("/documents")
