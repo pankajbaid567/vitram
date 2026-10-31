@@ -47,7 +47,7 @@ export function TransactionsSheet({ category, onClose, options }: { category: st
   const [explain, setExplain] = useState<string | null>(null)
   return (
     <>
-    <Sheet open={!!category} onOpenChange={(o) => !o && onClose()} title={label ?? 'Transactions'} description="Change a category if VITTRM got it wrong. Your correction is kept." wide>
+    <Sheet open={!!category} onOpenChange={(o) => !o && onClose()} title={label ?? 'Transactions'} description="Change a category if VITRAM got it wrong. Your correction is kept." wide>
       {q.isLoading && <p className="text-sm text-muted">Loading…</p>}
       {q.data && (
         <ul className="divide-y divide-line">
@@ -196,7 +196,7 @@ export function Review() {
     return (
       <>
         <PageHeader title="Your financial profile" />
-        <EmptyState title="No bank statement yet" body="Upload a 3, 6 or 12-month statement and VITTRM will show what it found here for you to confirm." action={<Button onClick={() => navigate('/onboarding/statement')}>Upload a statement</Button>} />
+        <EmptyState title="No bank statement yet" body="Upload a 3, 6 or 12-month statement and VITRAM will show what it found here for you to confirm." action={<Button onClick={() => navigate('/onboarding/statement')}>Upload a statement</Button>} />
       </>
     )
   }
@@ -211,7 +211,7 @@ export function Review() {
   return (
     <>
       <PageHeader title="Review your financial profile"
-        description={`From ${date(cf.period_start)} to ${date(cf.period_end)} (${cf.months_covered} months). Confirm what's right and fix what isn't — your corrections are used everywhere in VITTRM.`}
+        description={`From ${date(cf.period_start)} to ${date(cf.period_end)} (${cf.months_covered} months). Confirm what's right and fix what isn't — your corrections are used everywhere in VITRAM.`}
         actions={<Button onClick={finish}>{d.review_state.items_needing_review ? 'Continue to dashboard' : 'Looks right — continue'}</Button>} />
 
       <Panel className="mb-6 grid gap-5 p-5 sm:grid-cols-4">
@@ -223,7 +223,7 @@ export function Review() {
 
       {d.review_state.items_needing_review > 0 && (
         <Callout tone="saathi" className="mb-6" title={`${d.review_state.items_needing_review} items to confirm`}>
-          VITTRM treats unconfirmed items as estimates. Confirming them makes loan and EMI numbers more reliable.
+          VITRAM treats unconfirmed items as estimates. Confirming them makes loan and EMI numbers more reliable.
         </Callout>
       )}
 
@@ -280,7 +280,7 @@ export function Review() {
 
         {d.uncertain_transactions.length > 0 && (
           <Panel className="p-5">
-            <h2 className="font-semibold">Transactions VITTRM wasn't sure about</h2>
+            <h2 className="font-semibold">Transactions VITRAM wasn't sure about</h2>
             <p className="mt-0.5 text-sm text-muted">The PDF didn't make clear whether these were money in or out.</p>
             <UncertainList items={d.uncertain_transactions} />
           </Panel>

@@ -73,7 +73,7 @@ export function RealCost({ cost, documentId, documentName }: { cost: any; docume
         {cost.missing?.length > 0 && <Callout tone="caution" className="mt-3" title="Not included because it isn't stated">{cost.missing.join('; ')}.</Callout>}
         {cost.emi_check && (
           <p className={clsx('mt-2 text-sm', cost.emi_check.matches ? 'text-positive' : 'text-caution')}>
-            {cost.emi_check.matches ? 'The EMI in the document matches VITTRM\'s calculation.' : `The document states an EMI of ₹${cost.emi_check.stated}, but the stated terms give ${Math.round(cost.emi_check.calculated)}. Check the document.`}
+            {cost.emi_check.matches ? 'The EMI in the document matches VITRAM\'s calculation.' : `The document states an EMI of ₹${cost.emi_check.stated}, but the stated terms give ${Math.round(cost.emi_check.calculated)}. Check the document.`}
           </p>
         )}
       </div>

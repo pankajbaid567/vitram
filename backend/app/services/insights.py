@@ -195,7 +195,7 @@ def explain_transaction(db: Session, user_id: str, txn_id: str) -> dict | None:
             lines.append(f"This is the only payment to {t.merchant} in your statements.")
     group = db.get(RecurringGroup, t.recurring_group_id) if t.recurring_group_id else None
     if group:
-        state = {"confirmed": "you confirmed", "rejected": "you marked as not recurring"}.get(group.state, "VITTRM detected")
+        state = {"confirmed": "you confirmed", "rejected": "you marked as not recurring"}.get(group.state, "VITRAM detected")
         lines.append(f"Part of a monthly pattern ({group.label}, around day {group.day_of_month or '—'}) that {state}.")
     txns = db.query(Transaction).filter(Transaction.user_id == user_id).all()
     odd = next((u for u in unusual(db, user_id, txns) if u["id"] == t.id), None)

@@ -171,7 +171,7 @@ function Thread() {
       </div>
       {toolMode && (
         <p className="mx-3 mt-3 rounded-[var(--radius-control)] border border-marigold/35 bg-marigold-soft px-3 py-2 text-xs leading-relaxed text-marigold-deep">
-          <b>Tool mode.</b> Answers come from VITTRM's calculators and your data. Free-form AI is off because Gemini isn't configured.
+          <b>Tool mode.</b> Answers come from VITRAM's calculators and your data. Free-form AI is off because Gemini isn't configured.
         </p>
       )}
 

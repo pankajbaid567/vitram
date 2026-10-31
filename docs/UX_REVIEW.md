@@ -14,7 +14,7 @@ Reviewed in a real Chrome against the sample workspace (fictional data), at 1440
 | Docs and operability | 13/15 | Architecture, ADRs, deploy, go-live, doctor command, health and readiness endpoints. |
 
 Held back by: heavy decorative backgrounds competing with content, a first screen that asks for sign-up before
-showing value, brand naming drift (VITTRM in the UI, VITRAM in the repo), and a few small-tap-target clusters on phones.
+showing value, brand naming drift (the UI said VITTRM while the repo said VITRAM; now unified as VITRAM), and a few small-tap-target clusters on phones.
 
 ## Button and link audit (verified in the browser)
 
@@ -42,9 +42,9 @@ showing value, brand naming drift (VITTRM in the UI, VITRAM in the repo), and a 
 5. **Tap targets.** 20 controls under 32px on the emergency screen at 390px (relationship chips, small links); raise to 40px.
 
 ### P2
-1. One brand name across UI, repo and docs (decision for the owner: VITTRM or VITRAM).
+1. ~~One brand name across UI, repo and docs~~ Done: VITRAM everywhere (migration `0011` rewrites stored copy).
 2. Dashboard: lead with the single most urgent item (next EMI) and collapse the rest below.
-3. First-run checklist ("Set up VITTRM · 3 of 4") should be dismissible once complete and link to each step.
+3. First-run checklist ("Set up VITRAM · 3 of 4") should be dismissible once complete and link to each step.
 4. Add skeleton states for the two slowest screens (loan results, insights).
 5. Table/chart toggle on the dashboard: remember the choice per user.
 

@@ -46,7 +46,7 @@ def build_summary(db: Session, user: User, topic: str, policy_id: str | None, pr
     if product_id:
         prod = db.get(InsuranceProduct, product_id)
         if prod:
-            lines.append(f"Considering: {prod.product_name} — {prod.insurer} (VITTRM sample catalogue)")
+            lines.append(f"Considering: {prod.product_name} — {prod.insurer} (VITRAM sample catalogue)")
     return "\n".join(lines)
 
 
@@ -85,7 +85,7 @@ def _place_call(db: Session, c: ConsultationRequest) -> None:
         c.status, c.error = "not_configured", "Twilio credentials aren't configured in this environment."
         return
     callback = f"{s.public_api_url.rstrip('/')}/api/webhooks/twilio" if s.public_api_url else None
-    intro = "Hello, this is VITTRM connecting your insurance consultation. Please hold while we connect you to the consultant."
+    intro = "Hello, this is VITRAM connecting your insurance consultation. Please hold while we connect you to the consultant."
     try:
         res = twilio_voice.create_call(decrypt_str(c.phone_enc), intro, callback)
         c.twilio_call_sid, c.status, c.error = res["sid"], twilio_voice.TWILIO_TO_STATUS.get(res.get("status") or "queued", "calling"), None

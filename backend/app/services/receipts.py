@@ -1,6 +1,6 @@
 """Receipts (M13): the user-confirmed view of a scanned receipt and suggested bank-transaction matches.
 
-A receipt is evidence of a purchase, not of a payment: VITTRM never creates a transaction from it,
+A receipt is evidence of a purchase, not of a payment: VITRAM never creates a transaction from it,
 and a match is only recorded when the user chooses one.
 """
 

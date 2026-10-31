@@ -135,13 +135,13 @@ def compose(name: str, d: dict, ctx: dict, lang: str = "en") -> str:
 
     if name == "cards_list":
         n = len(d["cards"])
-        return P(f"You have {n} card{'s' if n != 1 else ''} in VITTRM.", f"VITTRM में आपके {n} कार्ड हैं।", f"VITTRM mein aapke {n} cards hain.")
+        return P(f"You have {n} card{'s' if n != 1 else ''} in VITRAM.", f"VITRAM में आपके {n} कार्ड हैं।", f"VITRAM mein aapke {n} cards hain.")
 
     if name == "emis_list":
         if not d["emis"]:
-            return P("You don't have any EMIs in VITTRM yet. Add one, or upload a bank statement to detect them.",
-                     "VITTRM में अभी कोई EMI नहीं है। जोड़िए, या बैंक स्टेटमेंट अपलोड कीजिए ताकि वे पहचानी जा सकें।",
-                     "VITTRM mein abhi koi EMI nahi hai. Add karo, ya bank statement upload karo taaki woh detect ho sakein.")
+            return P("You don't have any EMIs in VITRAM yet. Add one, or upload a bank statement to detect them.",
+                     "VITRAM में अभी कोई EMI नहीं है। जोड़िए, या बैंक स्टेटमेंट अपलोड कीजिए ताकि वे पहचानी जा सकें।",
+                     "VITRAM mein abhi koi EMI nahi hai. Add karo, ya bank statement upload karo taaki woh detect ho sakein.")
         nxt = min(d["emis"], key=lambda e: e["next_due"])
         unconf = sum(1 for e in d["emis"] if not e["confirmed"])
         n = len(d["emis"])
@@ -159,9 +159,9 @@ def compose(name: str, d: dict, ctx: dict, lang: str = "en") -> str:
         s = P(f"Reminders are set up ({ch}).", f"रिमाइंडर सेट हो गए ({'WhatsApp' if ch == 'WhatsApp' else 'ऐप में'})।",
               f"Reminders set ho gaye ({'WhatsApp' if ch == 'WhatsApp' else 'app mein'}).")
         if ch == "in-app" and not d["whatsapp_configured"]:
-            s += P(" WhatsApp isn't connected in this environment, so they'll appear in VITTRM.",
-                   " यहाँ WhatsApp जुड़ा नहीं है, इसलिए रिमाइंडर VITTRM में दिखेंगे।",
-                   " Yahan WhatsApp connected nahi hai, isliye reminders VITTRM mein dikhenge.")
+            s += P(" WhatsApp isn't connected in this environment, so they'll appear in VITRAM.",
+                   " यहाँ WhatsApp जुड़ा नहीं है, इसलिए रिमाइंडर VITRAM में दिखेंगे।",
+                   " Yahan WhatsApp connected nahi hai, isliye reminders VITRAM mein dikhenge.")
         return s
 
     if name == "insurance_search":
@@ -225,7 +225,7 @@ def compose(name: str, d: dict, ctx: dict, lang: str = "en") -> str:
         scan = P(" It was read from a scan or photo, so check each value.", " यह स्कैन या फ़ोटो से पढ़ा गया है, इसलिए हर मान जाँच लें।",
                  " Yeh scan ya photo se padha gaya hai, isliye har value check karo.") if doc["read_from_scan"] else ""
         if not n:
-            return P(f"VITTRM didn't find any values in {doc['name']}.{scan}", f"{doc['name']} में कोई मान नहीं मिला।{scan}",
+            return P(f"VITRAM didn't find any values in {doc['name']}.{scan}", f"{doc['name']} में कोई मान नहीं मिला।{scan}",
                      f"{doc['name']} mein koi value nahi mili.{scan}")
         def show(f):
             v = f["value"]
@@ -242,7 +242,7 @@ def compose(name: str, d: dict, ctx: dict, lang: str = "en") -> str:
             return v
         head = [f"{f['label']}: {show(f)}" for f in facts[:5]]
         listing = "; ".join(head)
-        return P(f"From {doc['name']} VITTRM read {n} values ({c} confirmed by you): {listing}.{scan} Unconfirmed values are extracted, not checked.",
+        return P(f"From {doc['name']} VITRAM read {n} values ({c} confirmed by you): {listing}.{scan} Unconfirmed values are extracted, not checked.",
                  f"{doc['name']} से {n} मान पढ़े गए ({c} आपने पक्के किए): {listing}.{scan} बिना पुष्टि वाले मान सिर्फ़ पढ़े गए हैं, जाँचे नहीं गए।",
                  f"{doc['name']} se {n} values padhi gayi ({c} aapne confirm ki): {listing}.{scan} Unconfirmed values sirf padhi gayi hain, check nahi hui.")
 
@@ -276,5 +276,5 @@ def compose(name: str, d: dict, ctx: dict, lang: str = "en") -> str:
             if sur is not None:
                 s += P(f" On average you have {inr(sur)} left each month.", f" औसतन हर महीने {inr(sur)} बचते हैं।", f" Average har mahine {inr(sur)} bachte hain.")
             return s
-        return P("Here's what VITTRM knows from your profile.", "आपकी प्रोफ़ाइल से VITTRM को यह पता है।", "Aapki profile se VITTRM ko yeh pata hai.")
+        return P("Here's what VITRAM knows from your profile.", "आपकी प्रोफ़ाइल से VITRAM को यह पता है।", "Aapki profile se VITRAM ko yeh pata hai.")
     return ""

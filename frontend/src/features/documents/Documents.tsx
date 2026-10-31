@@ -9,7 +9,7 @@ import { DocStack, FamilyArt } from '../../components/illustrations'
 import { Field, Input, Select } from '../../components/ui/field'
 import { Callout, errorMessage, ErrorState, PageSkeleton, Skeleton, useToast } from '../../components/ui/feedback'
 import { ConfirmDialog, Modal, Sheet } from '../../components/ui/overlay'
-import { del, get, patch, post } from '../../lib/api'
+import { ApiError, del, get, patch, post } from '../../lib/api'
 import { useAuth } from '../../lib/auth'
 import { date, inr, num, relDays } from '../../lib/format'
 import type { DocFact, DocumentRow } from '../../lib/types'
@@ -100,7 +100,7 @@ function FactsSheet({ doc, onClose }: { doc: DocumentRow | null; onClose: () => 
   const selectedCardMatches = matchingCards.some((c: any) => c.id === selectedCard)
   const confirmedValues = q.data?.facts.filter((f: DocFact) => f.user_verified && ['outstanding', 'due_date', 'points_balance'].includes(f.key)).length ?? 0
   return (
-    <Sheet open={!!doc} onOpenChange={(o) => !o && onClose()} title={doc?.display_name ?? ''} description="Values VITTRM extracted, with where each came from." wide>
+    <Sheet open={!!doc} onOpenChange={(o) => !o && onClose()} title={doc?.display_name ?? ''} description="Values VITRAM extracted, with where each came from." wide>
       {doc?.type === 'bank_statement' ? (
         <div className="flex flex-col gap-3 text-[0.95rem]">
           <p>{doc.transactions_found ?? 0} transactions from {date(doc.period_start)} to {date(doc.period_end)}.</p>
@@ -200,7 +200,7 @@ export function Documents() {
   return (
     <>
       <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Documents & data' }]} title="Documents & data"
-        description="Everything you've uploaded, what VITTRM extracted from it, and controls to correct, re-read or delete it."
+        description="Everything you've uploaded, what VITRAM extracted from it, and controls to correct, re-read or delete it."
         actions={<><LinkButton to="/onboarding/statement" icon={<Landmark className="size-4" />}>Bank statement</LinkButton><LinkButton to="/insurance/upload" variant="secondary" icon={<ShieldCheck className="size-4" />}>Policy</LinkButton><LinkButton to="/loans/analyze" variant="secondary" icon={<FileText className="size-4" />}>Loan document</LinkButton></>} />
 
       <div className="grid gap-5 @5xl:grid-cols-[1fr_21rem]">
@@ -208,7 +208,7 @@ export function Documents() {
           <div className="flex h-full flex-col gap-5 rounded-[calc(var(--radius-window)-0.5rem)] border-2 border-dashed border-indigo/20 p-5 sm:p-6 @3xl:flex-row @3xl:items-center">
             <div className="min-w-0 flex-1">
               <h2 id="up-h" className="text-[1.35rem] font-semibold tracking-[-0.015em]">Your financial documents, in one place</h2>
-              <p className="mt-1 max-w-[56ch] text-[0.95rem] text-ink/75">Choose what you're adding. Each type has its own check-in so VITTRM reads it correctly — account for statements, people covered for policies.</p>
+              <p className="mt-1 max-w-[56ch] text-[0.95rem] text-ink/75">Choose what you're adding. Each type has its own check-in so VITRAM reads it correctly — account for statements, people covered for policies.</p>
               <ul className="mt-4 grid gap-2.5 @xl:grid-cols-2 @6xl:grid-cols-4">
                 {UPLOADS.map((u) => (
                   <li key={u.to}>
@@ -227,7 +227,7 @@ export function Documents() {
         </section>
 
         <aside className="surface-card rounded-[var(--radius-window)] p-5" aria-labelledby="how-h">
-          <h2 id="how-h" className="mb-4 flex items-center gap-2 font-semibold"><Info className="size-5 text-indigo" aria-hidden />How VITTRM uses your data</h2>
+          <h2 id="how-h" className="mb-4 flex items-center gap-2 font-semibold"><Info className="size-5 text-indigo" aria-hidden />How VITRAM uses your data</h2>
           <ol className="flex flex-col gap-4">
             {[['Upload', 'Add bank statements, policies or loan documents.', <Upload key="u" />], ['Review what was found', 'Income, EMIs, coverage and terms — each with the page it came from.', <FileSearch key="r" />], ['Use the answers', 'Plans and comparisons use only what you confirmed.', <BarChart3 key="a" />]].map(([t, b, icon], i) => (
               <li key={t as string} className="flex items-start gap-3">
@@ -358,7 +358,7 @@ export function Family() {
   return (
     <>
       <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Family' }]} title="Family"
-        description="People whose insurance and obligations you organise. Each person's data stays separate, and VITTRM always shows whose data it's using."
+        description="People whose insurance and obligations you organise. Each person's data stays separate, and VITRAM always shows whose data it's using."
         actions={<Button size="lg" icon={<Plus className="size-4" />} onClick={() => add()}>Add a member</Button>} />
 
       <PageHero title="Manage your family, together" art={<FamilyArt className="w-80" />}
@@ -438,7 +438,7 @@ export function Family() {
       )}
 
       <ConfirmDialog open={!!removing} onOpenChange={(o) => !o && setRemoving(null)} title={`Remove ${removing?.name ?? 'this person'}?`}
-        description="Their details are deleted from VITTRM. Policies stay, but they won't be linked to this person." confirmLabel="Remove" cancelLabel="Keep"
+        description="Their details are deleted from VITRAM. Policies stay, but they won't be linked to this person." confirmLabel="Remove" cancelLabel="Keep"
         busy={remove.isPending} onConfirm={() => remove.mutate(removing.id)}>
         {remove.isError && <p role="alert" className="text-sm text-critical">{errorMessage(remove.error)}</p>}
       </ConfirmDialog>
@@ -483,7 +483,7 @@ export function Settings() {
   const vision = ai.data?.vision
   const services = [
     { key: 'chat', icon: <MessagesSquare />, label: 'Vitt Saathi chat', ok: ai.data?.chat_mode === 'gemini', okLabel: 'Gemini configured', offLabel: 'Tool mode · Gemini not configured', offTone: 'saathi' as const,
-      note: ai.data?.chat_mode === 'gemini' ? 'A Gemini key and model are set on the server. Answers still use VITTRM’s calculators for every number.' : 'Answers come from VITTRM’s calculators and your data. Free-form AI turns on when the server has a Gemini key and model.' },
+      note: ai.data?.chat_mode === 'gemini' ? 'A Gemini key and model are set on the server. Answers still use VITRAM’s calculators for every number.' : 'Answers come from VITRAM’s calculators and your data. Free-form AI turns on when the server has a Gemini key and model.' },
     { key: 'voice', icon: <AudioLines />, label: 'Vitt Saathi voice', ok: !!ai.data?.voice_available, okLabel: 'Gemini Live configured', offLabel: 'Not configured', offTone: 'neutral' as const,
       note: ai.data?.voice_available ? 'Voice uses Gemini Live with short-lived tokens; audio is not stored.' : (ai.data?.voice_note ?? 'Voice needs a Gemini Live model configured on the server.') },
     { key: 'vision', icon: <ScanText />, label: 'Reading photos and scans', ok: !!vision?.configured,
@@ -505,8 +505,14 @@ export function Settings() {
         <Panel className="p-5 sm:p-6" aria-labelledby="perm-h">
           <div className="mb-4 flex items-start gap-3">
             <IconTile tone="indigo" size="lg"><Lock /></IconTile>
-            <div><h2 id="perm-h" className="text-[1.1rem] font-semibold">Your permissions</h2><p className="text-sm text-muted">Control how VITTRM can use your information and when it may contact you.</p></div>
+            <div><h2 id="perm-h" className="text-[1.1rem] font-semibold">Your permissions</h2><p className="text-sm text-muted">Control how VITRAM can use your information and when it may contact you.</p></div>
           </div>
+          {toggle.error instanceof ApiError && toggle.error.code === 'PHONE_REQUIRED' && (
+            <Callout tone="caution" className="mb-3" title="Add your mobile number first"
+              action={<Link to="/profile" className="font-semibold text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Go to your profile</Link>}>
+              WhatsApp reminders and consultation calls need a number to reach you on.
+            </Callout>
+          )}
           {q.isLoading ? <div className="flex flex-col gap-2"><Skeleton className="h-14" /><Skeleton className="h-14" /><Skeleton className="h-14" /></div> : (
             <ul className="flex flex-col gap-2">
               {q.data?.purposes.map((p: any) => {
@@ -537,7 +543,7 @@ export function Settings() {
         <Panel className="p-5 sm:p-6" aria-labelledby="svc-h">
           <div className="mb-4 flex items-start gap-3">
             <IconTile tone="indigo" size="lg"><Plug /></IconTile>
-            <div><h2 id="svc-h" className="text-[1.1rem] font-semibold">Connected services</h2><p className="text-sm text-muted">What is set up on this VITTRM server right now.</p></div>
+            <div><h2 id="svc-h" className="text-[1.1rem] font-semibold">Connected services</h2><p className="text-sm text-muted">What is set up on this VITRAM server right now.</p></div>
           </div>
           <ul className="flex flex-col gap-2">
             {services.map((sv) => (
@@ -565,7 +571,7 @@ export function Settings() {
         <Panel className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
           <div className="min-w-0 flex-1">
             <h2 className="text-[1.05rem] font-semibold">Your data, your copy</h2>
-            <p className="mt-1 text-[0.95rem] text-muted">Download everything VITTRM holds about you as a JSON file: profile, transactions, extracted facts, cards, EMIs, policies, reminders and conversations. Passwords and uploaded files are not included.</p>
+            <p className="mt-1 text-[0.95rem] text-muted">Download everything VITRAM holds about you as a JSON file: profile, transactions, extracted facts, cards, EMIs, policies, reminders and conversations. Passwords and uploaded files are not included.</p>
           </div>
           <Button variant="secondary" onClick={() => window.location.assign('/api/profile/export')}>Download my data</Button>
         </Panel>

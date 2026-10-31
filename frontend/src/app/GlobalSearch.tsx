@@ -7,7 +7,7 @@ import { get } from '../lib/api'
 import type { DocumentRow } from '../lib/types'
 import { useSaathi } from '../features/saathi/context'
 
-/** Honest search: it only finds VITTRM pages and the user's own documents; anything else goes to Vitt Saathi as a question. */
+/** Honest search: it only finds VITRAM pages and the user's own documents; anything else goes to Vitt Saathi as a question. */
 const PAGES: { label: string; to: string; hint: string; words: string }[] = [
   { label: 'Home', to: '/', hint: 'Overview', words: 'dashboard overview summary' },
   { label: 'Loans', to: '/loans', hint: 'Loans', words: 'borrow credit interest' },
@@ -41,7 +41,7 @@ const PLACEHOLDER: [RegExp, string][] = [
   [/^\/emis/, 'Ask anything about EMIs, due dates or prepayment…'],
   [/^\/family/, "Search or ask about your family's cover…"],
   [/^\/documents/, 'Search documents, or ask about them…'],
-  [/.*/, 'Search VITTRM or ask anything about loans, insurance, cards, EMIs…'],
+  [/.*/, 'Search VITRAM or ask anything about loans, insurance, cards, EMIs…'],
 ]
 
 type Item = { kind: 'ask' | 'page' | 'doc'; label: string; hint?: string; to?: string }
@@ -98,7 +98,7 @@ export function GlobalSearch({ className }: { className?: string }) {
       <div className="glass relative flex min-h-12 items-center rounded-full">
         <Search className="pointer-events-none absolute left-4 size-[1.1rem] text-muted" aria-hidden />
         <input ref={input} value={q} placeholder={placeholder}
-          role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list" aria-label="Search VITTRM or ask Vitt Saathi"
+          role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list" aria-label="Search VITRAM or ask Vitt Saathi"
           aria-activedescendant={open && items[active] ? `${listId}-${active}` : undefined}
           onChange={(e) => { setQ(e.target.value); setActive(0); setOpen(true) }}
           onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 120)} onKeyDown={onKeyDown}

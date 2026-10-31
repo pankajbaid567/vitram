@@ -1,4 +1,4 @@
-// VITTRM accessibility audit: axe-core (WCAG 2.1 A/AA) on every route at desktop and mobile widths,
+// VITRAM accessibility audit: axe-core (WCAG 2.1 A/AA) on every route at desktop and mobile widths,
 // plus scripted keyboard checks (skip link, visible focus, dialog focus trap / Escape / focus return).
 //
 // Needs the app running (API on :8000, web on :5173) and a local Chrome. Uses a fresh browser profile and

@@ -95,10 +95,10 @@ export function Goals() {
   const d = q.data
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Goals' }]} title="Goals" description="Save towards something specific and track it. You record contributions yourself — VITTRM never moves money or assumes returns."
+      <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Goals' }]} title="Goals" description="Save towards something specific and track it. You record contributions yourself — VITRAM never moves money or assumes returns."
         actions={<Button size="lg" icon={<Plus className="size-4" />} onClick={() => setAdding(true)}>New goal</Button>} />
       {d.goals.length === 0 ? (
-        <EmptyState headingLevel={2} icon={<Target />} title="No goals yet" body="An emergency fund, a trip, a laptop — set a target and, if you like, a date. VITTRM shows what that means per month."
+        <EmptyState headingLevel={2} icon={<Target />} title="No goals yet" body="An emergency fund, a trip, a laptop — set a target and, if you like, a date. VITRAM shows what that means per month."
           action={<Button onClick={() => setAdding(true)} icon={<Plus className="size-4" />}>Create your first goal</Button>} />
       ) : (
         <div className="grid items-start gap-5 @3xl:grid-cols-2 @6xl:grid-cols-3">{d.goals.map((g: any) => <GoalCard key={g.id} g={g} surplus={d.monthly_surplus} />)}</div>

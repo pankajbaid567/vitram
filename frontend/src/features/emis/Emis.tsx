@@ -153,7 +153,7 @@ function Calendar() {
       {sel != null && (
         <div className="mt-4 hidden rounded-[var(--radius-card)] border border-white/80 bg-white/80 p-4 shadow-[var(--elev-1)] sm:block" aria-live="polite">
           <p className="mb-2 text-sm font-semibold">{new Date(`${sel}T12:00:00`).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-          {(byDay[sel] ?? []).length === 0 ? <p className="text-sm text-muted">Nothing due on this day that VITTRM knows of.</p> : (
+          {(byDay[sel] ?? []).length === 0 ? <p className="text-sm text-muted">Nothing due on this day that VITRAM knows of.</p> : (
             <ul className="flex flex-col divide-y divide-[var(--glass-hairline)]">
               {byDay[sel].map((it: any) => (
                 <li key={it.kind + it.object_id}>
@@ -296,7 +296,7 @@ export function EmisHome() {
             <div className="flex flex-col items-center gap-2 px-4 py-6 text-center">
               <ListTileArt className="w-44" />
               <p className="text-[1.05rem] font-semibold">No EMIs yet</p>
-              <p className="max-w-sm text-sm text-muted">Add one, or upload a bank statement so VITTRM can find them.</p>
+              <p className="max-w-sm text-sm text-muted">Add one, or upload a bank statement so VITRAM can find them.</p>
               <Button className="mt-2" size="lg" icon={<Plus className="size-4" />} onClick={() => setAdding(true)}>Add an EMI</Button>
             </div>
           ) : (
@@ -362,7 +362,7 @@ function EmiScenarios({ emi }: { emi: any }) {
           {!r.computable ? (
             <Callout tone="caution" title="Can't calculate this precisely">
               <ul className="list-disc pl-5">{[...r.missing, ...r.notes].map((x: string) => <li key={x}>{x}</li>)}</ul>
-              <p className="mt-2">Add the terms from your loan agreement using Edit, and VITTRM will calculate it. It won't guess a penalty.</p>
+              <p className="mt-2">Add the terms from your loan agreement using Edit, and VITRAM will calculate it. It won't guess a penalty.</p>
             </Callout>
           ) : (
             <div className="flex flex-col gap-2 text-[0.95rem]">
@@ -481,7 +481,7 @@ export function ReminderSettings() {
   const toggleDay = (d: number) => setLocal({ ...p, days_before: p.days_before.includes(d) ? p.days_before.filter((x: number) => x !== d) : [...p.days_before, d].sort() })
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'EMIs', to: '/emis' }]} title="Reminders" description="When and where VITTRM reminds you about EMIs, card bills and policy renewals. Reminders always appear in VITTRM; WhatsApp is optional." />
+      <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'EMIs', to: '/emis' }]} title="Reminders" description="When and where VITRAM reminds you about EMIs, card bills and policy renewals. Reminders always appear in VITRAM; WhatsApp is optional." />
       <div className="grid max-w-3xl gap-6">
         <Panel className="flex flex-col gap-5 p-5">
           <fieldset>
@@ -499,14 +499,14 @@ export function ReminderSettings() {
         <ReminderItems data={q.data} />
         <Panel className="flex flex-col gap-4 p-5">
           <h2 className="font-semibold">WhatsApp</h2>
-          {!p.whatsapp_configured && <Callout tone="caution" title="WhatsApp isn't connected in this environment">You can turn it on, but messages won't be sent until a WhatsApp provider is connected. You'll still get every reminder in VITTRM.</Callout>}
-          {p.whatsapp_enabled && p.whatsapp_blocked_reason && <Callout tone="caution" title="WhatsApp is on, but not active yet">{p.whatsapp_blocked_reason}{!p.phone_verified && p.whatsapp_consent && <> Finish the SMS check in <Link to="/profile" className="text-indigo underline">My profile</Link>.</>} Reminders still appear in VITTRM.</Callout>}
+          {!p.whatsapp_configured && <Callout tone="caution" title="WhatsApp isn't connected in this environment">You can turn it on, but messages won't be sent until a WhatsApp provider is connected. You'll still get every reminder in VITRAM.</Callout>}
+          {p.whatsapp_enabled && p.whatsapp_blocked_reason && <Callout tone="caution" title="WhatsApp is on, but not active yet">{p.whatsapp_blocked_reason}{!p.phone_verified && p.whatsapp_consent && <> Finish the SMS check in <Link to="/profile" className="text-indigo underline">My profile</Link>.</>} Reminders still appear in VITRAM.</Callout>}
           {p.whatsapp_consent ? (
             <Checkbox checked={p.whatsapp_enabled} onChange={(e) => setLocal({ ...p, whatsapp_enabled: e.target.checked })}
               label={`Send reminders to ${user?.phone_masked ?? 'my number'} on WhatsApp`} description="Messages show the item, due date and amount only — no account numbers. Reply STOP any time." />
           ) : (
             <div className="flex flex-col gap-3">
-              <p className="text-[0.95rem] text-muted">Get reminders and emergency insurance help on WhatsApp. VITTRM only messages you after you agree.</p>
+              <p className="text-[0.95rem] text-muted">Get reminders and emergency insurance help on WhatsApp. VITRAM only messages you after you agree.</p>
               {!user?.phone_masked && <Field label="Mobile number"><Input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-56" /></Field>}
               <Button variant="secondary" className="w-fit" onClick={enableWhatsApp}>I agree to WhatsApp messages</Button>
             </div>
@@ -518,7 +518,7 @@ export function ReminderSettings() {
           <h2 className="mb-2 font-semibold">Upcoming reminders</h2>
           {q.data.upcoming.length === 0 ? <p className="text-sm text-muted">None scheduled. Confirmed EMIs, card due dates and policy renewals get reminders automatically.</p> : (
             <ul className="divide-y divide-line text-[0.95rem]">{q.data.upcoming.slice(0, 10).map((r: any) => (
-              <li key={r.id} className="flex justify-between gap-3 py-2"><span>{KIND_ICON[r.object_type] ?? r.object_type} due {date(r.due_date)}</span><span className="text-muted">{new Date(r.schedule_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' })} IST · {r.channel === 'whatsapp' ? 'WhatsApp' : 'In VITTRM'}</span></li>
+              <li key={r.id} className="flex justify-between gap-3 py-2"><span>{KIND_ICON[r.object_type] ?? r.object_type} due {date(r.due_date)}</span><span className="text-muted">{new Date(r.schedule_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' })} IST · {r.channel === 'whatsapp' ? 'WhatsApp' : 'In VITRAM'}</span></li>
             ))}</ul>
           )}
           {q.data.history.length > 0 && <>
@@ -552,7 +552,7 @@ function ReminderItems({ data }: { data: any }) {
   return (
     <Panel className="flex flex-col gap-4 p-5" aria-labelledby="ri-h">
       <div><h2 id="ri-h" className="font-semibold">Reminders for each item</h2><p className="text-sm text-muted">Due dates come from EMIs you confirmed, card due dates you entered and policy dates you checked.</p></div>
-      {items.length === 0 ? <p className="text-sm text-muted">Nothing due in the next 60 days that VITTRM knows of.</p> : (
+      {items.length === 0 ? <p className="text-sm text-muted">Nothing due in the next 60 days that VITRAM knows of.</p> : (
         <ul className="flex flex-col divide-y divide-[var(--glass-hairline)]">
           {items.map((it) => {
             const next = upcoming.filter((r) => r.object_type === it.kind && r.object_id === it.object_id)
@@ -570,9 +570,9 @@ function ReminderItems({ data }: { data: any }) {
                   <ul className="flex flex-wrap gap-1.5">
                     {next.map((r) => (
                       <li key={r.id} className="inline-flex items-center gap-1 rounded-full bg-ink/[0.05] py-0.5 pl-3 pr-1 text-xs">
-                        {new Date(r.schedule_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })} · {r.channel === 'whatsapp' ? 'WhatsApp' : 'In VITTRM'}
+                        {new Date(r.schedule_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' })} · {r.channel === 'whatsapp' ? 'WhatsApp' : 'In VITRAM'}
                         <button type="button" onClick={() => cancel.mutate(r.id)} aria-label={`Cancel the reminder on ${new Date(r.schedule_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}`}
-                          className="inline-flex size-6 items-center justify-center rounded-full text-muted hover:bg-ink/10 hover:text-critical"><X className="size-3.5" aria-hidden /></button>
+                          className="inline-flex size-9 sm:size-6 items-center justify-center rounded-full text-muted hover:bg-ink/10 hover:text-critical"><X className="size-3.5" aria-hidden /></button>
                       </li>
                     ))}
                   </ul>

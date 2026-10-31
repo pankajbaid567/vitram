@@ -4,7 +4,7 @@
 
 An AI-assisted financial companion for salaried people in India: **loans, cards, EMIs and insurance** from one financial profile built out of your own bank statements and documents, with **Vitt Saathi (वित्त साथी)** as the single assistant.
 
-> The app's on-screen brand is **VITTRM**; VITRAM is the project name.
+> The app's on-screen brand is **VITRAM**; VITRAM is the project name.
 > **Decision-support prototype.** All *priced* loan, card and insurance data is fictional sample data, labelled as such. The lists of real cards and insurance products are **reference-only** (names and official links, with no fees or benefits invented). VITRAM is not a lender, insurer, broker or adviser.
 
 | | |

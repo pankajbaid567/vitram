@@ -229,7 +229,7 @@ def extract_loan(pages: list[str]) -> Extraction:
     inj = [str(i) for i, t in enumerate(pages, start=1) if looks_like_injection(t)]
     if inj:
         warnings.append(f"This document contains text addressed to AI assistants (page {', '.join(inj)}). "
-                        "VITTRM treated it as document text only and did not act on it.")
+                        "VITRAM treated it as document text only and did not act on it.")
     for k, label in (("principal", "loan amount"), ("annual_rate_pct", "interest rate"), ("tenure_months", "tenure")):
         if k not in terms:
             warnings.append(f"The {label} wasn't found in this document, so the Real Cost can't be fully calculated.")

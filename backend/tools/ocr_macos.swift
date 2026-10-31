@@ -1,4 +1,4 @@
-// VITTRM on-device OCR helper (macOS only).
+// VITRAM on-device OCR helper (macOS only).
 // Uses Apple's Vision framework, so document images never leave this machine.
 //
 //   vitram-ocr <file> [max_pages]

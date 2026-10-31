@@ -46,7 +46,7 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
     except ValueError:
         return PlainTextResponse("Bad request", status_code=400)
     if not wa.session_matches(payload):
-        # A validly signed webhook can still be wired to the wrong VITTRM deployment.
+        # A validly signed webhook can still be wired to the wrong VITRAM deployment.
         # Acknowledge and drop it so the gateway does not retry forever.
         log.warning("Ignoring gateway event for a different session or number")
         return PlainTextResponse("", status_code=204)

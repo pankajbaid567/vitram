@@ -71,7 +71,7 @@ function CardForm({ initial, onDone }: { initial?: any; onDone: () => void }) {
   )
 }
 
-/** Visual card face. Shows only the masked last 4 digits — VITTRM never stores the full number, CVV or PIN.
+/** Visual card face. Shows only the masked last 4 digits — VITRAM never stores the full number, CVV or PIN.
  * The tint is stable per card (derived from its id), not by rank. */
 const FACES = [
   'linear-gradient(135deg,#2b3690 0%,#161d45 70%)',
@@ -130,7 +130,7 @@ export function Optimizer({ categories, compact }: { categories: { key: string; 
       </form>
       {r && (
         <div className="flex flex-col gap-3" aria-live="polite">
-          {r.ranked.length === 0 && r.unranked.length === 0 && <Callout tone="caution">None of your cards have reward rules VITTRM can use.</Callout>}
+          {r.ranked.length === 0 && r.unranked.length === 0 && <Callout tone="caution">None of your cards have reward rules VITRAM can use.</Callout>}
           <ol className="flex flex-col gap-2">
             {r.ranked.map((x: any, i: number) => (
               <li key={x.card_id} className={clsx('rounded-[var(--radius-card)] p-4', i === 0 && x.value_inr > 0 ? 'border border-positive/40 bg-positive-soft/80 shadow-[var(--elev-2)]' : 'surface-card')}>
@@ -295,7 +295,7 @@ function CardCapabilities() {
   ]
   return (
     <section aria-labelledby="card-can">
-      <h2 id="card-can" className="mb-3 text-[1.1rem] font-semibold">What you can do with VITTRM</h2>
+      <h2 id="card-can" className="mb-3 text-[1.1rem] font-semibold">What you can do with VITRAM</h2>
       <ul className="grid gap-4 @xl:grid-cols-2 @5xl:grid-cols-4">
         {items.map((f) => <li key={f.title} className="surface-card rounded-[var(--radius-card)] p-5"><FeatureTile icon={f.icon} tone={f.tone} title={f.title} body={f.body} /></li>)}
       </ul>
@@ -329,7 +329,7 @@ export function CardOptimizerPage() {
   if (q.isLoading) return <PageSkeleton />
   return (
     <>
-      <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Cards', to: '/cards' }]} title="Which card should I use?" description="Enter a purchase and VITTRM ranks your cards by the rewards they'd earn, using each card's rules, caps and exclusions." />
+      <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Cards', to: '/cards' }]} title="Which card should I use?" description="Enter a purchase and VITRAM ranks your cards by the rewards they'd earn, using each card's rules, caps and exclusions." />
       {q.data?.cards?.length ? <Panel className="p-5"><Optimizer categories={q.data.categories} /></Panel> : <EmptyState title="Add a card first" action={<LinkButton to="/cards">Go to cards</LinkButton>} />}
     </>
   )
@@ -416,7 +416,7 @@ export function CardDetail() {
         )}
       </div>
       <Sheet open={editing} onOpenChange={setEditing} wide title="Edit card"><CardForm initial={c} onDone={() => { setEditing(false); q.refetch() }} /></Sheet>
-      <Modal open={confirmDel} onOpenChange={setConfirmDel} title="Remove this card?" description="Its balances and due dates are deleted from VITTRM."
+      <Modal open={confirmDel} onOpenChange={setConfirmDel} title="Remove this card?" description="Its balances and due dates are deleted from VITRAM."
         footer={<><Button variant="quiet" onClick={() => setConfirmDel(false)}>Keep</Button><Button variant="danger" loading={remove.isPending} onClick={() => remove.mutate()}>Remove card</Button></>}>
         <p className="text-[0.95rem]">{c.nickname}</p>
       </Modal>

@@ -1,7 +1,7 @@
 [project]
 name = "vitram-backend"
 version = "0.1.0"
-description = "VITTRM API — financial profile, document intelligence, deterministic finance engine and Vitt Saathi orchestration"
+description = "VITRAM API — financial profile, document intelligence, deterministic finance engine and Vitt Saathi orchestration"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115",

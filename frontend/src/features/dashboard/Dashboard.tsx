@@ -29,8 +29,8 @@ function SummaryCard({ to, icon, tone, label, value, sub, mark }: {
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2 text-sm text-muted">{label}{mark}</span>
         <span className="num mt-0.5 block truncate text-[1.35rem] font-semibold tracking-[-0.02em]">{value}</span>
-        <span className="mt-1 flex items-center justify-between gap-2 text-sm text-muted">
-          <span className="truncate">{sub}</span>
+        <span className="mt-1 flex items-start justify-between gap-2 text-sm text-muted">
+          <span className="line-clamp-2">{sub}</span>
           <ArrowRight className="size-4 shrink-0 transition-transform duration-[var(--dur)] group-hover:translate-x-0.5 group-hover:text-indigo" aria-hidden />
         </span>
       </span>
@@ -49,7 +49,7 @@ function SetupChecklist({ d }: { d: any }) {
         <IconTile tone="red"><Check /></IconTile>
         <div>
           <h2 id="setup-h" className="text-[1.05rem] font-semibold">Your setup</h2>
-          <p className="text-sm text-muted">The more VITTRM knows, the more precise every answer gets.</p>
+          <p className="text-sm text-muted">The more VITRAM knows, the more precise every answer gets.</p>
         </div>
       </div>
       <div className="flex flex-1 flex-wrap items-center gap-6">
@@ -98,7 +98,7 @@ function GetStarted() {
           <Badge tone="indigo" className="mb-2">Get started</Badge>
           <h2 id="gs-h" className="text-[1.4rem] font-semibold tracking-[-0.015em]">Upload a bank statement</h2>
         </div>
-        <p className="max-w-[60ch] text-[0.97rem] leading-relaxed text-ink/75">A PDF or CSV from your bank. VITTRM reads it once to build your financial profile, and every number links back to the line it came from.</p>
+        <p className="max-w-[60ch] text-[0.97rem] leading-relaxed text-ink/75">A PDF or CSV from your bank. VITRAM reads it once to build your financial profile, and every number links back to the line it came from.</p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <LinkButton to="/onboarding/statement" size="lg" icon={<FileUp className="size-4" />}>Upload a bank statement</LinkButton>
           <span className="flex items-center gap-1.5 text-xs text-muted"><Lock className="size-3.5" aria-hidden />Encrypted in your workspace</span>
@@ -183,7 +183,7 @@ function MeetSaathi({ chatMode, voice }: { chatMode: 'gemini' | 'tool'; voice: b
           <SaathiMark className="size-14 shadow-[var(--glow-saathi)]" />
           <div className="min-w-0">
             <h2 id="saathi-h" className="flex flex-wrap items-center gap-2 text-[1.15rem] font-semibold">Meet Vitt Saathi <Badge tone="saathi">Beta</Badge></h2>
-            <p className="text-[0.95rem] text-ink/75">Your financial assistant. It answers from your own documents and VITTRM's calculators, and shows where each number comes from.</p>
+            <p className="text-[0.95rem] text-ink/75">Your financial assistant. It answers from your own documents and VITRAM's calculators, and shows where each number comes from.</p>
           </div>
         </div>
         <form onSubmit={submit} className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-white/80 bg-white/90 p-1.5 shadow-[var(--glass-highlight),var(--elev-1)] focus-within:shadow-[var(--glass-highlight),var(--elev-1),var(--ring)] @4xl:max-w-md">
@@ -225,7 +225,7 @@ function ScanBand() {
               {vision && <Badge tone={on ? 'positive' : 'neutral'}>{on ? (vision.on_device ? 'Read on this device' : 'Read by Gemini') : 'Not set up on this server'}</Badge>}
             </h2>
             <p className="mt-1 max-w-[62ch] text-[0.95rem] text-ink/75">
-              {on ? 'Photograph a receipt, a policy page or a loan letter. VITTRM reads the text, finds the key values and shows each one with the line it came from for you to check.'
+              {on ? 'Photograph a receipt, a policy page or a loan letter. VITRAM reads the text, finds the key values and shows each one with the line it came from for you to check.'
                 : 'Reading photos and scanned PDFs needs OCR on the server. Digital PDFs and CSV statements work already.'}
             </p>
           </div>
@@ -263,9 +263,9 @@ export function Dashboard() {
       <header className="flex flex-col gap-5 @4xl:flex-row @4xl:items-end @4xl:justify-between">
         <div className="min-w-0">
           <h1 className="text-[2.1rem] font-semibold leading-tight tracking-[-0.025em] sm:text-[2.75rem]">Hello, {d.user.name.split(' ')[0]}</h1>
-          <p className="mt-2 text-[1.05rem] text-ink/80">Take control of your financial life with VITTRM.</p>
+          <p className="mt-2 text-[1.05rem] text-ink/80">Take control of your financial life with VITRAM.</p>
           <p className="mt-1 max-w-[64ch] text-[0.97rem] text-muted">
-            {hasStatement ? <>Everything here comes from your statement ({dayMonth(m.period_start)} – {dayMonth(m.period_end)}) and the documents you've added.</> : 'VITTRM uses only the documents you add and the numbers you confirm. Nothing is guessed.'}
+            {hasStatement ? <>Everything here comes from your statement ({dayMonth(m.period_start)} – {dayMonth(m.period_end)}) and the documents you've added.</> : 'VITRAM uses only the documents you add and the numbers you confirm. Nothing is guessed.'}
             {d.data_quality.items_needing_review > 0 && <> <Link to="/profile/review" className="font-medium text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">{d.data_quality.items_needing_review} items need review</Link>.</>}
             {d.data_quality.documents_processing > 0 && <> {d.data_quality.documents_processing} document{d.data_quality.documents_processing > 1 ? 's are' : ' is'} still processing…</>}
           </p>
@@ -275,7 +275,7 @@ export function Dashboard() {
           <div className="min-w-0">
             <p className="text-sm text-muted">{today.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</p>
             {next ? <p className="font-semibold leading-snug">Next due: {next.title} <span className="font-normal text-muted">{relDays(next.date)}</span></p>
-              : <p className="font-semibold leading-snug">Nothing due that VITTRM knows of</p>}
+              : <p className="font-semibold leading-snug">Nothing due that VITRAM knows of</p>}
           </div>
         </div>
       </header>
@@ -341,7 +341,7 @@ export function Dashboard() {
             <div className="mb-2 flex items-center gap-3"><IconTile tone="indigo" size="sm"><CalendarDays /></IconTile><h2 id="upcoming" className="font-semibold">Upcoming in 30 days</h2></div>
             {d.upcoming.length === 0 ? (
               <div className="flex flex-col items-start gap-3 py-2">
-                <p className="text-sm text-muted">Nothing due that VITTRM knows of.</p>
+                <p className="text-sm text-muted">Nothing due that VITRAM knows of.</p>
                 <LinkButton to="/emis" variant="secondary" size="sm" icon={<Plus className="size-4" />}>Add an EMI or bill</LinkButton>
               </div>
             ) : (

@@ -116,7 +116,7 @@ def request_email_verification(user: User = Depends(current_user), db: Session =
     db.commit()
     url = f"{get_settings().app_origin.rstrip('/')}/verify-email?token={raw}"
     try:
-        mailer.send(user.email, "Verify your VITTRM email", f"Verify your address within 30 minutes:\n{url}\n")
+        mailer.send(user.email, "Verify your VITRAM email", f"Verify your address within 30 minutes:\n{url}\n")
     except Exception as exc:
         raise DomainError("EMAIL_UNAVAILABLE", "Email could not be sent. Try again later.", status_code=503) from exc
     return {"status": "sent"}
@@ -231,22 +231,22 @@ def reset_request(body: ResetRequestIn, request: Request, db: Session = Depends(
     _rate_limit(f"reset|{email}|{request.client.host if request.client else ''}")
     if not settings.email_configured:
         return {"sent": False, "email_configured": False,
-                "message": "Password reset by email isn't set up on this VITTRM server yet."}
+                "message": "Password reset by email isn't set up on this VITRAM server yet."}
     user = db.query(User).filter(User.email == email, User.is_sample.is_(False)).first()
     if user:
         token, tid = new_session_token()
         db.add(PasswordReset(id=tid, user_id=user.id, expires_at=datetime.now(timezone.utc) + timedelta(minutes=RESET_MINUTES)))
         link = f"{settings.app_origin.rstrip('/')}/reset-password?token={token}"
         try:
-            mailer.send(email, "Reset your VITTRM password",
-                        f"Someone asked to reset the password for this VITTRM account.\n\nReset it here within {RESET_MINUTES} minutes:\n{link}\n\n"
+            mailer.send(email, "Reset your VITRAM password",
+                        f"Someone asked to reset the password for this VITRAM account.\n\nReset it here within {RESET_MINUTES} minutes:\n{link}\n\n"
                         "If this wasn't you, ignore this email — your password stays the same.")
             audit(db, user.id, "auth.reset_requested")
             db.commit()
         except Exception:  # noqa: BLE001 — never reveal delivery details to the caller
             db.rollback()
     return {"sent": True, "email_configured": True,
-            "message": "If that email has a VITTRM account, a reset link is on its way. It works for 30 minutes."}
+            "message": "If that email has a VITRAM account, a reset link is on its way. It works for 30 minutes."}
 
 
 class ResetConfirmIn(BaseModel):

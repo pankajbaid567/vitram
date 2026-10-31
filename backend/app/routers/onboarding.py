@@ -45,7 +45,7 @@ class AboutIn(BaseModel):
         today = date.today()
         age = today.year - v.year - ((today.month, today.day) < (v.month, v.day))
         if age < 18 or age > 100:
-            raise ValueError("You need to be at least 18 to use VITTRM")
+            raise ValueError("You need to be at least 18 to use VITRAM")
         return v
 
 

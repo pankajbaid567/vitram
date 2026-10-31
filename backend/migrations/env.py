@@ -1,4 +1,4 @@
-"""Alembic environment for VITTRM.
+"""Alembic environment for VITRAM.
 
 The database URL comes from application settings (DATABASE_URL), never from
 alembic.ini, so credentials stay out of source control. When the app runs

@@ -1,4 +1,4 @@
-/** Decorative inline-SVG illustrations in the VITTRM glass style. All are aria-hidden: they never carry information.
+/** Decorative inline-SVG illustrations in the VITRAM glass style. All are aria-hidden: they never carry information.
  * No brand marks of real banks or insurers appear here. */
 import clsx from 'clsx'
 import { useId } from 'react'
@@ -93,7 +93,7 @@ export function ShieldArt({ className }: P) {
   )
 }
 
-/** Fanned generic cards; the front card carries the VITTRM mark only. */
+/** Fanned generic cards; the front card carries the VITRAM mark only. */
 export function CardStackArt({ className }: P) {
   const id = useId()
   return (

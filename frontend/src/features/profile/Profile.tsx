@@ -195,7 +195,7 @@ function FinancialSummary({ user }: { user: User }) {
         </Field>
         <Button type="submit" variant="secondary" loading={save.isPending}>Save salary</Button>
       </form>
-      <Link to="/profile/review" className="inline-flex min-h-10 w-fit items-center gap-1 font-medium text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Review and correct everything VITTRM found<ArrowRight className="size-4" aria-hidden /></Link>
+      <Link to="/profile/review" className="inline-flex min-h-10 w-fit items-center gap-1 font-medium text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Review and correct everything VITRAM found<ArrowRight className="size-4" aria-hidden /></Link>
     </div>
   )
 }
@@ -261,12 +261,12 @@ export function Profile() {
               <div className="flex justify-between gap-2"><dt className="text-muted">Date of birth</dt><dd>{user.dob ? date(user.dob) : 'Not added'}</dd></div>
               <div className="flex justify-between gap-2"><dt className="text-muted">Work</dt><dd className="flex items-center gap-1.5"><BriefcaseBusiness className="size-3.5 text-muted" aria-hidden />{user.employment_type === 'salaried' ? 'Salaried' : user.employment_type ? 'Other' : 'Not added'}</dd></div>
             </dl>
-            <p className="mt-3 text-sm text-muted">To remove everything VITTRM holds, use <Link to="/settings" className="font-medium text-critical underline decoration-critical/40 underline-offset-2">Delete all my data</Link> in Settings.</p>
+            <p className="mt-3 text-sm text-muted">To remove everything VITRAM holds, use <Link to="/settings" className="font-medium text-critical underline decoration-critical/40 underline-offset-2">Delete all my data</Link> in Settings.</p>
           </Section>
         </div>
       </div>
 
-      <ConfirmDialog open={signout} onOpenChange={setSignout} title="Sign out of VITTRM?" danger={false} confirmLabel="Sign out" busy={busy}
+      <ConfirmDialog open={signout} onOpenChange={setSignout} title="Sign out of VITRAM?" danger={false} confirmLabel="Sign out" busy={busy}
         description={user.is_sample ? "This is a sample workspace with a generated password, so you can't sign back into it." : 'Your data stays in your workspace. Sign in again with your email and password.'}
         onConfirm={async () => { setBusy(true); try { await logout() } finally { setBusy(false); setSignout(false) } }} />
     </>

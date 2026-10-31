@@ -1,6 +1,6 @@
 {
   "meta": {
-    "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+    "source": "VITRAM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
     "is_mock": true,
     "last_updated": "2026-09-01"
   },
@@ -86,7 +86,7 @@
         {"key": "part_prepayment", "label": "Part-prepayment", "rule": {"allowed": true, "allowed_after_months": 12, "charge_pct": 2, "max_per_year_pct": 40, "gst_applicable": true}}
       ],
       "clauses": [
-        {"title": "Credit score requirement", "severity": "eligibility_condition", "text": "Requires a credit bureau score of 750 or more in the sample terms. VITTRM doesn't know your score, so this is marked unknown."}
+        {"title": "Credit score requirement", "severity": "eligibility_condition", "text": "Requires a credit bureau score of 750 or more in the sample terms. VITRAM doesn't know your score, so this is marked unknown."}
       ],
       "documents": ["PAN", "Aadhaar", "Form 16", "Last 3 salary slips", "Last 6 months' bank statements"]
     },

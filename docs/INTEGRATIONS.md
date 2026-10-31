@@ -18,7 +18,7 @@ Verification on 2026-09-23: the configured text model returned a response, the c
 
 1. In Meta Business Suite, verify the business and add a phone number. Note the **phone number id** and create a **system-user token** with `whatsapp_business_messaging` and `whatsapp_business_management`.
 2. Create a message template, category **Utility**, language `en` (or set `WHATSAPP_TEMPLATE_LANGUAGE`), body exactly:
-   `VITTRM reminder: {{1}} of {{2}} is due {{3}}.`
+   `VITRAM reminder: {{1}} of {{2}} is due {{3}}.`
    Business-initiated reminders can only be sent as an *approved* template; free text works only as a reply within 24 hours of the user's message.
 3. Set `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_APP_SECRET` (App settings → Basic), `WHATSAPP_VERIFY_TOKEN` (any long random string you choose) and `WHATSAPP_REMINDER_TEMPLATE` (the template's name).
 4. In the app's WhatsApp → Configuration, set the callback URL to `{PUBLIC_API_URL}/api/webhooks/whatsapp` and the same verify token; Meta calls it once with a `GET` challenge. Subscribe to the **messages** field.
@@ -43,7 +43,7 @@ Secret: the exact OPENWA_WEBHOOK_SECRET value
 Retries: 3
 ```
 
-OpenWA signs the exact request bytes in `X-OpenWA-Signature`; VITTRM rejects missing or invalid signatures and deduplicates on `X-OpenWA-Idempotency-Key`. `message.received` powers STOP and Vitt Saathi replies. `message.ack`/`message.failed` update reminder delivery state. Group messages and unresolved `@lid` identities are deliberately ignored; enable OpenWA's `RESOLVE_LID_TO_PHONE=true` if the selected engine emits privacy IDs.
+OpenWA signs the exact request bytes in `X-OpenWA-Signature`; VITRAM rejects missing or invalid signatures and deduplicates on `X-OpenWA-Idempotency-Key`. `message.received` powers STOP and Vitt Saathi replies. `message.ack`/`message.failed` update reminder delivery state. Group messages and unresolved `@lid` identities are deliberately ignored; enable OpenWA's `RESOLVE_LID_TO_PHONE=true` if the selected engine emits privacy IDs.
 
 Before an outbound send, the user still needs a stored, Twilio-verified phone, WhatsApp consent and enabled reminder preference. The scheduler rechecks these at dispatch; STOP or in-app revocation converts queued WhatsApp reminders to in-app. Use only a controlled, opted-in test recipient. Verify send, delivery/read acknowledgements, inbound emergency query, deep link, duplicate webhook idempotency, invalid signature rejection, STOP and retry. Record provider message IDs/status only; never log message bodies or full phone numbers.
 
@@ -51,7 +51,7 @@ Before an outbound send, the user still needs a stored, Twilio-verified phone, W
 
 Set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and a Verify v2 `TWILIO_VERIFY_SERVICE_SID` (prefix `VA`). Users request an SMS from the Profile page, then enter its code. A phone change clears verification and queued WhatsApp delivery. Verify setup is independent of a consultation call.
 
-For calls, also set `TWILIO_FROM_NUMBER`, a team-controlled `CONSULTANT_PHONE_NUMBER`, and `PUBLIC_API_URL`. The status callback is `POST {PUBLIC_API_URL}/api/webhooks/twilio`. Trial accounts may restrict destination numbers. The request screen must show the context summary and number, with explicit consent. A live call to a saved or entered number requires that it match the user's verified phone. Test one consented call to a controlled number, consultant bridge, signed status transitions, failure/retry, and no recording. If any prerequisite is absent, VITTRM must not imply that a call happened.
+For calls, also set `TWILIO_FROM_NUMBER`, a team-controlled `CONSULTANT_PHONE_NUMBER`, and `PUBLIC_API_URL`. The status callback is `POST {PUBLIC_API_URL}/api/webhooks/twilio`. Trial accounts may restrict destination numbers. The request screen must show the context summary and number, with explicit consent. A live call to a saved or entered number requires that it match the user's verified phone. Test one consented call to a controlled number, consultant bridge, signed status transitions, failure/retry, and no recording. If any prerequisite is absent, VITRAM must not imply that a call happened.
 
 ## Deployment gate
 

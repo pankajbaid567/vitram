@@ -37,7 +37,7 @@ GENERAL_STEPS = {
         "The nominee submits the claim form with ID and bank details.",
     ],
 }
-DISCLAIMER = ("The insurer decides whether a claim is admissible. VITTRM shows what your policy documents say and "
+DISCLAIMER = ("The insurer decides whether a claim is admissible. VITRAM shows what your policy documents say and "
               "can't guarantee approval.")
 
 

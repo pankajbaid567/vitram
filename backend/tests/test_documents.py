@@ -270,7 +270,7 @@ def test_injection_line_excluded_and_flagged():
     ex, f = _facts("sample_policy_family_health.pdf", extract_policy)
     assert not any("ai assistants" in c.lower() for c in f["conditions"].value)
     assert any("addressed to AI assistants" in w for w in ex.warnings)
-    assert all("SAMPLE DOCUMENT FOR VITTRM" not in x for x in f["exclusions"].value)  # running header stripped
+    assert all("SAMPLE DOCUMENT FOR VITRAM" not in x for x in f["exclusions"].value)  # running header stripped
 
 
 def test_calendar_respects_first_due_date(sample):

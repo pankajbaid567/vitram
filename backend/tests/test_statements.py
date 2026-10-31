@@ -124,7 +124,7 @@ def test_statement_flow_dedup_and_overrides(client):
     r2 = client.post("/api/documents", data={"type": "bank_statement", "period_months": "3", "bank_account_id": doc["bank_account_id"]},
                      files={"file": (pdf.name, pdf.read_bytes(), "application/pdf")})
     d2 = client.get(f"/api/documents/{r2.json()['id']}").json()
-    assert any("already in VITTRM" in w for w in d2["warnings"]), d2
+    assert any("already in VITRAM" in w for w in d2["warnings"]), d2
     assert client.get("/api/transactions?limit=1").json()["total"] == 260
 
     review = client.get("/api/profile/review").json()

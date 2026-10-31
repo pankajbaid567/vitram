@@ -138,7 +138,7 @@ def _process_statement(db: Session, doc: Document, data: bytes) -> None:
     warnings = list(parsed.warnings) + ([scan_note] if scan_note else [])
     if result["skipped_overlap"]:
         warnings.append(
-            f"{result['skipped_overlap']} transactions were already in VITTRM from an overlapping statement and weren't added again."
+            f"{result['skipped_overlap']} transactions were already in VITRAM from an overlapping statement and weren't added again."
         )
     if doc.period_months and start and end:
         covered = ((end - start).days + 1) / 30.44

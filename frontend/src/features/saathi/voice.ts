@@ -7,7 +7,7 @@
  *
  * Flow: backend mints an ephemeral token → browser connects directly →
  * mic audio streams as 16 kHz PCM → model audio (24 kHz PCM) plays back →
- * tool calls are executed by the VITTRM backend so every number still comes
+ * tool calls are executed by the VITRAM backend so every number still comes
  * from deterministic code → transcripts are saved to the same conversation.
  */
 import { post } from '../../lib/api'

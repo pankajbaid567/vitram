@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
         task.cancel()
 
 
-app = FastAPI(title="VITTRM API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="VITRAM API", version="0.1.0", lifespan=lifespan)
 app.add_exception_handler(DomainError, domain_error_handler)
 
 

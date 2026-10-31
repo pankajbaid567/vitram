@@ -1,4 +1,4 @@
-# VITTRM — Implementation Plan
+# VITRAM — Implementation Plan
 
 > **Historical design record.** Written before and during the build; kept for its requirement IDs (P1, O1, F1 …, cited in code and tests) and design rationale.
 > It is **not** a status report: current verification state is in [`docs/STATUS.md`](../STATUS.md), architecture in [`docs/ARCHITECTURE.md`](../ARCHITECTURE.md), and decisions in [`docs/DECISIONS.md`](../DECISIONS.md). Older test totals and "no credentials" statements below are superseded.
@@ -19,8 +19,8 @@ Section references below use `RD §n` and `HW:<area>`.
 
 ## 1. Product Understanding
 
-### 1.1 What VITTRM is
-VITTRM is a **standalone, India-only, AI-powered financial journeys platform** for **formal-sector salaried individuals / young professionals** (RD §2, §4, §6.1). It turns a user's own financial data and documents — bank statements, insurance policies, loan and card documents, onboarding answers — into a **reusable, structured, correctable Financial Profile** with **source-linked facts**, and uses that foundation to make **Loans, Credit Cards, EMIs and Insurance** understandable, personalized and actionable (RD §2.1, Appendix C).
+### 1.1 What VITRAM is
+VITRAM is a **standalone, India-only, AI-powered financial journeys platform** for **formal-sector salaried individuals / young professionals** (RD §2, §4, §6.1). It turns a user's own financial data and documents — bank statements, insurance policies, loan and card documents, onboarding answers — into a **reusable, structured, correctable Financial Profile** with **source-linked facts**, and uses that foundation to make **Loans, Credit Cards, EMIs and Insurance** understandable, personalized and actionable (RD §2.1, Appendix C).
 
 Core loop (RD §2.2): **DATA → STRUCTURE → UNDERSTANDING → PERSONALIZATION → CALCULATION → EXPLANATION → ACTION**, delivered across Web + Voice + WhatsApp + Consultation Call.
 
@@ -34,7 +34,7 @@ Core loop (RD §2.2): **DATA → STRUCTURE → UNDERSTANDING → PERSONALIZATION
 - **Supporting intelligence:** Credit Card Intelligence and EMI Intelligence (RD §4, HW).
 - **One AI identity — Vitt Saathi (वित्त साथी)** — chat + real-time voice, context/tools scoped per page (RD §11).
 - **Channels:** self-hosted OpenWA (reminders, emergency quick-query, linked Q&A) and Twilio (insurance consultation calls) (RD §17.1 specifies Meta's Cloud API — see ADR-0002).
-- **Principle that makes it VITTRM, not a chatbot:** language intelligence is separated from financial truth. Numbers come from deterministic code; product/document facts come from catalogues and source-linked extractions; the LLM explains and orchestrates (RD §1, §2, §5, §22).
+- **Principle that makes it VITRAM, not a chatbot:** language intelligence is separated from financial truth. Numbers come from deterministic code; product/document facts come from catalogues and source-linked extractions; the LLM explains and orchestrates (RD §1, §2, §5, §22).
 - **Honest prototyping:** curated/mock catalogues are allowed but must be labelled; nothing claims to be live unless it is (RD §4, §5).
 
 ### 1.4 Handwritten ideation (HW) — transcription
@@ -58,7 +58,7 @@ IDs are used in the traceability matrix (§4). **L** = locked decision (RD §1.1
 ### 2.1 Platform & identity
 | ID | Requirement | Source |
 |----|-------------|--------|
-| P1 | Product name VITTRM; AI identity Vitt Saathi (one assistant everywhere) | L — RD §4, §11.1; HW |
+| P1 | Product name VITRAM; AI identity Vitt Saathi (one assistant everywhere) | L — RD §4, §11.1; HW |
 | P2 | India only; INR everywhere | L — RD §4, §20.1 |
 | P3 | Standalone app; no Paytm auth/ecosystem dependency | L — RD §3.3, §4, §33.1 |
 | P4 | All journeys begin from a common dashboard | L — RD §4, §8.2, §31.1 |
@@ -298,7 +298,7 @@ Status values: **Not started · In progress · Implemented · Tested · Blocked 
 Informed by the `ui-ux-pro-max` design-system search (fintech/trust query → *Minimalism & Swiss style*, *IBM Plex Sans*, contrast/focus/reduced-motion rules, "avoid unclear fees", "avoid AI purple/pink gradients"). We **rejected** its generated palette (gold + purple on dark), because the purple accent is the same "AI purple" its own anti-pattern list warns against and doesn't fit the subject. The `frontend-design` skill set the process: build a token plan, check it against generic defaults, then spend boldness in one place.
 
 ### 5.1 Design idea: "every number shows where it came from"
-VITTRM's value is *trustworthy, source-linked, correctable* data (RD §5). So the one memorable visual device is the **trust mark**: a small, consistent marker attached to every material value. It tells the user whether the value was **Extracted**, **You confirmed**, **Conflicted**, **Missing**, **Sample data** or **Estimate**, and it opens the source. It also carries the RD's product rules into the interface. Everything else stays quiet: a neutral surface, disciplined type and tabular numbers.
+VITRAM's value is *trustworthy, source-linked, correctable* data (RD §5). So the one memorable visual device is the **trust mark**: a small, consistent marker attached to every material value. It tells the user whether the value was **Extracted**, **You confirmed**, **Conflicted**, **Missing**, **Sample data** or **Estimate**, and it opens the source. It also carries the RD's product rules into the interface. Everything else stays quiet: a neutral surface, disciplined type and tabular numbers.
 
 Reviewed against generic defaults and revised:
 - Rejected: dark-navy "fintech terminal" with a neon accent (a generic default); a cream background with a terracotta accent (a generated-design tell); a SaaS card grid with identical shadows everywhere.
@@ -330,7 +330,7 @@ Trust-mark styles: Extracted = dotted outline; You confirmed = solid positive wi
 ```
 Desktop (≥1024)                                   Mobile (<1024)
 ┌────────┬──────────────────────────┬──────────┐  ┌──────────────────────┐
-│ VITTRM │  Page header + context   │ Vitt     │  │ header  [bell][me]   │
+│ VITRAM │  Page header + context   │ Vitt     │  │ header  [bell][me]   │
 │ Home   │                          │ Saathi   │  │                      │
 │ Loans  │  Module content          │ panel    │  │  content             │
 │ Insur. │                          │ (toggle, │  │                      │
@@ -381,7 +381,7 @@ Every data view has four states: **loading** (skeletons that reserve layout), **
 - Header: marigold mark + "Vitt Saathi" + **context badge** (e.g. "Loans", "Insurance · Policy: Care Plus", "Emergency · Mother"). The user can switch to "General".
 - Messages: user bubbles on the right; Saathi answers are left-aligned text (not bubbles) with **tool cards** inline (EMI result, cost breakdown, card ranking, clause excerpt) and **Source** chips.
 - Voice: one-tap mic. States: connecting → listening (pulsing ring, marigold) → speaking (waveform) → interrupted. Transcripts stream into the same thread. Stop is always visible.
-- Mode label when Gemini isn't configured: "Tool mode — answers come from VITTRM calculators and your data; free-form AI is off." Never styled to look like the full AI.
+- Mode label when Gemini isn't configured: "Tool mode — answers come from VITRAM calculators and your data; free-form AI is off." Never styled to look like the full AI.
 
 ---
 
@@ -476,7 +476,7 @@ Browser ↔ backend (session cookie). Backend ↔ Gemini/OpenWA/Twilio (server-h
 **Behaviour when not configured (labelled, not silent):**
 - Chat → **Tool mode.** A deterministic intent router (English + Hinglish keywords) calls the same tools and renders the same cards, with the badge "Tool mode — AI not configured". It never produces free-form financial claims.
 - Voice → the mic shows "Voice needs Gemini Live setup", with the setup steps. No fake voice.
-- WhatsApp reminder → the reminder row is saved and the in-app notification is created. Delivery status is `not_configured`, and the UI says "WhatsApp isn't connected. You'll see this reminder in VITTRM."
+- WhatsApp reminder → the reminder row is saved and the in-app notification is created. Delivery status is `not_configured`, and the UI says "WhatsApp isn't connected. You'll see this reminder in VITRAM."
 - Consultation → the request is saved with status `not_configured`, and the UI says "Calling isn't set up, so no call was placed. Your request is saved." It never implies a call happened (RD §26).
 
 **Saathi orchestration (RD §11.3, §18.2, App. B):** resolve context → minimal profile slice (A11) → tool allow-list for the context → Gemini function-calling loop (max N steps) → validate tool output + provenance → answer. A **numeric-fidelity guard** checks that every ₹ amount in the narrative appears in some tool output this turn. If one doesn't, the message is flagged and the tool cards stay authoritative. Document text is passed inside clearly delimited "untrusted document content" blocks (RD §23.3).
@@ -499,7 +499,7 @@ Browser ↔ backend (session cookie). Backend ↔ Gemini/OpenWA/Twilio (server-h
 | AI requests | Minimal profile slice per context, with masked identifiers (policy/account refs masked, e.g. `••••4821`). Family-member data is included only when that member is selected (RD §6.2, §11.4). Document text is delimited as untrusted. |
 | Upload safety | Size/type limits; magic-byte check (`%PDF`); CSV size/row caps; symlinks irrelevant (bytes only); filename never used as a path. |
 | Secrets | `.env` (git-ignored), `.env.example` without values; frontend never receives server keys; Live uses ephemeral tokens. |
-| Regulatory (S8) | Persistent footer note and per-catalogue label: "VITTRM is a decision-support prototype, not a lender, insurer or adviser. Products shown are sample data." Production needs RBI KFS/APR alignment, IRDAI intermediary review and DPDP alignment (RD §23.2). |
+| Regulatory (S8) | Persistent footer note and per-catalogue label: "VITRAM is a decision-support prototype, not a lender, insurer or adviser. Products shown are sample data." Production needs RBI KFS/APR alignment, IRDAI intermediary review and DPDP alignment (RD §23.2). |
 
 ---
 
@@ -674,9 +674,9 @@ Reference screens (`resources/`): `image.png` Home · `image copy.png` Loans · 
 
 Design decisions (from the references, adjusted):
 - Lavender-periwinkle canvas with soft light and a faint mountain horizon; glass cards (translucent + blur) with solid fallbacks; deep-indigo floating sidebar with tagline, indigo active pill, setup-progress card and profile card; topbar split into search pill · bell · amber Ask Vitt Saathi · avatar.
-- Kept out on purpose: handwritten script captions, motivational quotes, real bank logos on the card illustration, a "financial health score" (VITTRM computes no score — shown instead as a real setup checklist), "Powered by Gemini / Voice enabled" chips (shown only from `/ai/status`), Privacy/Terms/Help footer links (no such pages).
+- Kept out on purpose: handwritten script captions, motivational quotes, real bank logos on the card illustration, a "financial health score" (VITRAM computes no score — shown instead as a real setup checklist), "Powered by Gemini / Voice enabled" chips (shown only from `/ai/status`), Privacy/Terms/Help footer links (no such pages).
 - Illustrations are inline SVG (no image assets, no new dependencies).
-- Search is honest: it matches VITTRM pages and the user's own document names, and otherwise sends the question to Vitt Saathi. No fabricated results.
+- Search is honest: it matches VITRAM pages and the user's own document names, and otherwise sends the question to Vitt Saathi. No fabricated results.
 
 Checklist:
 - ✔ Tokens & canvas refresh (lavender scale, sidebar/active/amber/danger washes, layout + control sizes); translucent glass cards (no per-card blur, for scroll performance) with solid/forced-colours fallbacks; `Breadcrumbs`, `PageHero`, `FeatureTile`, `IconTile`, `GlassCard`, `ConfirmDialog`, `PasswordInput`, `Avatar`, inline-SVG illustrations (`components/illustrations.tsx`)
@@ -690,7 +690,7 @@ Checklist:
 - ✔ Verification (2026-09-23): `tsc -b` clean · oxlint 0 errors (21 pre-existing warnings) · vitest 21/21 (7 new in `src/__tests__/m12.test.tsx`) · pytest 92/92 (3 new in `tests/test_auth_password.py`) · `vite build` OK · screenshots 1440 / 768 / 390, fresh account (empty states) and sample workspace · accessibility audit (`scripts/a11y-audit.mjs`, now also covering `/profile`, `/login`, `/signup`): 61 scans, **0 violations**, keyboard & touch 8/8 PASS. The first M12 run found four issues (duplicate "Account" landmark on Profile, brand text outside landmarks on login/sign-up, search input without its own focus ring, an inline link under 24 px) — all fixed and re-verified.
 
 Known gaps / honest notes:
-- Search finds VITTRM pages and the user's own document names only; everything else is sent to Vitt Saathi as a question.
+- Search finds VITRAM pages and the user's own document names only; everything else is sent to Vitt Saathi as a question.
 - Theme choice is not offered (the app has one light theme). Email change, password reset, verification, OTP and social login are not built.
 - The background image carries the text "YOUR MONEY · A BRIGHTER YOU" at its right edge, which can sit behind page content on wide screens.
 - One test account (`m12-empty-…@example.com`) was created in the local dev database for empty-state screenshots.
@@ -737,7 +737,7 @@ Not built / not verified (honest):
 - WhatsApp and Twilio: unchanged, still not configured; no live message or call. SMTP: no live email sent.
 - OCR outside macOS needs `OCR_PROVIDER=gemini` (cloud) — no local engine was installed on purpose.
 - HEIC photos are refused with advice to use JPG. Multi-page photo sets are separate uploads.
-- Family: data stays per member as before; explicit cross-member permissions (e.g. sharing a member's data with another login) aren't built — VITTRM has one login per workspace.
+- Family: data stays per member as before; explicit cross-member permissions (e.g. sharing a member's data with another login) aren't built — VITRAM has one login per workspace.
 - Card statement upload (D4, paused in M10) still not built.
 
 ### Next milestone (M10/M11)

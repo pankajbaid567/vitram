@@ -24,7 +24,7 @@ _build_lock = threading.Lock()
 
 NOT_CONFIGURED = VisionError(
     "OCR_NOT_CONFIGURED",
-    "This looks like a scan or a photo, and reading those isn't set up on this VITTRM server. "
+    "This looks like a scan or a photo, and reading those isn't set up on this VITRAM server. "
     "Upload the digital PDF (or a CSV for bank statements), or ask the administrator to enable OCR.",
 )
 

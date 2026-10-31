@@ -133,7 +133,7 @@ def parse_csv(data: bytes) -> ParsedStatement:
     if mapping is None:
         raise StatementParseError(
             "UNRECOGNISED_COLUMNS",
-            "VITTRM couldn't find date, description and amount columns in this CSV. "
+            "VITRAM couldn't find date, description and amount columns in this CSV. "
             "Export the statement with Date, Narration, Withdrawal, Deposit and Balance columns.",
         )
     rows: list[ParsedRow] = []
@@ -262,7 +262,7 @@ def parse_text_pages(pages: list[str], method: str = "pdf_text", base_confidence
     if not rows:
         raise StatementParseError(
             "NO_TRANSACTIONS",
-            "VITTRM couldn't find transaction lines in this PDF. Try the CSV export from your bank.",
+            "VITRAM couldn't find transaction lines in this PDF. Try the CSV export from your bank.",
         )
     if uncertain:
         warnings.append(f"{uncertain} transactions have an uncertain debit/credit direction and need review.")

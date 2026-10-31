@@ -514,7 +514,7 @@ class WebhookEvent(Base):
 
 
 class Goal(Base):
-    """A savings goal the user tracks by hand. VITTRM never moves money or promises returns."""
+    """A savings goal the user tracks by hand. VITRAM never moves money or promises returns."""
 
     __tablename__ = "goals"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)

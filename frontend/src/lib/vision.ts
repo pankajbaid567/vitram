@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { get } from './api'
 
-/** What this VITTRM server can read. Photos and scans need OCR; digital PDFs and CSVs never do. */
+/** What this VITRAM server can read. Photos and scans need OCR; digital PDFs and CSVs never do. */
 export interface VisionStatus { provider: 'macos' | 'gemini' | 'none'; configured: boolean; on_device: boolean; note: string }
 
 export function useAiStatus() {

@@ -156,7 +156,7 @@ def missed_payment(emi_amount: float, late_rule: dict | None, days_late: int = 3
     baseline = {"amount_due": emi_amount, "extra_cost": 0.0}
     notes = [
         "The missed EMI remains payable in addition to later EMIs.",
-        "VITTRM does not estimate credit-score effects.",
+        "VITRAM does not estimate credit-score effects.",
     ]
     if not late_rule or (late_rule.get("flat_fee") is None and late_rule.get("penal_rate_pa") is None):
         return _result(

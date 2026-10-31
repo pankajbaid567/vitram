@@ -36,7 +36,7 @@ export function Insights() {
     return (
       <>
         <PageHeader crumbs={crumbs} title="Spending insights" description="Patterns in your own bank statement — trends, subscriptions and payments worth a second look." />
-        <EmptyState headingLevel={2} icon={<Search />} title="No statement yet" body="Upload a bank statement of 3, 6 or 12 months. VITTRM compares full calendar months, so three or more give the clearest picture."
+        <EmptyState headingLevel={2} icon={<Search />} title="No statement yet" body="Upload a bank statement of 3, 6 or 12 months. VITRAM compares full calendar months, so three or more give the clearest picture."
           action={<LinkButton to="/onboarding/statement">Upload a bank statement</LinkButton>} />
       </>
     )

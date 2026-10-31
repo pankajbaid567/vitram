@@ -29,7 +29,7 @@ const MARKS: Record<Mark, { label: string; cls: string; icon: ReactNode; title: 
   conflicted: { label: 'Conflicted', cls: 'border-caution/40 bg-caution-soft text-caution', icon: <AlertTriangle className="size-3" />,
     title: 'Two sources disagree. Review which is right.' },
   missing: { label: 'Missing', cls: 'border-dashed border-line-strong text-muted', icon: <CircleDashed className="size-3" />,
-    title: "VITTRM doesn't have this yet." },
+    title: "VITRAM doesn't have this yet." },
   sample: { label: 'Sample data', cls: 'hatch border-ink/25 text-ink', icon: <FlaskConical className="size-3" />,
     title: 'From the curated sample catalogue with fictional institutions. Not live market data.' },
   estimate: { label: 'Estimate', cls: 'border-line-strong text-muted', icon: <HelpCircle className="size-3" />,
@@ -37,7 +37,7 @@ const MARKS: Record<Mark, { label: string; cls: string; icon: ReactNode; title: 
   user: { label: 'You entered', cls: 'border-positive/40 text-positive', icon: <BadgeCheck className="size-3" />,
     title: 'You entered this value.' },
   rejected: { label: 'You rejected', cls: 'border-line-strong text-muted line-through decoration-muted/50', icon: <CircleDashed className="size-3" />,
-    title: 'You marked this value as wrong. VITTRM will not use it.' },
+    title: 'You marked this value as wrong. VITRAM will not use it.' },
   scan: { label: 'Read from scan', cls: 'border-dashed border-indigo/50 text-indigo-dark', icon: <Sigma className="size-3" />,
     title: 'Read from a photo or scan by OCR. Check it against the document.' },
 }
@@ -87,7 +87,7 @@ export function SourceProvider({ children }: { children: ReactNode }) {
               <TrustMark state={c.user_verified ? 'confirmed' : 'extracted'} />
               {c.confidence != null && <span className="text-muted">Extraction confidence {(c.confidence * 100).toFixed(0)}%</span>}
             </div>
-            <p className="text-sm text-muted">Text from documents is shown as written. VITTRM never treats it as instructions.</p>
+            <p className="text-sm text-muted">Text from documents is shown as written. VITRAM never treats it as instructions.</p>
             <a href={`/api/documents/${c.document_id}/file`} target="_blank" rel="noopener noreferrer"
               className="inline-flex min-h-11 w-fit items-center gap-2 rounded-[var(--radius-control)] border border-line-strong px-4 text-sm font-medium hover:border-indigo hover:text-indigo">
               <FileText className="size-4" aria-hidden /> Open the document{c.page ? ` (page ${c.page})` : ''}
@@ -104,7 +104,7 @@ export function SourceLink({ citation, label = 'Source', className }: { citation
   if (!citation) return null
   return (
     <button type="button" onClick={() => open(citation)}
-      className={clsx('inline-flex min-h-6 items-center gap-1 rounded px-1 text-xs font-medium text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo', className)}>
+      className={clsx('inline-flex min-h-9 sm:min-h-6 items-center gap-1 rounded px-1 text-xs font-medium text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo', className)}>
       <FileText className="size-3" aria-hidden />
       {label}{citation.page ? ` · p.${citation.page}` : ''}
     </button>

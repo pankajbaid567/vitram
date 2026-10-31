@@ -202,7 +202,7 @@ export function ToolCard({ card, onQuick }: { card: any; onQuick?: (t: string) =
     case 'doc_search':
       return (
         <Shell icon={<FileSearch className="size-4" />} title={card.found ? 'From your document' : 'Not found in your documents'}>
-          {!card.found && <p className="text-muted">VITTRM didn't find this, so it won't guess.</p>}
+          {!card.found && <p className="text-muted">VITRAM didn't find this, so it won't guess.</p>}
           {card.results.slice(0, 2).map((r: any, i: number) => (
             <div key={i} className="py-1">
               <p className="line-clamp-3 border-l-2 border-indigo/50 pl-2 text-ink/90">{r.citation.snippet}</p>

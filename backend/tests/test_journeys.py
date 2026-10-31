@@ -128,7 +128,7 @@ def test_detected_emi_confirm_and_reminder_honesty(sample):
     r = sample.post("/api/reminders/send-now", json={"object_type": "emi", "object_id": det["id"]}).json()
     assert r["channel"] == "in_app" and r["status"] == "sent" and "explanation" in r
     notes = sample.get("/api/notifications").json()["items"]
-    assert any("VITTRM reminder" in n["title"] for n in notes)
+    assert any("VITRAM reminder" in n["title"] for n in notes)
 
 
 def test_whatsapp_reminder_not_configured_is_honest(client, monkeypatch):

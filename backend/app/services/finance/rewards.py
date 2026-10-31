@@ -35,7 +35,7 @@ def estimate_card(card: dict, amount: float, category: str | None, merchant: str
         return {
             "card_id": card["id"], "card_name": card["name"], "computable": False,
             "reward_units": None, "unit_name": None, "value_inr": None, "why": [],
-            "caveats": ["No reward rules are available for this card, so VITTRM can't estimate rewards."],
+            "caveats": ["No reward rules are available for this card, so VITRAM can't estimate rewards."],
             "incomplete": ["Card reward rules"],
         }
 

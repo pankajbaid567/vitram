@@ -1,4 +1,4 @@
-/** Thin fetch wrapper for the VITTRM API. Session is an HttpOnly cookie; no tokens in JS. */
+/** Thin fetch wrapper for the VITRAM API. Session is an HttpOnly cookie; no tokens in JS. */
 
 export class ApiError extends Error {
   code: string
@@ -56,7 +56,7 @@ export async function api<T = any>(path: string, init: RequestInit & { json?: un
       body: json !== undefined ? JSON.stringify(json) : rest.body,
     })
   } catch {
-    throw new ApiError(0, 'NETWORK', "VITTRM can't reach the server. Check your connection and try again.")
+    throw new ApiError(0, 'NETWORK', "VITRAM can't reach the server. Check your connection and try again.")
   }
   if (res.status === 401 && onUnauthenticated && !path.startsWith('/auth/')) onUnauthenticated()
   return (await parse(res)) as T
@@ -76,7 +76,7 @@ export function upload<T = any>(path: string, form: FormData, onProgress?: (pct:
     xhr.open('POST', '/api' + path)
     xhr.withCredentials = true
     xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100)) }
-    xhr.onerror = () => reject(new ApiError(0, 'NETWORK', "VITTRM can't reach the server. Check your connection and try again."))
+    xhr.onerror = () => reject(new ApiError(0, 'NETWORK', "VITRAM can't reach the server. Check your connection and try again."))
     xhr.onload = () => {
       if (xhr.status === 401 && onUnauthenticated) onUnauthenticated()
       parse(new Response(xhr.responseText, { status: xhr.status })).then((b) => resolve(b as T), reject)

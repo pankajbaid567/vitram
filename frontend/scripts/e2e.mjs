@@ -98,7 +98,7 @@ await step('Documents & data lists the processed documents (and does not crash)'
 
 await step('a document opens with page-cited facts', async () => {
   await clickByText('button', '/Review values/')
-  await waitFor('the facts sheet', hasText('Values VITTRM extracted, with where each came from.'))
+  await waitFor('the facts sheet', hasText('Values VITRAM extracted, with where each came from.'))
   await waitFor('a cited fact', `document.querySelectorAll('[role=dialog] a, [role=dialog] button').length > 0 && /Source|p\\.\\s?\\d|page/i.test(document.body.innerText)`)
 })
 

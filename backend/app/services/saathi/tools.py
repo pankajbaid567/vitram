@@ -117,7 +117,7 @@ def t_doc_search(db, user, args, ctx) -> ToolResult:
 
 
 def t_document_summary(db, user, args, ctx) -> ToolResult:
-    """What VITTRM read from one document: every value with its review state and source line (never auto-confirmed)."""
+    """What VITRAM read from one document: every value with its review state and source line (never auto-confirmed)."""
     from app.models import Document, DocumentFact
     doc_id = args.get("document_id") or (ctx.get("document_ids") or [None])[0]
     d = db.query(Document).filter(Document.id == doc_id, Document.owner_user_id == user.id).first() if doc_id else None
@@ -342,10 +342,10 @@ CARD_CATS = ["travel", "food_delivery", "groceries", "ecommerce", "fuel", "utili
 
 TOOLS: dict[str, Tool] = {t.name: t for t in [
     Tool("profile_get_slice", "Get the user's approved financial profile facts relevant to the current page.", _obj({}), t_profile),
-    Tool("navigation_open", "Offer a link to a VITTRM screen.", _obj({"destination": _str("Screen", [
+    Tool("navigation_open", "Offer a link to a VITRAM screen.", _obj({"destination": _str("Screen", [
         "loans", "explore_loans", "analyze_loan", "cards", "card_optimizer", "emis", "reminders", "insurance", "explore_insurance",
         "upload_policy", "emergency", "consult", "profile_review", "documents", "family", "upload_statement"])}, ["destination"]), t_navigate),
-    Tool("document_summary", "Everything VITTRM extracted from the current document (receipt, policy, loan document or statement), with each value's review state and source line.",
+    Tool("document_summary", "Everything VITRAM extracted from the current document (receipt, policy, loan document or statement), with each value's review state and source line.",
          _obj({"document_id": _str("Document id; defaults to the one open on this page")}), t_document_summary),
     Tool("documents_search", "Search the user's uploaded policy or loan documents for a clause or term. Returns short source snippets with page numbers.",
          _obj({"query": _str("What to look for"), "document_id": _str("Specific document id, if known")}, ["query"]), t_doc_search),

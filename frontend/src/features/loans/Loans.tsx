@@ -78,7 +78,7 @@ export function LoansHome() {
                 </span>
               </div>
               <h2 className="mt-2 text-[1.45rem] font-semibold leading-tight">Find the right loan for your goals</h2>
-              <p className="text-[0.95rem] leading-relaxed text-white/75">Tell VITTRM the purpose, amount and whether you can offer collateral. It checks what it can from your profile and compares options on their full cost.</p>
+              <p className="text-[0.95rem] leading-relaxed text-white/75">Tell VITRAM the purpose, amount and whether you can offer collateral. It checks what it can from your profile and compares options on their full cost.</p>
               <div className="mt-auto flex flex-wrap gap-2 pt-3">
                 <Link to="/loans/need" className={buttonClass('secondary', 'md', 'border-transparent')}><Search className="size-4" aria-hidden />Start exploring</Link>
                 <button type="button" onClick={() => ask('I need a loan')}
@@ -90,7 +90,7 @@ export function LoansHome() {
             <Panel className="flex flex-col gap-3 p-6 sm:p-7">
               <span className="flex items-center gap-2.5"><IconTile tone="indigo"><FileText /></IconTile><Badge tone="indigo">Analyse a loan document</Badge></span>
               <h2 className="mt-2 text-[1.45rem] font-semibold leading-tight">Understand a loan you already have or were offered</h2>
-              <p className="text-[0.95rem] leading-relaxed text-muted">Upload a sanction letter, Key Facts Statement or agreement. VITTRM extracts the terms with page references, works out the real cost and flags clauses to read.</p>
+              <p className="text-[0.95rem] leading-relaxed text-muted">Upload a sanction letter, Key Facts Statement or agreement. VITRAM extracts the terms with page references, works out the real cost and flags clauses to read.</p>
               <Link to="/loans/analyze" className="group mt-auto flex items-center gap-3 rounded-[var(--radius-card)] border-2 border-dashed border-indigo/25 bg-white/60 p-4 transition-colors hover:border-indigo/55 hover:bg-white">
                 <IconTile tone="indigo" size="sm"><CloudUpload /></IconTile>
                 <span className="min-w-0 flex-1"><span className="block font-semibold">Upload a loan document</span><span className="text-sm text-muted">PDF, up to 15 MB</span></span>
@@ -435,19 +435,19 @@ export function LoanDetail() {
               { k: 'Employment', v: p.eligibility.employment?.join(', ') },
               { k: 'Minimum monthly income', v: p.eligibility.min_monthly_income ? inr(p.eligibility.min_monthly_income) : 'Not stated' },
               { k: 'Age', v: `${p.eligibility.age_min}–${p.eligibility.age_max}` },
-              { k: 'Credit score', v: p.eligibility.credit_score_min ? `${p.eligibility.credit_score_min}+ (VITTRM can't check this)` : 'Not stated' },
+              { k: 'Credit score', v: p.eligibility.credit_score_min ? `${p.eligibility.credit_score_min}+ (VITRAM can't check this)` : 'Not stated' },
               { k: 'Collateral', v: p.eligibility.collateral },
             ]} />
             <h3 className="mt-4 text-sm font-medium">Documents usually needed</h3>
             <ul className="mt-1 list-disc pl-5 text-[0.95rem] text-muted">{p.documents.map((d: string) => <li key={d}>{d}</li>)}</ul>
           </Panel>
-          <p className="text-sm text-muted">VITTRM doesn't process applications. Apply directly with the lender after checking their current terms.</p>
+          <p className="text-sm text-muted">VITRAM doesn't process applications. Apply directly with the lender after checking their current terms.</p>
         </div>
       </div>
       {c && (
         <Panel className="mt-6 p-5">
           <h2 className="mb-1 text-lg font-semibold">What if…</h2>
-          <p className="mb-4 text-sm text-muted">Calculated by VITTRM's finance engine using this product's stated rules.</p>
+          <p className="mb-4 text-sm text-muted">Calculated by VITRAM's finance engine using this product's stated rules.</p>
           <WhatIf base={{ product_id: id, principal: amount, tenure_months: tenure }} floating={p.pricing.interest_type === 'floating'} />
         </Panel>
       )}

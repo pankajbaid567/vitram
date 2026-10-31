@@ -1,6 +1,6 @@
 """OpenWA WhatsApp gateway adapter.
 
-VITTRM talks only to the self-hosted OpenWA REST API. Outbound messages use
+VITRAM talks only to the self-hosted OpenWA REST API. Outbound messages use
 the configured session's send-text endpoint; inbound messages and delivery
 receipts arrive through OpenWA's signed webhook envelope.
 """

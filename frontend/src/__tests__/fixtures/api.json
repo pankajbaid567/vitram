@@ -405,19 +405,19 @@
     ],
     "cautions": [
      "EMI of ₹9,857 is more than your estimated monthly surplus.",
-     "Has a credit-score requirement VITTRM can't check."
+     "Has a credit-score requirement VITRAM can't check."
     ],
     "warnings": [
      {
       "title": "Credit score requirement",
       "severity": "eligibility_condition",
-      "text": "Requires a credit bureau score of 750 or more in the sample terms. VITTRM doesn't know your score, so this is marked unknown."
+      "text": "Requires a credit bureau score of 750 or more in the sample terms. VITRAM doesn't know your score, so this is marked unknown."
      }
     ],
     "notes": [],
     "obligation_share_pct": 29.456150993265524,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "source": "VITRAM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false
@@ -581,7 +581,7 @@
     "notes": [],
     "obligation_share_pct": 29.607519181907698,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "source": "VITRAM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false
@@ -718,7 +718,7 @@
     ],
     "obligation_share_pct": 32.88732021303845,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "source": "VITRAM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false
@@ -874,7 +874,7 @@
     "notes": [],
     "obligation_share_pct": 29.977330208577513,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
+     "source": "VITRAM curated sample catalogue — fictional lenders with illustrative terms. Not live market data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false
@@ -1211,7 +1211,7 @@
    "Sample",
    "Asha Sample"
   ],
-  "disclaimer": "The insurer decides whether a claim is admissible. VITTRM shows what your policy documents say and can't guarantee approval."
+  "disclaimer": "The insurer decides whether a claim is admissible. VITRAM shows what your policy documents say and can't guarantee approval."
  },
  "insurance_events": [
   {
@@ -1562,7 +1562,7 @@
    "bank_account_id": null,
    "family_member_id": null,
    "warnings": [
-    "This document contains text addressed to AI assistants (page 2). VITTRM treated it as document text only and did not act on it."
+    "This document contains text addressed to AI assistants (page 2). VITRAM treated it as document text only and did not act on it."
    ],
    "transactions_found": null,
    "facts_found": 27,
@@ -1649,7 +1649,7 @@
     "user_benefits": [],
     "has_rules": true,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+     "source": "VITRAM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false
@@ -1695,7 +1695,7 @@
     "user_benefits": [],
     "has_rules": true,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+     "source": "VITRAM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false
@@ -1737,7 +1737,7 @@
     "user_benefits": [],
     "has_rules": true,
     "catalogue": {
-     "source": "VITTRM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
+     "source": "VITRAM curated sample catalogue — fictional card programmes with illustrative reward rules. Not live issuer data.",
      "last_updated": "2026-09-01",
      "is_mock": true,
      "is_stale": false

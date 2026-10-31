@@ -54,7 +54,7 @@ export function InsuranceHome() {
       {d.policy_count === 0 ? (
         <div className="flex flex-col gap-6">
           <PageHero pill={<><ShieldCheck />No policies yet</>} title="Add your first policy" art={<ShieldArt className="w-72" />}
-            body="Upload a policy schedule or wording. VITTRM turns it into a clear summary of coverage, exclusions, waiting periods and claim steps — with page references."
+            body="Upload a policy schedule or wording. VITRAM turns it into a clear summary of coverage, exclusions, waiting periods and claim steps — with page references."
             actions={<LinkButton to="/insurance/upload" size="lg" icon={<Upload className="size-4" />}>Upload a policy</LinkButton>}
             note={<><Lock />Your documents are encrypted in your workspace.</>} />
           <ul className="grid gap-5 @xl:grid-cols-2 @5xl:grid-cols-4" aria-label="What you get">
@@ -204,7 +204,7 @@ export function PolicyUpload() {
                     <Checkbox key={p.key} disabled={later} checked={who.includes(p.key)} onChange={(e) => setWho(e.target.checked ? [...who, p.key] : who.filter((x) => x !== p.key))}
                       label={p.key === 'self' ? 'You' : `${p.name} (${REL[p.relation] ?? p.relation})`} />
                   ))}
-                  <Checkbox checked={later} onChange={(e) => setLater(e.target.checked)} label="I'll confirm after VITTRM reads the policy" />
+                  <Checkbox checked={later} onChange={(e) => setLater(e.target.checked)} label="I'll confirm after VITRAM reads the policy" />
                 </div>
                 <Link to="/family" className="mt-2 inline-block text-sm font-medium text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Add a family member</Link>
               </fieldset>
@@ -261,8 +261,8 @@ function FactRow({ f, docId }: { f: DocFact; docId: string }) {
           <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
             <TrustMark state={f.state} />
             <SourceLink citation={f.citation} />
-            {!edit && <button type="button" className="min-h-6 px-1 text-xs font-medium text-muted hover:text-indigo" onClick={() => setEdit(true)}>Correct</button>}
-            {!edit && f.state === 'extracted' && <button type="button" className="min-h-6 px-1 text-xs font-medium text-muted hover:text-positive" onClick={() => save.mutate({ confirm_only: true })}>Looks right</button>}
+            {!edit && <button type="button" className="min-h-9 sm:min-h-6 px-1 text-xs font-medium text-muted hover:text-indigo" onClick={() => setEdit(true)}>Correct</button>}
+            {!edit && f.state === 'extracted' && <button type="button" className="min-h-9 sm:min-h-6 px-1 text-xs font-medium text-muted hover:text-positive" onClick={() => save.mutate({ confirm_only: true })}>Looks right</button>}
           </div>
         </dd>
     </div>
@@ -297,7 +297,7 @@ export function PolicySummary() {
       {p.status === 'needs_review' && (
         <Callout tone="saathi" className="mb-6" title="Check this summary"
           action={<Button size="sm" onClick={() => confirm.mutate()} loading={confirm.isPending} disabled={!p.members_confirmed}>{p.members_confirmed ? 'Confirm summary' : 'Confirm who is covered first'}</Button>}>
-          VITTRM read these values automatically. Correct anything that doesn't match the document, then confirm.
+          VITRAM read these values automatically. Correct anything that doesn't match the document, then confirm.
         </Callout>
       )}
       {d.document?.warnings?.map((w: string) => <Callout key={w} tone="caution" className="mb-4">{w}</Callout>)}
@@ -505,7 +505,7 @@ export function Consult() {
     <>
       <PageHeader crumbs={[{ label: 'Home', to: '/' }, { label: 'Insurance', to: '/insurance' }]} title="Talk to a consultant" description="Request a call about a policy or plan. You see exactly what will be shared before anything is sent." />
       {history.data && !history.data.calling_configured && (
-        <Callout tone="caution" className="mb-6" title="Calling isn't set up in this environment">You can prepare and save a request, but no call will be placed until Twilio is configured. VITTRM will say so clearly.</Callout>
+        <Callout tone="caution" className="mb-6" title="Calling isn't set up in this environment">You can prepare and save a request, but no call will be placed until Twilio is configured. VITRAM will say so clearly.</Callout>
       )}
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
         <Panel className="p-5">
@@ -592,7 +592,7 @@ export function Emergency() {
           <Select value={event} onChange={(e) => set('event', e.target.value)}>{events.data?.map((e: any) => <option key={e.key} value={e.key}>{e.label}</option>)}</Select>
         </Field>
       </Panel>
-      {!member && <p className="text-muted">Choose the person first so VITTRM only looks at their policies.</p>}
+      {!member && <p className="text-muted">Choose the person first so VITRAM only looks at their policies.</p>}
       {q.isLoading && member && <PageSkeleton />}
       {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
       {q.data && (

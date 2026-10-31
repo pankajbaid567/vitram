@@ -1,4 +1,4 @@
-"""Generate VITTRM sample documents (deterministic).
+"""Generate VITRAM sample documents (deterministic).
 
 All institutions are fictional and every document is stamped SAMPLE. These
 files drive the extraction tests (RD §27.2) and the labelled sample workspace
@@ -77,7 +77,7 @@ def write_statement_csv(rows) -> None:
     bal = 84000.0
     with open(OUT / "sample_statement_6m.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["ARAVALI BANK (SAMPLE) — ACCOUNT STATEMENT — SAMPLE DOCUMENT FOR VITTRM DEMO"])
+        w.writerow(["ARAVALI BANK (SAMPLE) — ACCOUNT STATEMENT — SAMPLE DOCUMENT FOR VITRAM DEMO"])
         w.writerow(["Account", "Savings ••••7730", "Period", "01/03/2026 to 31/08/2026"])
         w.writerow([])
         w.writerow(["Date", "Narration", "Withdrawal Amt.", "Deposit Amt.", "Closing Balance"])
@@ -118,7 +118,7 @@ def pdf(name: str, pages: list[list[str]], title: str) -> None:
     for lines in pages:
         y = 810
         c.setFont("Helvetica-Bold", 9)
-        c.drawString(18 * mm, y, "SAMPLE DOCUMENT FOR VITTRM DEMO - FICTIONAL INSURER/LENDER - NOT A REAL CONTRACT")
+        c.drawString(18 * mm, y, "SAMPLE DOCUMENT FOR VITRAM DEMO - FICTIONAL INSURER/LENDER - NOT A REAL CONTRACT")
         y -= 20
         for line in lines:
             if line.isupper() and len(line) < 60:

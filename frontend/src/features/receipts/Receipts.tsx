@@ -41,7 +41,7 @@ export function ReceiptScan() {
   return (
     <>
       <PageHeader crumbs={CRUMBS} title="Scan a receipt or invoice"
-        description="Photograph a bill or upload an e-invoice. VITTRM reads the merchant, date, total, GST and items, and you check them before anything is used." />
+        description="Photograph a bill or upload an e-invoice. VITRAM reads the merchant, date, total, GST and items, and you check them before anything is used." />
       <div className="grid max-w-5xl gap-6 @4xl:grid-cols-[1.3fr_1fr]">
         {poll.data ? (
           <Panel className="p-6">
@@ -137,7 +137,7 @@ export function ReceiptDetail() {
         <Panel className="p-5 sm:p-6" aria-labelledby="rv-h">
           <div className="mb-4 flex items-start gap-3">
             <IconTile tone="indigo"><ReceiptText /></IconTile>
-            <div><h2 id="rv-h" className="text-[1.1rem] font-semibold">Check what VITTRM read</h2>
+            <div><h2 id="rv-h" className="text-[1.1rem] font-semibold">Check what VITRAM read</h2>
               <p className="text-sm text-muted">Confirm, correct or reject each value. Rejected values are never used.</p></div>
           </div>
           <ExtractedReview docId={doc.id} />
@@ -158,7 +158,7 @@ export function ReceiptDetail() {
               <Button size="sm" variant="quiet" className="mt-2" icon={<Link2Off className="size-4" />} loading={link.isPending} onClick={() => link.mutate(null)}>Remove match</Button>
             </div>
           ) : r.total == null ? (
-            <p className="text-sm text-muted">Add or confirm the total first, then VITTRM can look for the payment.</p>
+            <p className="text-sm text-muted">Add or confirm the total first, then VITRAM can look for the payment.</p>
           ) : candidates.length === 0 ? (
             <p className="text-sm text-muted">No bank transaction matches this total within a few days of the bill. That's fine — the payment may be on a card or statement you haven't uploaded. Nothing is added automatically.</p>
           ) : (

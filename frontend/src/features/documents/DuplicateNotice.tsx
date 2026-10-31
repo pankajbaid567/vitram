@@ -26,7 +26,7 @@ export function DuplicateNotice({ error, onReread, expectedType }: { error: ApiE
       {otherType ? (
         <p>It was uploaded as {TYPE_LABEL[d.type] ?? 'another type'} (<b>{d.display_name}</b>). Open it there — or delete it in Documents & data first if you want to add it as {TYPE_LABEL[expectedType!] ?? 'this type'}.</p>
       ) : (
-        <p>It's in Documents & data as <b>{d.display_name ?? 'an earlier upload'}</b>. Reading it again uses VITTRM's latest reader{d.read_from_scan ? '' : ', including photos and scans'}. Values you already checked will need checking again.</p>
+        <p>It's in Documents & data as <b>{d.display_name ?? 'an earlier upload'}</b>. Reading it again uses VITRAM's latest reader{d.read_from_scan ? '' : ', including photos and scans'}. Values you already checked will need checking again.</p>
       )}
       {again.isError && <p className="mt-1 text-critical">{errorMessage(again.error)}</p>}
     </Callout>

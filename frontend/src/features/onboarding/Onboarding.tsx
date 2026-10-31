@@ -96,7 +96,7 @@ export function AboutStep() {
       <form onSubmit={submit} className="mt-6 grid gap-5 sm:grid-cols-2" noValidate>
         <Field label="Name" error={fe('name')}><Input value={f.name} onChange={set('name')} autoComplete="name" /></Field>
         <Field label="Date of birth" error={fe('dob')}><Input type="date" value={f.dob} onChange={set('dob')} max={new Date().toISOString().slice(0, 10)} /></Field>
-        <Field label="Employment" hint={f.employment_type === 'other' ? 'VITTRM is designed for salaried people; some features may not fit other situations.' : undefined}>
+        <Field label="Employment" hint={f.employment_type === 'other' ? 'VITRAM is designed for salaried people; some features may not fit other situations.' : undefined}>
           <Select value={f.employment_type} onChange={set('employment_type')}>
             <option value="salaried">Salaried (formal sector)</option>
             <option value="other">Other</option>
@@ -106,7 +106,7 @@ export function AboutStep() {
         <Field label="Employer" optional><Input value={f.employer} onChange={set('employer')} autoComplete="organization" /></Field>
         <Field label="Designation" optional><Input value={f.designation} onChange={set('designation')} autoComplete="organization-title" /></Field>
         <Field label="Monthly take-home salary" optional error={fe('salary_manual')}
-          hint="Skip this if you prefer — VITTRM can estimate it from your bank statement and ask you to confirm.">
+          hint="Skip this if you prefer — VITRAM can estimate it from your bank statement and ask you to confirm.">
           <Input prefix="₹" inputMode="numeric" value={f.salary} onChange={set('salary')} />
         </Field>
         <Field label="Mobile number" optional error={fe('phone')} hint={user?.phone_masked ? `On file: ${user.phone_masked}` : 'Needed only for WhatsApp reminders or consultation calls.'}>
@@ -174,7 +174,7 @@ export function FamilyStep() {
   return (
     <OnboardingLayout step="family">
       <h1 className="text-2xl font-semibold">Family</h1>
-      <p className="mt-2 max-w-prose text-muted">Add people whose insurance or obligations you manage — spouse, parents, children. You can skip this and add them later. VITTRM always shows whose data it's using.</p>
+      <p className="mt-2 max-w-prose text-muted">Add people whose insurance or obligations you manage — spouse, parents, children. You can skip this and add them later. VITRAM always shows whose data it's using.</p>
       <div className="mt-6 flex flex-col gap-3">
         {members.map((m: any) => (
           <Panel key={m.id} className="flex items-center justify-between gap-3 p-4">
@@ -214,7 +214,7 @@ export function ConsentGate({ purpose, children, title, body }: { purpose: strin
 
 export const DOC_CONSENT_BODY = (
   <ul className="list-disc space-y-1 pl-5">
-    <li>VITTRM reads your statement and documents to build your financial profile, then stores the extracted facts.</li>
+    <li>VITRAM reads your statement and documents to build your financial profile, then stores the extracted facts.</li>
     <li>Files are encrypted and only you can open them. You can delete any document and its data at any time.</li>
     <li>Only the facts needed for a page are shared with Vitt Saathi. Card numbers, PINs and passwords are never needed.</li>
   </ul>
@@ -303,7 +303,7 @@ export function StatementStep() {
   return (
     <OnboardingLayout step="statement">
       <h1 className="text-2xl font-semibold">Upload a bank statement</h1>
-      <p className="mt-2 max-w-prose text-muted">Use your salary account for 3, 6 or 12 months. VITTRM finds your income, spending categories, frequent merchants, EMIs and other regular payments, and asks you to confirm them.</p>
+      <p className="mt-2 max-w-prose text-muted">Use your salary account for 3, 6 or 12 months. VITRAM finds your income, spending categories, frequent merchants, EMIs and other regular payments, and asks you to confirm them.</p>
       <div className="mt-6">
         <ConsentGate purpose="financial_documents" title="Before you upload" body={DOC_CONSENT_BODY}>
           <Panel className="p-5"><StatementUpload onUploaded={(d) => navigate(`/onboarding/processing/${d.id}`)} /></Panel>
@@ -384,7 +384,7 @@ export function ProcessingStep() {
   return (
     <OnboardingLayout step="statement">
       <h1 className="text-2xl font-semibold">{done ? 'Your statement is ready' : doc?.status === 'failed' ? "We couldn't read this statement" : 'Analysing your statement'}</h1>
-      <p className="mt-2 text-muted">{done ? `${doc?.transactions_found ?? 0} transactions read. Next, check what VITTRM found.` : doc?.status === 'failed' ? '' : 'This usually takes a few seconds. You can leave this page — it keeps going.'}</p>
+      <p className="mt-2 text-muted">{done ? `${doc?.transactions_found ?? 0} transactions read. Next, check what VITRAM found.` : doc?.status === 'failed' ? '' : 'This usually takes a few seconds. You can leave this page — it keeps going.'}</p>
       <Panel className="mt-6 p-5">
         {q.isError && <ErrorState error={q.error} onRetry={() => q.refetch()} />}
         {doc && <ProcessingSteps doc={doc} />}

@@ -74,7 +74,7 @@ def describe_dispatch(r: Reminder, block_reason: str | None) -> str:
     if r.status == "failed":
         return f"WhatsApp rejected the message: {r.last_error}. The in-app notification was created."
     if r.status == "scheduled":
-        return f"WhatsApp didn't respond ({r.last_error}); VITTRM will retry. The in-app notification was created."
+        return f"WhatsApp didn't respond ({r.last_error}); VITRAM will retry. The in-app notification was created."
     return "Sent on WhatsApp. Delivery status will update when WhatsApp confirms it."
 
 
@@ -83,7 +83,7 @@ def reminder_text(item: dict, days_left: int) -> tuple[str, list[str]]:
     d = date.fromisoformat(item["date"])
     when = "today" if days_left == 0 else f"on {d:%d %b}"
     amount = f"{inr(item['amount'])}" if item.get("amount") else "the amount due"
-    text = f"VITTRM reminder: {item['title']} of {amount} is due {when}."
+    text = f"VITRAM reminder: {item['title']} of {amount} is due {when}."
     return text, [item["title"], amount, f"{d:%d %b %Y}"]
 
 

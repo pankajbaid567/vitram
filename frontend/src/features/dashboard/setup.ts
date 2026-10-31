@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { get } from '../../lib/api'
 
-/** Real setup progress, derived only from what VITTRM holds for this user (no score, no estimates). */
+/** Real setup progress, derived only from what VITRAM holds for this user (no score, no estimates). */
 export type SetupStep = { key: string; label: string; done: boolean; to: string }
 
 export function setupSteps(d: any): SetupStep[] {

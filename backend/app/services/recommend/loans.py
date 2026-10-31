@@ -188,7 +188,7 @@ def _cautions(e: dict, intent: dict) -> list[str]:
     if "FLOATING_RATE" in m:
         out.append("Floating rate: EMI or tenure can change when the benchmark changes.")
     labels = {
-        "CREDIT_SCORE_REQUIREMENT_UNKNOWN": "Has a credit-score requirement VITTRM can't check.",
+        "CREDIT_SCORE_REQUIREMENT_UNKNOWN": "Has a credit-score requirement VITRAM can't check.",
         "INCOME_UNKNOWN": "Has an income requirement; confirm your income to check it.",
         "AGE_UNKNOWN": "Age limits apply; add your date of birth to check.",
         "COLLATERAL_UNKNOWN": "Needs collateral; tell us whether you can offer it.",

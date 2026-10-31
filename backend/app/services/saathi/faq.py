@@ -100,7 +100,7 @@ def product_answer(db: Session, text: str) -> dict | None:
             return {
                 "id": data["id"], "category": "product", "question": name,
                 "text": (f"{name} is a {kind} from {provider}. It is commonly positioned for {uses}. "
-                         "VITTRM keeps it as a market-reference product, so I won't guess current fees, rewards, "
+                         "VITRAM keeps it as a market-reference product, so I won't guess current fees, rewards, "
                          f"waiting periods or eligibility. Verify the latest terms on the official product page: {url}"),
             }
     return None

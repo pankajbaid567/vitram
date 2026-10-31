@@ -38,8 +38,8 @@ export function Logo({ light, tagline, compact }: { light?: boolean; tagline?: b
         <circle cx="24" cy="9" r="3" fill="#E7A02F" />
       </svg>
       {!compact && (tagline ? (
-        <span className="flex flex-col leading-tight">VITTRM<span className="text-[0.7rem] font-normal tracking-normal text-white/65">Your Money, A Brighter You</span></span>
-      ) : 'VITTRM')}
+        <span className="flex flex-col leading-tight">VITRAM<span className="text-[0.7rem] font-normal tracking-normal text-white/65">Your Money, A Brighter You</span></span>
+      ) : 'VITRAM')}
     </span>
   )
 }
@@ -87,7 +87,7 @@ export function Disclaimer() {
   return (
     <footer className="mt-14 flex items-start gap-3 rounded-[var(--radius-card)] border border-white/70 bg-white/55 px-5 py-4 text-xs leading-relaxed text-muted shadow-[var(--glass-highlight)]">
       <Info className="mt-0.5 size-4 shrink-0 text-ink/60" aria-hidden />
-      <p>VITTRM is a decision-support prototype, not a lender, insurer, broker or adviser. Loan, card and insurance products shown are
+      <p>VITRAM is a decision-support prototype, not a lender, insurer, broker or adviser. Loan, card and insurance products shown are
         sample data with fictional institutions. Calculations use the inputs and assumptions shown; confirm terms with the provider before acting.</p>
     </footer>
   )
@@ -134,7 +134,7 @@ function SetupCard({ collapsed }: { collapsed?: boolean }) {
   const next = steps.find((s) => !s.done)!
   return (
     <Link to={next.to} className="group relative block overflow-hidden rounded-[18px] bg-white/[0.07] p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),inset_0_0_0_1px_rgb(255_255_255/0.08)] backdrop-blur-sm transition-colors hover:bg-white/[0.11]">
-      <p className="text-xs font-medium text-white/65">Set up VITTRM · {done} of {steps.length}</p>
+      <p className="text-xs font-medium text-white/65">Set up VITRAM · {done} of {steps.length}</p>
       <p className="mt-1 text-sm font-semibold text-white">Next: {next.label}</p>
       <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-white/10" aria-hidden>
         <span className="block h-full rounded-full bg-marigold" style={{ width: `${(done / steps.length) * 100}%` }} />
@@ -166,7 +166,7 @@ function SidebarBody({ collapsed, onNavigate, onToggle }: { collapsed?: boolean;
   return (
     <>
       <div className={clsx('mb-7 flex items-center gap-2', collapsed ? 'flex-col' : 'justify-between pr-1')}>
-        <Link to="/" onClick={onNavigate} className="rounded-[12px] px-1.5 py-1" aria-label="VITTRM home"><Logo light tagline compact={collapsed} /></Link>
+        <Link to="/" onClick={onNavigate} className="rounded-[12px] px-1.5 py-1" aria-label="VITRAM home"><Logo light tagline compact={collapsed} /></Link>
         {onToggle && (
           <button type="button" onClick={onToggle} aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!collapsed}
             className="inline-flex size-9 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white">
@@ -236,7 +236,7 @@ function AccountMenu() {
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
-      <ConfirmDialog open={confirm} onOpenChange={setConfirm} title="Sign out of VITTRM?" danger={false} confirmLabel="Sign out" busy={busy}
+      <ConfirmDialog open={confirm} onOpenChange={setConfirm} title="Sign out of VITRAM?" danger={false} confirmLabel="Sign out" busy={busy}
         description={user?.is_sample ? "This is a sample workspace with a generated password, so you can't sign back into it. You can open a new sample workspace any time." : 'Your data stays in your workspace. Sign in again with your email and password.'}
         onConfirm={async () => { setBusy(true); try { await logout() } finally { setBusy(false); setConfirm(false) } }} />
     </>
@@ -270,7 +270,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
             <header className="mx-auto flex max-w-[var(--page-max)] items-center gap-2 sm:gap-3">
               <button type="button" onClick={() => setDrawer(true)} aria-label="Open menu"
                 className="glass inline-flex size-12 shrink-0 items-center justify-center rounded-full text-ink/80 lg:hidden"><Menu className="size-5" aria-hidden /></button>
-              <Link to="/" className="rounded-[12px] sm:hidden" aria-label="VITTRM home"><Logo /></Link>
+              <Link to="/" className="rounded-[12px] sm:hidden" aria-label="VITRAM home"><Logo /></Link>
               <GlobalSearch className="hidden min-w-0 max-w-2xl flex-1 sm:block" />
               <div className="ml-auto flex items-center gap-2 sm:gap-3">
                 {user?.is_sample && <span className="hidden xl:block"><Badge tone="saathi">Sample workspace</Badge></span>}

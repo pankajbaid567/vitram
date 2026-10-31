@@ -112,7 +112,7 @@ async def upload(
     db: Session = Depends(get_db),
 ):
     require_consent(db, user.id, "financial_documents",
-                    "Allow VITTRM to process your financial documents before uploading.")
+                    "Allow VITRAM to process your financial documents before uploading.")
     settings = get_settings()
     data = await file.read(settings.max_upload_mb * 1024 * 1024 + 1)
     if len(data) > settings.max_upload_mb * 1024 * 1024:

@@ -65,7 +65,7 @@ def extract_receipt(pages: list[str], ocr_confidence: float | None = None) -> Ex
 
     lines = [(pno, clean(raw)) for pno, text in enumerate(pages, start=1) for raw in text.splitlines() if clean(raw)]
     if any(looks_like_injection(t) for _, t in lines):
-        warnings.append("This receipt contains text addressed to AI assistants. VITTRM treated it as receipt text only.")
+        warnings.append("This receipt contains text addressed to AI assistants. VITRAM treated it as receipt text only.")
 
     # merchant: first substantial line near the top that isn't an address/phone/"tax invoice" line
     for pno, t in lines[:8]:

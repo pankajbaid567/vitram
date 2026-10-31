@@ -54,7 +54,7 @@ def list_goals(user: User = Depends(current_user), db: Session = Depends(get_db)
     return {"currency": "INR", "goals": [goal_out(db, g) for g in goals],
             # an estimate from the statement, shown next to "monthly needed" so the user can judge it themselves
             "monthly_surplus": {"value": surplus.get("value"), "state": surplus.get("state")},
-            "note": "Progress counts only the contributions you record. VITTRM doesn't move money or assume any returns."}
+            "note": "Progress counts only the contributions you record. VITRAM doesn't move money or assume any returns."}
 
 
 class GoalIn(BaseModel):

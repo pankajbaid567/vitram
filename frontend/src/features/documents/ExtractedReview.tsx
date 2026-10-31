@@ -10,7 +10,7 @@ import { get, patch, post } from '../../lib/api'
 import { date, inr } from '../../lib/format'
 import type { DocFact, DocumentRow } from '../../lib/types'
 
-/** Review what VITTRM read from one document: confirm, correct or reject each value. Nothing is confirmed in bulk. */
+/** Review what VITRAM read from one document: confirm, correct or reject each value. Nothing is confirmed in bulk. */
 export function ExtractedReview({ docId, compact }: { docId: string; compact?: boolean }) {
   const q = useQuery({ queryKey: ['facts', docId], queryFn: () => get<{ document: DocumentRow; facts: DocFact[] }>(`/documents/${docId}/facts`) })
   if (q.isLoading) return <div className="flex flex-col gap-2"><Skeleton className="h-16" /><Skeleton className="h-16" /><Skeleton className="h-16" /></div>
@@ -34,7 +34,7 @@ export function ExtractedReview({ docId, compact }: { docId: string; compact?: b
           Read from a {doc.mime?.startsWith('image/') ? 'photo' : 'scan'}{doc.ocr?.on_device ? ' on this device' : doc.ocr?.provider === 'gemini' ? ' by Gemini' : ''}. OCR can misread digits — check each value against the document.
         </p>
       )}
-      {facts.length === 0 && <p className="text-sm text-muted">VITTRM didn't find any values in this document.</p>}
+      {facts.length === 0 && <p className="text-sm text-muted">VITRAM didn't find any values in this document.</p>}
       {[...groups.entries()].map(([g, fs]) => (
         <section key={g} aria-label={g}>
           {groups.size > 1 && <h3 className="mb-1.5 text-sm font-semibold text-muted">{g}</h3>}

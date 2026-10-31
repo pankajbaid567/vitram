@@ -1,7 +1,7 @@
 """Inbound WhatsApp messages: STOP opt-out and Vitt Saathi replies.
 
 Business rules live here, not in the webhook router: the router only authenticates,
-de-duplicates and routes. VITTRM answers only the *verified, opted-in* owner of a
+de-duplicates and routes. VITRAM answers only the *verified, opted-in* owner of a
 number, never someone who merely appears in the connected account's chat history.
 """
 
@@ -23,7 +23,7 @@ log = logging.getLogger("vitram.inbound")
 
 EMERGENCY = re.compile(r"emergency|hospital|admit|bharti|accident|claim|icu|ilaaj|cashless", re.I)
 STOP = re.compile(r"^\s*(stop|unsubscribe|band karo|stop all)\s*$", re.I)
-STOP_REPLY = "You won't get VITTRM messages on WhatsApp any more. You can turn them back on in the app."
+STOP_REPLY = "You won't get VITRAM messages on WhatsApp any more. You can turn them back on in the app."
 
 
 def _resolve_user(db: Session, sender: str) -> User | None:
@@ -69,7 +69,7 @@ def _answer(db: Session, user: User, text: str) -> str:
     for card in result["cards"]:
         if card.get("type") == "navigation":
             route = card["route"]
-    reply = f"{result['text']}\n\nDetails in VITTRM: {get_settings().app_origin.rstrip('/')}{route}"
+    reply = f"{result['text']}\n\nDetails in VITRAM: {get_settings().app_origin.rstrip('/')}{route}"
     db.add(Message(conversation_id=conv.id, role="assistant", content=reply, mode="tool", cards=result["cards"],
                    citations=result["citations"], tool_calls=result["tool_calls"]))
     audit(db, user.id, "whatsapp.inbound", "conversation", conv.id, context=ctx_type)

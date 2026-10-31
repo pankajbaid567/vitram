@@ -54,7 +54,7 @@ class CardIn(BaseModel):
             if len(b) > 120:
                 raise ValueError("Keep each benefit under 120 characters.")
             if looks_like_full_card_number(b):
-                raise ValueError("Don't enter card numbers. VITTRM only needs the last 4 digits.")
+                raise ValueError("Don't enter card numbers. VITRAM only needs the last 4 digits.")
             out.append(b)
         return out
 
@@ -62,7 +62,7 @@ class CardIn(BaseModel):
     @classmethod
     def _no_pan(cls, v: str) -> str:
         if looks_like_full_card_number(v):
-            raise ValueError("Don't enter your full card number. VITTRM only needs the last 4 digits.")
+            raise ValueError("Don't enter your full card number. VITRAM only needs the last 4 digits.")
         return v.strip()
 
     @field_validator("cycle_spend")

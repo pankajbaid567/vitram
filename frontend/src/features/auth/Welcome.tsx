@@ -84,7 +84,7 @@ function NavyOrbit() {
 
 function BrandPanel() {
   return (
-    <section aria-label="About VITTRM"
+    <section aria-label="About VITRAM"
       className="relative isolate flex flex-col justify-between gap-8 overflow-hidden rounded-[var(--radius-window)] px-6 py-7 text-white max-xl:sidebar-surface sm:px-10 lg:px-12 lg:py-11 xl:overflow-visible xl:rounded-none xl:px-[5.5vw] xl:py-12">
       <Logo light tagline />
       <p className="pointer-events-none -mt-2 hidden font-mono text-[0.8rem] leading-[2.1] tracking-[0.35em] text-white/30 xl:ml-[2.5vw] xl:block" aria-hidden>
@@ -96,7 +96,7 @@ function BrandPanel() {
             Know what your loans, cards and policies really mean for you.
           </p>
           <p className="mt-4 max-w-[52ch] text-[1rem] leading-relaxed text-white/80">
-            VITTRM reads your bank statement and documents once, then helps you compare loans by their full cost,
+            VITRAM reads your bank statement and documents once, then helps you compare loans by their full cost,
             use the right card, stay ahead of EMIs and understand your insurance — with Vitt Saathi to explain it.
           </p>
         </div>
@@ -147,8 +147,7 @@ function SampleWorkspace() {
     }
   }
   return (
-    <div className="mt-6">
-      <div className="mb-5 flex items-center gap-3 text-sm text-muted"><span className="h-px flex-1 bg-ink/10" />or<span className="h-px flex-1 bg-ink/10" /></div>
+    <div className="mb-4">
       <div className="wash-amber rounded-[var(--radius-card)] p-4">
         <p className="font-semibold">Try a sample workspace</p>
         <p className="mt-1 text-sm text-ink/75">A separate account filled with generated documents from fictional institutions — a 6-month statement, three policies and a loan KFS — processed through the real pipeline.</p>
@@ -202,7 +201,8 @@ export function Login() {
   return (
     <AuthLayout>
       <div className="w-full max-w-md">
-        <AuthCard title="Welcome back" subtitle="Sign in to your VITTRM workspace.">
+        <SampleWorkspace />
+        <AuthCard title="Welcome back" subtitle="Sign in to your VITRAM workspace.">
           {params.get('expired') && <Callout tone="info" className="mb-5" title="Your session ended">Sign in again to continue. Nothing you saved was lost.</Callout>}
           <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
             <Field label="Email" error={fe('email')}>
@@ -215,9 +215,8 @@ export function Login() {
             {err && !err.field && <p role="alert" className="text-sm text-critical">{err.message}</p>}
             <Button type="submit" loading={busy} size="lg" className="mt-1">Sign in<ArrowRight className="size-4" aria-hidden /></Button>
           </form>
-          <p className="mt-5 text-center text-sm text-muted">New to VITTRM? <Link to="/signup" className="font-semibold text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Create an account</Link></p>
+          <p className="mt-5 text-center text-sm text-muted">New to VITRAM? <Link to="/signup" className="font-semibold text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Create an account</Link></p>
         </AuthCard>
-        <SampleWorkspace />
       </div>
     </AuthLayout>
   )
@@ -272,7 +271,8 @@ export function Signup() {
   return (
     <AuthLayout>
       <div className="w-full max-w-md">
-        <AuthCard title="Create your account" subtitle="Two minutes to set up. You choose what VITTRM may read.">
+        <SampleWorkspace />
+        <AuthCard title="Create your account" subtitle="Two minutes to set up. You choose what VITRAM may read.">
           <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
             <Field label="Your name" error={fe('name')}>
               <Input autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
@@ -288,14 +288,13 @@ export function Signup() {
             </Field>
             <Checkbox checked={form.accept} onChange={(e) => setForm({ ...form, accept: e.target.checked })}
               label="I accept the terms and privacy notice"
-              description="VITTRM asks separately before processing any financial document, sending WhatsApp messages or calling you." />
+              description="VITRAM asks separately before processing any financial document, sending WhatsApp messages or calling you." />
             {fe('accept_terms') && <p role="alert" className="-mt-2 text-sm text-critical">{fe('accept_terms')}</p>}
             {err && !err.field && <p role="alert" className="text-sm text-critical">{err.message}</p>}
             <Button type="submit" loading={busy} size="lg" className="mt-1">Create account<ArrowRight className="size-4" aria-hidden /></Button>
           </form>
           <p className="mt-5 text-center text-sm text-muted">Already have an account? <Link to="/login" className="font-semibold text-indigo underline decoration-indigo/40 underline-offset-2 hover:decoration-indigo">Sign in</Link></p>
         </AuthCard>
-        <SampleWorkspace />
       </div>
     </AuthLayout>
   )
@@ -330,7 +329,7 @@ export function ForgotPassword() {
             <div className="flex items-start gap-3">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-indigo-soft text-indigo" aria-hidden><KeyRound className="size-5" /></span>
               <div className="text-[0.95rem] text-ink/80">
-                <p>This VITTRM server can't send email yet, so it can't send a reset link.</p>
+                <p>This VITRAM server can't send email yet, so it can't send a reset link.</p>
                 <p className="mt-2">If you're signed in on another device, change your password in <b>Profile → Security</b>. Otherwise, ask the person running this server to set up email (see the README).</p>
               </div>
             </div>

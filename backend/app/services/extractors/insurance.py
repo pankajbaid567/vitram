@@ -170,7 +170,7 @@ def extract_policy(pages: list[str]) -> Extraction:
         warnings.append(
             "This document contains text addressed to AI assistants (page "
             + ", ".join(map(str, sorted(injection_pages)))
-            + "). VITTRM treated it as document text only and did not act on it."
+            + "). VITRAM treated it as document text only and did not act on it."
         )
     have = {f.key for f in facts}
     for needed, label in (("sum_insured", "sum insured"), ("premium", "premium"), ("exclusions", "exclusions"), ("claim_documents", "claim documents")):

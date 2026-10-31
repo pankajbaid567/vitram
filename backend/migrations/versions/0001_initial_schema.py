@@ -1,4 +1,4 @@
-"""initial schema — VITTRM data model as first released (RD §19).
+"""initial schema — VITRAM data model as first released (RD §19).
 
 Revision ID: 0001
 Revises: 

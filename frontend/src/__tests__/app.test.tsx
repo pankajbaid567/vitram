@@ -34,7 +34,7 @@ describe('Documents & data page', () => {
     mockApi({ '/auth/me': user, '/documents': documents, '/documents/d1/facts': { document: documents[0], facts: [] }, '/ai/status': {}, '/dashboard': dashboard })
     at('/documents')
     await userEvent.click(await screen.findByRole('button', { name: 'Review values' }))
-    expect(await screen.findByText('Values VITTRM extracted, with where each came from.')).toBeInTheDocument()
+    expect(await screen.findByText('Values VITRAM extracted, with where each came from.')).toBeInTheDocument()
   })
 })
 

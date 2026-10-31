@@ -45,7 +45,7 @@ def status(user: User = Depends(current_user)):
         "voice_available": s.gemini_live_configured,
         "vision": provider_status(),
         "chat_note": None if s.gemini_configured else
-        "Tool mode — answers come from VITTRM's calculators and your data. Free-form AI is off because Gemini isn't configured.",
+        "Tool mode — answers come from VITRAM's calculators and your data. Free-form AI is off because Gemini isn't configured.",
         "voice_note": None if s.gemini_live_configured else "Voice needs Gemini Live to be configured on the server.",
     }
 

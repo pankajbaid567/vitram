@@ -47,7 +47,7 @@ def dashboard(user: User = Depends(current_user), db: Session = Depends(get_db))
     review = p.get("review_state", {})
     attention = []
     if not statements:
-        attention.append({"kind": "upload_statement", "title": "Upload a bank statement", "body": "VITTRM builds your financial profile from it.", "link": "/onboarding/statement"})
+        attention.append({"kind": "upload_statement", "title": "Upload a bank statement", "body": "VITRAM builds your financial profile from it.", "link": "/onboarding/statement"})
     if review.get("items_needing_review"):
         attention.append({"kind": "review", "title": f"{review['items_needing_review']} items need your review",
                           "body": "Confirm salary, EMIs and other recurring payments so recommendations use the right numbers.", "link": "/profile/review"})
