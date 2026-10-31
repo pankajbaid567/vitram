@@ -13,7 +13,7 @@ under *Not verified* rather than claimed; [`GO_LIVE.md`](GO_LIVE.md) is the orde
 | Backend on a Linux container | pass (same results as macOS) | `make ci-linux` |
 | Backend on PostgreSQL 16 | pass, including four racing workers and the shared rate limiter (migration tests are SQLite-specific) | `TEST_DATABASE_URL=postgresql+psycopg://… uv run pytest -q --deselect tests/test_migrations.py` |
 | Backend lint | clean | `uv run ruff check .` |
-| Frontend tests | **48 pass** (journeys render the real route tree against fixtures captured from the live API) | `make test-frontend` |
+| Frontend tests | **50 pass** (journeys render the real route tree against fixtures captured from the live API) | `make test-frontend` |
 | Typecheck, lint, build | pass; lint has **0 warnings** | `make lint && npm run build` |
 | Migrations | `0001 → 0011` apply on empty SQLite and PostgreSQL; `0007` also verified on PostgreSQL with data; idempotent for pre-Alembic databases | `python -m app.migrate upgrade` |
 | Real-user journey (browser) | **16/16 steps, at desktop and phone (390 px) width**, as a brand-new user: sign up → onboarding → upload a statement → profile review → dashboard → add a policy → loans (options, real cost, compare) → cards → EMIs → emergency mode → reminders → ask the assistant → export data → delete the account (and the door is locked afterwards). Also asserts no console errors or failed requests | `make journey` |

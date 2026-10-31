@@ -9,7 +9,7 @@ Reviewed in a real Chrome against the sample workspace (fictional data), at 1440
 |---|---|---|
 | Product thinking | 18/20 | A real problem (what do my loans, cards and policies actually cost me?), clear provenance on every figure (Extracted / Estimate / You confirmed), consent-first design, emergency mode for insurance. |
 | Engineering depth | 22/25 | FastAPI + SQLAlchemy + Alembic, deterministic finance engine with versioned snapshots, provider-neutral WhatsApp port with two adapters, worker + scheduler, rate limiting, encrypted uploads. |
-| Quality and testing | 18/20 | 518 backend tests (88% coverage), 48 frontend tests, generated access matrix, browser journey and accessibility checks in CI. |
+| Quality and testing | 18/20 | 518 backend tests (88% coverage), 50 frontend tests, generated access matrix, browser journey and accessibility checks in CI. |
 | UI / UX polish | 15/20 | Consistent design system, mobile bottom nav, honest empty and error states. Held back by the issues below. |
 | Docs and operability | 13/15 | Architecture, ADRs, deploy, go-live, doctor command, health and readiness endpoints. |
 
