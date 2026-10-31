@@ -70,3 +70,10 @@ Short architecture decision records: what was decided, why, and what it costs. N
 **Context.** Card-statement purchase rows are low-confidence extractions, but they are exactly what a reward cap needs ("how much of this month's cap is used?").
 **Decision.** Only user-confirmed rows count; they are grouped by category into `UserCard.imported_spend` (with document provenance) rather than overwriting the user's own `cycle_spend`. Reward maths uses the sum. The import is previewable, undoable, withdrawn when the statement is deleted or re-read, and replacing one statement with another needs explicit consent.
 **Consequences.** Manual and imported figures never silently mix; every number can be traced to a statement row the user approved.
+
+## ADR-0013: Storage is a port with a local and an S3 adapter
+
+**Context.** Free hosts have no persistent disk, but uploads were written to `DATA_DIR`. **Decision.** `services/storage.py`
+keeps one contract (`put`/`get`/`delete`, ciphertext only, random keys) with `local` and `s3` backends chosen by
+`STORAGE_BACKEND`; R2 (S3-compatible) serves the free deployment. **Consequences.** No caller changed; the bucket never sees
+plaintext; boto3 is an optional extra; moving between backends needs a copy of existing objects.

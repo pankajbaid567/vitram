@@ -26,6 +26,14 @@ class Settings(BaseSettings):
     env: str = "development"
     database_url: str = f"sqlite:///{BACKEND_DIR / '.data' / 'vitram.db'}"
     data_dir: Path = BACKEND_DIR / ".data"
+    # Where encrypted uploads live: "local" (DATA_DIR/objects, needs a persistent disk) or "s3" (any S3-compatible
+    # bucket, e.g. Cloudflare R2, for hosts without a disk). Files are Fernet-encrypted before they leave the process.
+    storage_backend: str = "local"
+    s3_endpoint_url: str | None = None
+    s3_bucket: str | None = None
+    s3_access_key_id: str | None = None
+    s3_secret_access_key: str | None = None
+    s3_region: str = "auto"
     # Fernet key for encrypting uploaded files at rest. Auto-generated in dev.
     vitram_data_key: str | None = None
     # Public origin of the web app, used for CSRF origin checks and deep links.

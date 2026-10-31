@@ -16,6 +16,29 @@ have not been run by the author, so treat them as a starting point.
 \* **One API instance until uploads move off local disk.** Encrypted uploads are stored under `DATA_DIR/objects`, so every process
 that serves documents needs the same volume. Workers don't read uploads and scale freely; the database carries all other state.
 
+## Free-tier shape ($0): Cloudflare + Render + Neon
+
+Everything below has a free plan. The trade-off is that the free API host sleeps when idle, so a cron keeps it awake.
+
+```
+ browser ─► Cloudflare Worker (static app, /api proxy, cron every 10 min) ─► Render free web service (API + in-process reminders)
+                                                                              ├─► Neon free PostgreSQL     (DATABASE_URL)
+                                                                              └─► Cloudflare R2 bucket     (STORAGE_BACKEND=s3, encrypted uploads)
+```
+
+| Piece | Where | Config |
+|---|---|---|
+| Web app, `/api` proxy, keep-awake cron | Cloudflare Worker, [`deploy/cloudflare/`](../deploy/cloudflare) | set `API_ORIGIN` in `wrangler.jsonc`; `npm run build` in `frontend`, then `npx wrangler deploy` |
+| API (and the reminder loop) | Render free web service, `backend/Dockerfile` | `RUN_SCHEDULER=true` (no separate worker on the free plan), `AUTO_MIGRATE=true` |
+| Database | Neon free PostgreSQL | `DATABASE_URL` (pooled connection string) |
+| Uploads | Cloudflare R2 (S3 API) | `STORAGE_BACKEND=s3`, `S3_ENDPOINT_URL=https://<account>.r2.cloudflarestorage.com`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` |
+
+Files are Fernet-encrypted before they reach the bucket, so R2 only ever holds ciphertext. `APP_ORIGIN` and `PUBLIC_API_URL` are the
+Worker's public URL, because the browser and providers' webhooks both reach the API through it.
+
+Limits to expect: the first request after a long idle takes up to a minute while the API wakes; the Worker's free plan allows
+100,000 API requests a day; Render's free plan gives 750 instance-hours a month, enough for one always-awake service.
+
 ## Configuration that must be right
 
 The API **refuses to start** in `ENV=production` if these are wrong (`python -m app.doctor --offline` shows the same checks):

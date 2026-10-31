@@ -4,7 +4,7 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy PIP_NO_CACHE_DIR=1
 RUN pip install uv
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project --extra ai --extra postgres
+RUN uv sync --frozen --no-dev --no-install-project --extra ai --extra postgres --extra s3
 
 FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1 PATH="/app/.venv/bin:$PATH" ENV=production DATA_DIR=/data
