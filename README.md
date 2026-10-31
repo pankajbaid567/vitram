@@ -58,6 +58,7 @@ make up                  # docker compose up --build → http://localhost:8080  
 make ci          # ruff + oxlint + tsc + backend tests (88 % coverage) + frontend tests + build
 make ci-linux    # the backend job in a Linux container
 make e2e         # drive the demo path in Chrome (needs the app running)
+make journey     # a brand-new user's whole journey in Chrome, at desktop and phone width
 make a11y        # axe on every route + keyboard checks
 make audit       # known-vulnerability scan of both dependency trees
 ```

@@ -475,7 +475,9 @@ export function Settings() {
   const wipe = useMutation({ mutationFn: () => post('/profile/delete-all', { confirm: 'DELETE' }), onSuccess: () => { qc.clear(); refresh(); navigate('/') } })
   const removeAccount = useMutation({
     mutationFn: () => post('/auth/account/delete', { password: accPw, confirm: 'DELETE' }),
-    onSuccess: () => { qc.clear(); refresh(); navigate('/welcome') },
+    // A full page load, not a client-side navigation: nothing of the deleted account stays in memory, and the still-mounted
+    // Settings page can't refetch against a session that no longer exists.
+    onSuccess: () => window.location.assign('/welcome'),
   })
   const reset = useQuery({ queryKey: ['reset-status'], queryFn: () => get<{ email_configured: boolean }>('/auth/password-reset/status') })
   const vision = ai.data?.vision

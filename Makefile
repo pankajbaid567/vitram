@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 # The browser scripts need a global WebSocket: built in on Node 22+, behind a flag on Node 20.
 NODE_FLAGS := $(shell node -e "process.exit(typeof WebSocket === 'undefined' ? 0 : 1)" 2>/dev/null && echo --experimental-websocket)
-.PHONY: help install api web test test-backend test-frontend lint e2e a11y ci ci-linux fixtures up down audit
+.PHONY: help install api web test test-backend test-frontend lint e2e journey a11y ci ci-linux fixtures up down audit
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -31,6 +31,9 @@ lint:  ## Ruff, oxlint and the TypeScript compiler
 
 e2e:  ## Browser smoke test (needs `make api` and a built `npm run preview` on :5173, plus Chrome)
 	cd frontend && node $(NODE_FLAGS) scripts/e2e.mjs
+
+journey:  ## Real-user journey in Chrome as a brand-new user, desktop then phone width (same prerequisites as e2e)
+	cd frontend && node $(NODE_FLAGS) scripts/e2e-journey.mjs && node $(NODE_FLAGS) scripts/e2e-journey.mjs --width 390
 
 a11y:  ## Accessibility audit (same prerequisites as e2e)
 	cd frontend && node $(NODE_FLAGS) scripts/a11y-audit.mjs

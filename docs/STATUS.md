@@ -16,7 +16,8 @@ under *Not verified* rather than claimed; [`GO_LIVE.md`](GO_LIVE.md) is the orde
 | Frontend tests | **48 pass** (journeys render the real route tree against fixtures captured from the live API) | `make test-frontend` |
 | Typecheck, lint, build | pass; lint has **0 warnings** | `make lint && npm run build` |
 | Migrations | `0001 → 0010` apply on empty SQLite and PostgreSQL; `0007` also verified on PostgreSQL with data; idempotent for pre-Alembic databases | `python -m app.migrate upgrade` |
-| Browser end to end | **9/9 steps** on the local stack **and** on the containerised stack (nginx → API → PostgreSQL + worker); proven to fail on the original Documents crash | `make e2e` |
+| Real-user journey (browser) | **16/16 steps, at desktop and phone (390 px) width**, as a brand-new user: sign up → onboarding → upload a statement → profile review → dashboard → add a policy → loans (options, real cost, compare) → cards → EMIs → emergency mode → reminders → ask the assistant → export data → delete the account (and the door is locked afterwards). Also asserts no console errors or failed requests | `make journey` |
+| Browser smoke on the sample workspace | **9/9 steps** on the local stack **and** on the containerised stack (nginx → API → PostgreSQL + worker); proven to fail on the original Documents crash | `make e2e` |
 | Accessibility | **0 axe violations** (81 route scans; 79 on the Linux stack, which has no on-device OCR), 8/8 keyboard and touch checks. Screen-reader testing is still manual | `make a11y` |
 | Dependency audit | `pip-audit` and `npm audit`: **no known vulnerabilities** (this found and fixed 73 in Pillow, pypdf, aiohttp, pyasn1, pyjwt and certifi) | `make audit` |
 | API reference | `docs/API.md` + `openapi.json` current (129 operations), checked in CI on Linux | `uv run python scripts/export_openapi.py --check` |

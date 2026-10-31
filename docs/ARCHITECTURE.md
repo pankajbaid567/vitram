@@ -146,7 +146,7 @@ Identity & consent (`users`, `sessions`, `consents`, `auth_tokens`, `password_re
 | Contracts | `test_contracts.py` walks the journey routes (currency, precision, provenance, catalogue labels, citations, calculation snapshots); `test_access_matrix.py` is generated from the OpenAPI schema (every route authenticated or justified; every object route isolated) |
 | Provider behaviour | adapters are tested against mocked HTTP built from the providers' documented shapes (Meta, OpenWA, Twilio, Gemini); the AI-extraction validator is tested with hostile proposals |
 | Frontend (`src/__tests__`, vitest) | formatting, upload, scanner geometry, the API client, and journey tests that render the real route tree against **fixtures captured from the live API** (`make fixtures`), so a contract change breaks them |
-| Browser | `e2e.mjs` drives the demo path in Chrome (verified to fail on the old crash); `a11y-audit.mjs` runs axe on every route plus keyboard checks |
+| Browser | `e2e-journey.mjs` is a brand-new user's full journey (sign-up to account deletion) at desktop and phone width; `e2e.mjs` drives the sample-workspace demo path (verified to fail on the old crash); `a11y-audit.mjs` runs axe on every route plus keyboard checks |
 | Pipeline | CI runs backend on SQLite and PostgreSQL, ruff, an API-docs freshness check, a dependency audit, the frontend checks, e2e and a11y. `make ci-linux` reproduces it locally |
 
 Behaviour that needs a real phone or provider key is listed, not claimed, in [`STATUS.md`](STATUS.md).

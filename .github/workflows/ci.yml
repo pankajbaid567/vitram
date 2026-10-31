@@ -121,6 +121,12 @@ jobs:
       - name: Drive the demo path in Chrome
         working-directory: frontend
         run: node scripts/e2e.mjs
+      - name: Real-user journey, desktop (sign up → onboarding → statement → loans → cards → EMIs → insurance → assistant → export → delete)
+        working-directory: frontend
+        run: node scripts/e2e-journey.mjs
+      - name: Real-user journey, phone width
+        working-directory: frontend
+        run: node scripts/e2e-journey.mjs --width 390
       - name: Accessibility audit (axe on every route + keyboard checks)
         working-directory: frontend
         run: node scripts/a11y-audit.mjs
