@@ -120,7 +120,14 @@ export function Forecast() {
         <div className="flex flex-col gap-6">
           <Panel className="p-5" aria-labelledby="ex-h">
             <SectionHeader id="ex-h" title="Expected payments" description="One-off amounts you know are coming, in or out." />
-            <form className="grid gap-3" noValidate onSubmit={(e: FormEvent) => { e.preventDefault(); addX.mutate() }}>
+            <form className="grid gap-3" noValidate onSubmit={(e: FormEvent) => {
+              e.preventDefault()
+              const missing = !x.label.trim() ? { field: 'label', message: 'Say what this payment is.' }
+                : !parseAmountInput(x.amount) ? { field: 'amount', message: 'Enter an amount above ₹0.' }
+                : !x.on_date ? { field: 'on_date', message: 'Pick the date it falls on.' } : null
+              if (missing) { setXErr(new ApiError(400, 'VALIDATION', missing.message, missing.field)); return }
+              setXErr(null); addX.mutate()
+            }}>
               <Field label="What is it" error={xErr?.field === 'label' ? xErr.message : null}><Input value={x.label} onChange={(e) => setX({ ...x, label: e.target.value })} placeholder="e.g. School fees" /></Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Amount" error={xErr?.field === 'amount' ? xErr.message : null}><Input prefix="₹" inputMode="numeric" value={x.amount} onChange={(e) => setX({ ...x, amount: e.target.value })} /></Field>
