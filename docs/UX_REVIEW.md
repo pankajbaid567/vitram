@@ -32,6 +32,7 @@ showing value, brand naming drift (the UI said VITTRM while the repo said VITRAM
 ## Improvement plan
 
 ### Done in this pass
+0. The watermark text is retouched out of `app-background.jpg`.
 0. The chart/table choice on the dashboard is remembered per browser (`usePreference`, tested, safe when storage is blocked).
 1. Forecast form validation with field-level messages.
 2. Sample workspace offered above the sign-in and sign-up forms.
@@ -39,9 +40,6 @@ showing value, brand naming drift (the UI said VITTRM while the repo said VITRAM
 4. Touch targets raised to 36px on phones (source links, policy field actions, EMI row action).
 5. Missing-phone consent error now shows an inline notice linking to the profile.
 6. One product name, VITRAM, in the UI, docs and generated copy (migration `0011`).
-
-### P1 (remaining)
-1. **Quieter background.** The faint "YOUR MONEY / A BRIGHTER YOU" watermark crosses content on wide screens; it is baked into `frontend/src/assets/app-background.jpg`, so the fix is a clean export of that image without the text.
 
 ### P2
 Re-checked against the code: the dashboard already leads with the next due item, the setup checklist already
