@@ -10,7 +10,7 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
-  "vars": { "API_ORIGIN": "https://vitram-api.onrender.com" },
+  "vars": { "API_ORIGIN": "https://vitram-api-pb.onrender.com" },
   "triggers": { "crons": ["*/10 * * * *"] },
   "observability": { "enabled": true }
 }
