@@ -1,6 +1,6 @@
-# VITTRM integration runbook
+# Integration runbook
 
-All secrets belong in the gitignored repository-root `.env` or a deployment secret manager. Never paste them into tickets, screenshots, logs, or this file.
+Every integration is optional and off by default: without credentials the app shows an honest *not configured* state. All secrets belong in the gitignored repository-root `.env` or a deployment secret manager. Never paste them into tickets, screenshots, logs, or this file.
 
 ## Gemini: Vitt Saathi and scanned PDFs
 
@@ -10,9 +10,13 @@ Safe smoke test: use a sample workspace and a fictional document. Ask a loan, ca
 
 Verification on 2026-09-23: the configured text model returned a response, the configured Live model returned audio over a WebSocket, the app's chat endpoint completed one tool-using turn on a fictional sample workspace, and OCR recovered an expected number from a fictional one-page image-only PDF. These narrow probes do not verify browser microphone capture/playback, voice interruption, multilingual financial safety, or real-document extraction quality.
 
-## OpenWA WhatsApp gateway
+## WhatsApp gateway (OpenWA, development only)
 
-VITTRM uses the local `OpenWA/` service. Start it with its SQLite-friendly `.env.minimal` configuration, pair a dedicated WhatsApp number in the OpenWA dashboard, then create an operator API key scoped to that one session. Do not connect a primary personal or business number: OpenWA is an unofficial WhatsApp client and its own documentation warns that account restriction or banning remains possible.
+> **Read first.** The product specification calls for the *official* Meta WhatsApp Cloud API. This repository ships an adapter for [OpenWA](https://github.com/rmyndharis/OpenWA), a third-party, MIT-licensed, self-hosted gateway, **not included here** (clone it separately). OpenWA is *unofficial*: it connects through reverse-engineered clients, and its own README says there is always a non-zero risk of the WhatsApp account being restricted or banned. Use it **only with a dedicated test number**, never a personal or business number, and do not present it as a production channel (see [ADR-0002](DECISIONS.md)). The application talks to it only through the `WhatsAppGateway` port, so a Meta Cloud API adapter can replace it without touching callers.
+
+Start OpenWA with its SQLite-friendly `.env.minimal` configuration, pair the dedicated number in the OpenWA dashboard, then create an operator API key scoped to that one session.
+
+When running the backend in Docker Compose, `OPENWA_BASE_URL` must be reachable *from the container*, e.g. `http://host.docker.internal:2785`, not `127.0.0.1`.
 
 Set `OPENWA_BASE_URL`, `OPENWA_API_KEY`, `OPENWA_SESSION_ID`, `OPENWA_WEBHOOK_SECRET`, and `PUBLIC_API_URL`. The API key is bearer-equivalent and must stay server-side. Use HTTPS outside localhost and keep redirects disabled so the key cannot be forwarded to another host. The webhook secret must be at least 16 characters.
 
@@ -27,7 +31,7 @@ Retries: 3
 
 OpenWA signs the exact request bytes in `X-OpenWA-Signature`; VITTRM rejects missing or invalid signatures and deduplicates on `X-OpenWA-Idempotency-Key`. `message.received` powers STOP and Vitt Saathi replies. `message.ack`/`message.failed` update reminder delivery state. Group messages and unresolved `@lid` identities are deliberately ignored; enable OpenWA's `RESOLVE_LID_TO_PHONE=true` if the selected engine emits privacy IDs.
 
-Before an outbound send, the VITTRM user still needs a stored, Twilio-verified phone, WhatsApp consent and enabled reminder preference. The scheduler rechecks these at dispatch; STOP or in-app revocation converts queued WhatsApp reminders to in-app. Use only a controlled, opted-in test recipient. Verify send, delivery/read acknowledgements, inbound emergency query, deep link, duplicate webhook idempotency, invalid signature rejection, STOP and retry. Record provider message IDs/status only; never log message bodies or full phone numbers.
+Before an outbound send, the user still needs a stored, Twilio-verified phone, WhatsApp consent and enabled reminder preference. The scheduler rechecks these at dispatch; STOP or in-app revocation converts queued WhatsApp reminders to in-app. Use only a controlled, opted-in test recipient. Verify send, delivery/read acknowledgements, inbound emergency query, deep link, duplicate webhook idempotency, invalid signature rejection, STOP and retry. Record provider message IDs/status only; never log message bodies or full phone numbers.
 
 ## Twilio Verify and consultation Voice
 

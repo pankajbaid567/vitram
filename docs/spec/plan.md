@@ -1,14 +1,15 @@
 # VITTRM — Implementation Plan
 
-> Living document. Created before any application code was written; updated as milestones land.
-> Original implementation record; see `plan2.md` and `checklist.md` for the current completion status and remaining gates. Several older totals and “no credentials” statements below are historical snapshots superseded by later work.
+> **Historical design record.** Written before and during the build; kept for its requirement IDs (P1, O1, F1 …, cited in code and tests) and design rationale.
+> It is **not** a status report: current verification state is in [`docs/STATUS.md`](../STATUS.md), architecture in [`docs/ARCHITECTURE.md`](../ARCHITECTURE.md), and decisions in [`docs/DECISIONS.md`](../DECISIONS.md). Older test totals and "no credentials" statements below are superseded.
+> **Correction:** where this plan says the WhatsApp channel is "per RD §17.1", note the RD locks the *official Meta WhatsApp Cloud API*; the self-hosted OpenWA gateway is a later implementation choice (see ADR-0002).
 
 **Source documents read in full**
 
 | ID | Document | How it was read |
 |----|----------|-----------------|
-| **RD** | `VITRAM_Project_Resource_Document_v1.0.docx` — Project Resource Document + PRS, v1.0 (35 sections + Appendices A–C, 2 figures) | Converted with pandoc; both embedded figures (Fig. 1 Document-to-Profile Pipeline, Fig. 2 Reference Architecture) inspected as images. |
-| **HW** | `WhatsApp Image 2026-09-23 at 01.18.40.jpeg` — handwritten ideation page | Inspected visually, then cropped and upscaled per region for accurate transcription (see §1.4). |
+| **RD** | `spec/VITRAM_Project_Resource_Document_v1.0.docx` — Project Resource Document + PRS, v1.0 (35 sections + Appendices A–C, 2 figures) | Converted with pandoc; both embedded figures (Fig. 1 Document-to-Profile Pipeline, Fig. 2 Reference Architecture) inspected as images. |
+| **HW** | `spec/ideation-page.jpeg` — handwritten ideation page | Inspected visually, then cropped and upscaled per region for accurate transcription (see §1.4). |
 
 Section references below use `RD §n` and `HW:<area>`.
 
@@ -32,7 +33,7 @@ Core loop (RD §2.2): **DATA → STRUCTURE → UNDERSTANDING → PERSONALIZATION
 - **Two core pillars:** Loan Journey and Insurance Journey (RD §4, HW: "Loan Part" / "Insurance Part").
 - **Supporting intelligence:** Credit Card Intelligence and EMI Intelligence (RD §4, HW).
 - **One AI identity — Vitt Saathi (वित्त साथी)** — chat + real-time voice, context/tools scoped per page (RD §11).
-- **Channels:** self-hosted OpenWA (reminders, emergency quick-query, linked Q&A) and Twilio (insurance consultation calls) (RD §17).
+- **Channels:** self-hosted OpenWA (reminders, emergency quick-query, linked Q&A) and Twilio (insurance consultation calls) (RD §17.1 specifies Meta's Cloud API — see ADR-0002).
 - **Principle that makes it VITTRM, not a chatbot:** language intelligence is separated from financial truth. Numbers come from deterministic code; product/document facts come from catalogues and source-linked extractions; the LLM explains and orchestrates (RD §1, §2, §5, §22).
 - **Honest prototyping:** curated/mock catalogues are allowed but must be labelled; nothing claims to be live unless it is (RD §4, §5).
 

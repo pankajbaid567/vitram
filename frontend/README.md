@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# VITRAM web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19 + TypeScript + Vite + Tailwind v4 + Radix. Talks to the API only through `src/lib/api.ts` (cookie session, stable `{error:{code,message}}` contract → `ApiError`).
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev          # http://localhost:5173, proxies /api to http://127.0.0.1:8000
+                     # API on another port?  API_PROXY_TARGET=http://127.0.0.1:8001 npm run dev
+npm test             # Vitest + Testing Library (jsdom)
+npm run typecheck && npm run lint && npm run build
+node --experimental-websocket scripts/a11y-audit.mjs   # axe on every route + keyboard checks (needs the stack running and local Chrome; Node 22 needs no flag)
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Structure
+
+```
+src/
+  main.tsx            mount only: BrowserRouter + root ErrorBoundary
+  app/                App (providers), routes (lazy, code-split), AppShell, ErrorBoundary
+  features/<journey>/ one folder per journey: screens + their hooks (loans, cards, emis, insurance, documents, …)
+  components/ui/      design-system primitives: button, field, feedback, overlay, data (Money, TrustMark, source citations)
+  lib/                api client, auth context, formatting (Indian digit grouping), shared types
+  styles/index.css    design tokens
+  __tests__/          unit + app-level tests (the real route tree against a mocked fetch)
+```
+
+Conventions that matter:
+
+- **A screen failing must not take the app down.** `ErrorBoundary` wraps the routed area and resets on navigation.
+- **Money is never shown as zero when unknown.** Use `inr()` / `<Money>`: missing values read "Not available".
+- **Provenance is part of the UI.** Facts render with `TrustMark` (extracted / confirmed / conflicted / missing) and open their source page.
+- **Server state lives in React Query**; local state stays local.

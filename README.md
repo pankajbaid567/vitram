@@ -1,107 +1,102 @@
-# VITTRM
+# VITRAM
 
-AI-powered financial journeys for salaried professionals in India — Loans, Insurance, Credit Cards and EMIs, with
-**Vitt Saathi (वित्त साथी)** as the single assistant. Built from `VITRAM_Project_Resource_Document_v1.0.docx` and the
-handwritten ideation page; see [`plan.md`](plan.md) for requirements and [`plan2.md`](plan2.md) / [`checklist.md`](checklist.md) for completion work.
+An AI-assisted financial companion for salaried people in India: **loans, cards, EMIs and insurance** from one financial profile built out of your own bank statements and documents, with **Vitt Saathi (वित्त साथी)** as the single assistant.
 
-> Decision-support prototype. Loan, card and insurance catalogues are **sample data with fictional institutions**.
-> VITTRM is not a lender, insurer, broker or adviser.
+> The app's on-screen brand is **VITTRM**; VITRAM is the project name.
+> **Decision-support prototype.** Loan, card and insurance catalogues are *fictional sample data*, labelled as such. VITRAM is not a lender, insurer, broker or adviser.
 
-## Run it locally
+| | |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard.jpg) | ![Loan options with real cost](docs/screenshots/loan-options.jpg) |
+| ![Which card to use](docs/screenshots/card-optimizer.jpg) | ![Emergency mode, scoped to one family member](docs/screenshots/emergency-mode.jpg) |
 
-Requirements: Python ≥ 3.11 with [uv](https://docs.astral.sh/uv/), Node ≥ 20.
+## What makes it different
+
+- **Numbers you can trust.** EMI, real cost (scheduled vs contingent charges), prepayment, missed-payment and reward maths are pure, versioned functions, verified against independent recomputation. The assistant can only *narrate* their output; an amount in a model reply that doesn't match a tool result to the paise is replaced. Unknown terms give "not computable", never an invented fee.
+- **Every fact opens its source.** Values extracted from statements, policies and loan documents carry document, page, snippet and confidence, and can be corrected by the user.
+- **Consent where it matters.** Outbound WhatsApp is re-checked against consent and a verified phone *at send time*; `STOP` wins immediately.
+- **Honest about what it can't do.** Missing integrations show *not configured*, never a fake success. See [`docs/STATUS.md`](docs/STATUS.md) for exactly what has and hasn't been verified.
+
+## Journeys
+
+| Journey | What you get |
+|---|---|
+| **Profile** | Upload a CSV/PDF statement (or a photo of one) → income, categories, merchants, recurring payments, review & correct |
+| **Loans** | Ranked, reason-coded options → real cost → compare → what-ifs; ask questions of a loan key-facts document with page citations |
+| **Cards** | Best card for a purchase using each card's caps, exclusions and reward value; due dates; card-document import |
+| **EMIs** | Detected or manual EMIs, month/week calendar, missed-payment and prepayment scenarios, in-app and WhatsApp reminders |
+| **Insurance** | Policy documents → coverage, exclusions, waiting periods with sources; compare plans; **Emergency mode** scoped to one person |
+| **Also** | Receipts, spending insights, cash-flow forecast, goals, family members, consultation requests |
+
+## Run it
+
+**Local (SQLite, no keys needed).** Python ≥ 3.11 with [uv](https://docs.astral.sh/uv/), Node ≥ 20.
 
 ```bash
-# backend (http://127.0.0.1:8000)
-cd backend
-uv sync --extra ai            # --extra ai installs google-genai (needed only when Gemini is configured)
-uv run uvicorn app.main:app --reload --port 8000
+# backend → http://127.0.0.1:8000
+cd backend && uv sync --extra ai && uv run uvicorn app.main:app --port 8000
 
-# frontend (http://localhost:5173, proxies /api to the backend)
-cd frontend
-npm install
-npm run dev
+# frontend → http://localhost:5173 (proxies /api to the backend)
+cd frontend && npm install && npm run dev      # port 8000 busy? API_PROXY_TARGET=http://127.0.0.1:8001 npm run dev
 ```
 
-Open http://localhost:5173 and either create an account or choose **Open sample workspace** — a separate, clearly
-labelled account whose generated sample documents (6-month bank statement, three policies, a loan KFS) are processed
-through the real pipeline.
+Open <http://localhost:5173> and choose **Open sample workspace** (generated fictional documents processed through the real pipeline), or create an account.
 
-## Tests
+**Full stack in containers (PostgreSQL + API + nginx).**
 
 ```bash
-cd backend && uv run pytest -q          # finance engine, parsing, extraction, journeys, Saathi, channels, migrations
-# optional: run the suite on PostgreSQL → TEST_DATABASE_URL=postgresql+psycopg://… uv run pytest -q --deselect tests/test_migrations.py
-cd frontend && npm test && npm run typecheck && npm run build
+cp .env.example .env     # then set VITRAM_DATA_KEY (command in the file)
+docker compose up --build        # → http://localhost:8080   (WEB_PORT to change)
 ```
 
-Sample documents are generated deterministically: `cd backend && uv run python scripts/make_fixtures.py`.
+## Tests and quality gates
 
-## Database & migrations
+```bash
+cd backend  && uv run pytest -q --cov=app     # 177 tests, 84 % coverage
+            && uv run ruff check .
+cd frontend && npm test && npm run typecheck && npm run lint && npm run build     # 31 tests
+```
 
-SQLite (`backend/.data/vitram.db`) is the default; set `DATABASE_URL` for PostgreSQL
-(`uv sync --extra postgres` installs the driver, e.g. `postgresql+psycopg://user:pass@host/vitram`).
-The schema is managed by **Alembic** (`backend/migrations/`).
+CI runs the backend on SQLite *and* PostgreSQL and the frontend on every push. Details and results: [`docs/STATUS.md`](docs/STATUS.md).
 
-- **Start-up**: pending migrations are applied automatically (`AUTO_MIGRATE=true`, default). A database created before
-  migrations existed is detected, stamped with the matching revision without any schema change, then upgraded.
-- **Backups**: before any migration touches an existing SQLite file, a consistent copy is written to
-  `backend/.data/backups/vitram-<timestamp>-pre-<revision>.db` (SQLite online-backup API, safe while the app runs).
-  For PostgreSQL, take a `pg_dump` before upgrading — VITTRM logs a reminder but cannot do it for you.
-- Commands (from `backend/`):
+## Database
 
-  ```bash
-  uv run python -m app.migrate status            # current vs head revision
-  uv run python -m app.migrate backup            # manual SQLite backup
-  uv run python -m app.migrate upgrade           # apply pending migrations (with backup)
-  uv run python -m app.migrate restore <backup>  # restore a SQLite backup (stop the API first; the current file is backed up too)
-  uv run alembic revision --autogenerate -m "…"  # new migration after changing app/models.py — review it before committing
-  uv run alembic downgrade -1                    # manual only; never run automatically
-  ```
-- Production: set `AUTO_MIGRATE=false` and run `uv run alembic upgrade head` as a deploy step after a backup.
+SQLite (`backend/.data/vitram.db`) by default; set `DATABASE_URL` for PostgreSQL (`uv sync --extra postgres`). **Alembic** owns the schema (`backend/migrations`, `0001 → 0008`). Pending migrations apply at start-up (`AUTO_MIGRATE=true`) and an existing SQLite file is backed up first; in production set `AUTO_MIGRATE=false` and run `uv run alembic upgrade head` as a deploy step after a backup.
 
-## Document vision & intelligence (M13)
-
-- **Photos and scans**: JPG, PNG and WebP photos and scanned PDFs are read by OCR (see Integrations). Photos are rotated upright, downscaled and re-encoded before storage, which removes EXIF metadata such as GPS location. HEIC isn't accepted (phones convert to JPG on upload).
-- **Live camera scanner**: "Scan with camera" opens an in-browser scanner built on OpenCV.js (`@techstark/opencv-js`, Apache-2.0). It finds the page's edges in real time, captures automatically when the phone is steady, lets you adjust the corners, straightens the page and offers Enhanced / Colour / Black & white looks. Everything runs in the browser, and only the final scan is uploaded. Camera access needs HTTPS or `localhost`; without a camera the upload box offers the phone camera app or a file instead.
-- **Receipts** (`/documents/receipts/new`): merchant, date, total, GST lines, items and payment method, each with its source line. Nothing is confirmed automatically; long digit runs (card numbers) are cut to the last 4. Matching to a bank transaction is a suggestion the user chooses; no transaction is created.
-- **Review** any document's values (confirm / correct / reject) in Documents & data; rejected values are never used. Vitt Saathi can summarise or search one document (`document` context).
-- **Spending insights** (`/insights`), **cash-flow estimate** (`/forecast`) and **goals** (`/goals`) use only the user's own, confirmed or entered data; see `plan.md` M13 for the rules.
-
-## Screens & accounts
-
-- `/login`, `/signup` (and `/welcome`, an alias of sign-up). Signed-out visitors are sent to `/login` and returned to the page they asked for; a session that ends mid-use shows a "session ended" notice.
-- `/profile` — personal details, Vitt Saathi reply language, contact permissions, password change (`POST /api/auth/password`; signs out other devices) and the confirmed financial profile.
-- Phone possession verification uses Twilio Verify v2 when configured; until a number is verified, outbound WhatsApp and live consultation calls are gated. Email verification and single-use password-reset links use configured SMTP; without SMTP, the UI reports that delivery is unavailable. OTP sign-in and social login are not implemented.
-- App background: `frontend/src/assets/app-background.jpg` (from `resources/`), shown on signed-in and onboarding screens only.
+```bash
+uv run python -m app.migrate status | backup | upgrade | restore <file>
+uv run alembic revision --autogenerate -m "…"     # review before committing
+```
 
 ## Integrations
 
-Copy `.env.example` to `.env`. Nothing below is required to run the app; each missing integration shows an honest
-"not configured" state.
+All optional; configure through `.env` (see [`.env.example`](.env.example)).
 
-| Integration | Enables | Settings | Status in this repo |
-|---|---|---|---|
-| Gemini | Free-form Vitt Saathi chat with function calling and consented scanned-PDF OCR | `GEMINI_API_KEY`, `GEMINI_MODEL` | Text, one sample-workspace tool call and fictional image-PDF OCR passed live provider probes; full language/safety and real-document evaluation remain open. Without it, chat runs in labelled **Tool mode**. |
-| Gemini Live | In-app real-time voice (ephemeral token → browser) | `GEMINI_API_KEY`, `GEMINI_LIVE_MODEL` | A provider-level WebSocket returned audio; browser microphone, interruption, transcripts and tool calls are **not yet verified**. |
-| OpenWA | EMI/card/renewal reminders, emergency quick-query, STOP opt-out | `OPENWA_*`, `PUBLIC_API_URL` | Self-hosted send and signed-webhook contracts are tested locally; a paired live session is still required. Reminders always appear in-app. |
-| OCR — Apple Vision (default on macOS) | Photos and scanned PDFs: receipts, policies, loan documents, statements | `OCR_PROVIDER=auto` (default) | **Verified on this Mac**: a Swift helper (`backend/tools/ocr_macos.swift`) is compiled on first use into `backend/.data/bin/`; documents are read on-device. Needs Xcode command-line tools (`swiftc`). |
-| OCR — Gemini vision (opt-in) | Same, on servers without Apple Vision | `OCR_PROVIDER=gemini`, `GEMINI_API_KEY`, `GEMINI_VISION_MODEL` (or `GEMINI_MODEL`) | Built against `google-genai` 2.25 (`Part.from_bytes` + `response_json_schema`), contract-tested offline; **not verified live**. Sends documents to Google — never chosen automatically. |
-| SMTP email | Email verification and password-reset links | `SMTP_HOST`, `SMTP_FROM` (+ `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_PORT`, `SMTP_STARTTLS`, `APP_ORIGIN`) | Both flows tested with a fake mailer; **no live email sent**. Not configured → reset is shown as unavailable. |
-| Twilio Voice | Insurance consultation calls | `TWILIO_*`, `CONSULTANT_PHONE_NUMBER`, `PUBLIC_API_URL` | Call creation + signed status webhook built and tested locally; **no live call verified**. Requests are saved with "no call was placed". |
-| Twilio Verify | SMS phone possession check before outbound contact | `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID` | API and gating locally tested; **no live SMS verified**. |
+| Integration | Enables | State |
+|---|---|---|
+| Gemini | Free-form assistant, consented scan OCR, live voice | Adapter unit-tested; live use unverified. Without it the assistant runs in labelled *Tool mode* |
+| WhatsApp (OpenWA gateway) | EMI/card/renewal reminders, emergency quick-query, `STOP` | Verified against a mock gateway. **Unofficial gateway: dev/demo only**, see [ADR-0002](docs/DECISIONS.md) |
+| Twilio Verify / Voice | Phone possession check; insurance consultation calls | Gated and tested locally; no live SMS or call run |
+| SMTP | E-mail verification and password reset | Tested with a fake mailer |
+| Apple Vision (macOS) | On-device OCR for photos and scans | Verified on macOS |
 
-See [`INTEGRATIONS.md`](INTEGRATIONS.md) for safe setup and live-test gates, and [`DEMO_SCRIPT.md`](DEMO_SCRIPT.md) for the capability-based walkthrough.
+Setup and the live-test checklist: [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
 
-OpenWA webhook URL: `{PUBLIC_API_URL}/api/webhooks/openwa` (HMAC secret = `OPENWA_WEBHOOK_SECRET`).
-Twilio status callback: `{PUBLIC_API_URL}/api/webhooks/twilio`.
+## Documentation
+
+| | |
+|---|---|
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Layers, money path, document pipeline, channels, security model, failure behaviour, scaling path |
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | Architecture decision records |
+| [`docs/STATUS.md`](docs/STATUS.md) | What is verified, how, and what is not |
+| [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md) · [`docs/DEMO.md`](docs/DEMO.md) | Provider setup · demo walkthrough |
+| [`docs/spec/`](docs/spec) | Product requirements document, ideation page, historical plan |
 
 ## Layout
 
 ```
-backend/   FastAPI · SQLAlchemy · deterministic finance engine · document pipeline · Vitt Saathi orchestrator
-frontend/  React · TypeScript · Vite · Tailwind v4 · Radix primitives
-plan.md    requirements, traceability matrix, design system, architecture, roadmap, progress tracker
-plan2.md   completion roadmap; checklist.md tracks open implementation and test work
+backend/    FastAPI · SQLAlchemy · Alembic · finance engine · document pipeline · Saathi · channels
+frontend/   React 19 · TypeScript · Vite · Tailwind v4 · Radix
+docs/       architecture, decisions, status, integrations, demo, spec
+.github/    CI
 ```
-# paytm-mumbai

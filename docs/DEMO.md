@@ -1,6 +1,8 @@
-# VITTRM capability demo
+# Demo script (≈ 2 minutes for the core, 8 for everything)
 
-Use a fresh, labelled **sample workspace**. These are fictional institutions, terms and people; VITTRM is a decision-support prototype, not a lender, insurer or broker. Start every demo by showing whether Gemini, OpenWA and Twilio are actually connected. Never claim an external message, call or live offer unless its provider status proves it.
+Use a fresh, labelled **sample workspace**. These are fictional institutions, terms and people; VITRAM is a decision-support prototype, not a lender, insurer or broker. Start every demo by showing whether Gemini, OpenWA and Twilio are actually connected. Never claim an external message, call or live offer unless its provider status proves it.
+
+**Two-minute core:** steps 1, 3 (loans), 4 (cards) and 6 (emergency mode). Everything runs from *Open sample workspace*, with no keys.
 
 1. Sign in and open the common dashboard. Show the setup checklist, four journeys, money-in/out, upcoming dues, and trust/source marks.
 2. Open Documents & Data. Upload the sample bank statement through the real pipeline, show processing, then review salary, category, recurring EMI and any uncertain values. Correct one item and show the dashboard/profile change. Mention that raw documents are not repeatedly sent to Vitt Saathi.
@@ -11,4 +13,4 @@ Use a fresh, labelled **sample workspace**. These are fictional institutions, te
 7. Open Consultation. Preview exactly what context will be shared and where the call goes. Only place a consented call to a verified controlled destination if the Voice configuration is complete. Otherwise show the honest not-configured state.
 8. Test resilience: disconnect Gemini and show Tool mode; withdraw WhatsApp consent and show queued sends become in-app; show no fabricated rates, fees, claim approval or credit score.
 
-Acceptance evidence to capture: an API/test result for each calculation and extraction fixture, screenshots at phone and desktop widths, source-page and correction examples, signed webhook/idempotency results, screen-reader pass, and real provider IDs/status only for controlled live tests. See `checklist.md` for the remaining gates.
+Acceptance evidence to capture: an API/test result for each calculation and extraction fixture, screenshots at phone and desktop widths, source-page and correction examples, signed webhook/idempotency results, screen-reader pass, and real provider IDs/status only for controlled live tests. See [`STATUS.md`](STATUS.md) for the remaining gates.
