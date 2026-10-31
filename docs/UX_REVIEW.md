@@ -36,7 +36,7 @@ showing value, brand naming drift (VITTRM in the UI, VITRAM in the repo), and a 
 
 ### P1 (next)
 1. **Show value before sign-up.** Put "Open sample workspace" next to the headline on /welcome, not under the form.
-2. **Quieter background.** The faint "YOUR MONEY / A BRIGHTER YOU" watermark crosses content on wide screens; remove it behind content areas.
+2. **Quieter background.** The faint "YOUR MONEY / A BRIGHTER YOU" watermark crosses content on wide screens; it is baked into `frontend/src/assets/app-background.jpg`, so the fix is a clean export of that image without the text.
 3. **Make permission errors actionable.** "Add your mobile number first" should link to the profile field.
 4. **Truncated stat captions** on the dashboard cards; allow two lines instead of clipping.
 5. **Tap targets.** 20 controls under 32px on the emergency screen at 390px (relationship chips, small links); raise to 40px.
