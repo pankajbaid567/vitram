@@ -62,7 +62,7 @@ function FactsSheet({ doc, onClose }: { doc: DocumentRow | null; onClose: () => 
           <p>{doc.transactions_found ?? 0} transactions from {date(doc.period_start)} to {date(doc.period_end)}.</p>
           <LinkButton to="/profile/review" variant="secondary" className="w-fit">Review and correct in your profile</LinkButton>
         </div>
-      ) : doc?.type !== 'card_document' ? <ExtractedReview docId={doc!.id} /> : q.isLoading ? <p className="text-sm text-muted">Loading…</p> : (<>
+      ) : !doc ? null : doc.type !== 'card_document' ? <ExtractedReview docId={doc.id} /> : q.isLoading ? <p className="text-sm text-muted">Loading…</p> : (<>
         <dl className="divide-y divide-line">
           {q.data?.facts.map((f: DocFact) => (
             <div key={f.id} className="flex flex-col gap-1 py-3">
