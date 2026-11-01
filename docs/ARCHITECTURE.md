@@ -128,7 +128,10 @@ Identity & consent (`users`, `sessions`, `consents`, `auth_tokens`, `password_re
 
 - **Processes.** The API can run the reminder loop itself (default) or leave it to a dedicated worker: `RUN_SCHEDULER=false` + `python -m app.worker`. Several workers are safe (atomic claims). `docker compose up` starts PostgreSQL, API, worker and nginx.
 - **Observability.** `X-Request-ID` on every response and log line (inbound ids reused when well-formed), `LOG_FORMAT=json`, redaction before formatting. `/api/health` (liveness) and `/api/ready` (database, schema revision, reminder-loop heartbeat from the `worker_heartbeats` table).
-- **Rate limiting.** One interface, two backends: per-process memory (default) or the shared database (`RATE_LIMIT_BACKEND=database`), where each attempt is recorded before it is counted so racing requests can only be over-refused, never over-admitted.
+- **Throttling and shedding.** Per-user / per-IP token buckets on every API route (`app/throttle.py`; memory or shared Redis, fails open), a Worker edge limiter, in-flight and queue-depth load shedding (`503` + `Retry-After`), circuit breakers around WhatsApp and the AI provider (`app/resilience.py`).
+- **Caching.** The dashboard is cached per user by data version (`app/cache.py`, ADR-0016); catalogues use ETags.
+- **Observability.** Prometheus metrics, readiness queue signals and opt-in OpenTelemetry traces: [`OBSERVABILITY.md`](OBSERVABILITY.md).
+- **Rate limiting (sign-in and recovery).** One interface, two backends: per-process memory (default) or the shared database (`RATE_LIMIT_BACKEND=database`), where each attempt is recorded before it is counted so racing requests can only be over-refused, never over-admitted.
 - **Integration doctor.** `python -m app.doctor [--offline] [--json]` reports each integration as configured / reachable using read-only calls only, with secrets scrubbed from the output.
 - **Backups.** `backend/scripts/backup.sh` and `restore.sh` cover PostgreSQL *and* the encrypted uploads; the key is backed up separately. See [`DEPLOY.md`](DEPLOY.md).
 

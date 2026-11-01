@@ -46,9 +46,31 @@ precision (about 50 steps) and use the closed-form annuity value for level EMI s
 `tests/test_irr_fast.py`: 300 random level streams and 100 uneven streams agree with the original algorithm to within `1e-12`.
 Across the whole mix this lifted saturation throughput by about 14%, because loan ranking is one request type in six.
 
+## Optimisation 2: a version-keyed dashboard cache (before / after)
+
+The dashboard costs 15 to 17 queries per request, and a page load fetches it repeatedly. `app/cache.py` caches the finished JSON per user, keyed by
+the user's **data version** and the day. Any committed change to a row the user owns (any table with `user_id`/`owner_user_id`, plus their own `users`
+row) bumps the version, which makes every older entry unreachable at once; append-only logs (`audit_events`, `calculation_runs`) are excluded so
+recording a calculation does not throw pages away. A 30 s TTL is the backstop for what a version cannot see. State is in Upstash Redis when `REDIS_URL`
+is set, so a write on one API instance invalidates for all of them.
+
+Dashboard only, 20 virtual users, no think time, one process (three runs each; the laptop was busy with other work, load average 11 to 19, so absolute
+numbers are pessimistic, but both columns ran under the same conditions):
+
+| | Cache off | Cache on |
+|---|---|---|
+| Throughput | 85 to 120 req/s | **325 to 460 req/s** |
+| p95 latency | 205 to 320 ms | **56 to 78 ms** |
+| Queries on a hit | 12 (session, user, then the full build) | **2 to 3** |
+
+Correctness is the point of the tests, not the hit rate (`tests/test_cache.py`): a new EMI shows on the very next read, renaming the user shows, users never
+see each other's pages, rolled-back changes do not invalidate, an unreachable Redis is a miss rather than an error, and the shared Redis store is verified
+against a real Upstash instance. Public reference data (the three product catalogues) additionally uses `ETag` + `Cache-Control: private, max-age=300` and
+answers `304`; user-specific responses stay `no-store`.
+
 ## Where the remaining time goes (profiled)
 
-- **`GET /api/dashboard`** is about 10 ms of CPU and issues **15 queries** per request. Most of the time is waiting on the database. The
+- **`GET /api/dashboard`** is about 10 ms of CPU and issues **15 to 17 queries** per request on a cache miss (now guarded by a query budget test). Most of the time is waiting on the database. The
   `financial_profiles` row (a large JSON document) is the single most expensive statement by total time. This is the target of the
   query-count and caching work (see `docs/FUTURE.md`, items 3 and 9).
 - **`POST /api/loans/recommend`** writes a `calculation_runs` row per call (13.7 ms average insert under load). Moving that audit write off the

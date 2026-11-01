@@ -97,3 +97,12 @@ family members, cards) carry a `version`; `If-Match` on PATCH gives 412 when sta
 refuse a write from a stale copy (409). **Why both layers.** The header lets a client say what it saw; the database guard protects
 clients that say nothing. **Consequences.** One extra row per keyed request; omitting the headers keeps the old behaviour.
 
+## ADR-0016: Cache by data version, not by hand-written invalidation
+
+**Context.** The dashboard costs ~16 queries and is fetched constantly; a cache is only acceptable if it can never show stale money. **Decision.**
+Each user has a version counter; any committed write to a row they own bumps it (SQLAlchemy `after_flush`/`after_commit` hooks), and cache keys embed the
+version and the date. Nothing has to remember which keys to delete. Append-only log tables are excluded; a 30 s TTL bounds what a version cannot see
+(bulk SQL, rows owned only through a parent). Redis (Upstash) holds the state when configured so every API instance agrees; otherwise per process.
+**Consequences.** Hits cost ~2 queries; a write anywhere in a user's data invalidates all of that user's cached pages (coarse but safe); with several
+instances and no Redis a page can be up to the TTL old, so production sets `REDIS_URL`. A broken Redis degrades to uncached, never to an error.
+

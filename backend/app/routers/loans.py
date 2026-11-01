@@ -2,11 +2,12 @@
 
 from typing import Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field, model_validator
 from sqlalchemy.orm import Session
 
 from app.audit import audit
+from app import cache
 from app.config import get_settings
 from app.db import get_db
 from app.deps import current_user
@@ -31,11 +32,11 @@ def product_out(row: LoanProduct) -> dict:
 
 
 @router.get("/catalogue")
-def catalogue(category: str | None = None, db: Session = Depends(get_db), user: User = Depends(current_user)):
+def catalogue(request: Request, category: str | None = None, db: Session = Depends(get_db), user: User = Depends(current_user)):
     q = db.query(LoanProduct)
     if category:
         q = q.filter(LoanProduct.category == category)
-    return {"currency": "INR", "products": [product_out(r) for r in q.order_by(LoanProduct.category, LoanProduct.lender)]}
+    return cache.etag_response(request, {"currency": "INR", "products": [product_out(r) for r in q.order_by(LoanProduct.category, LoanProduct.lender)]})
 
 
 @router.get("/products/{product_id}")

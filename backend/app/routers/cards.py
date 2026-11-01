@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
+from app import cache
 from app.audit import audit
 from app.db import get_db
 from app.deps import current_user
@@ -111,15 +112,15 @@ def _get(db: Session, user: User, card_id: str) -> UserCard:
 
 
 @router.get("/catalogue")
-def catalogue(db: Session = Depends(get_db), user: User = Depends(current_user)):
-    return {"currency": "INR", "products": [{"id": r.id, "issuer": r.issuer, "card_name": r.card_name, "network": r.data.get("network"),
+def catalogue(request: Request, db: Session = Depends(get_db), user: User = Depends(current_user)):
+    return cache.etag_response(request, {"currency": "INR", "products": [{"id": r.id, "issuer": r.issuer, "card_name": r.card_name, "network": r.data.get("network"),
                           "annual_fee": (r.data.get("fees") or {}).get("annual"),
                           "reward_unit": (r.data.get("rules") or {}).get("currency_name"),
                           "categories": r.data.get("categories", []), "best_for": r.data.get("best_for", []),
                           "official_url": r.data.get("official_url"), "reference_only": r.data.get("reference_only", False),
                           "verified_at": r.data.get("verified_at"),
                           "catalogue": catalogue_meta(r)}
-                         for r in db.query(CardProduct).order_by(CardProduct.issuer)]}
+                         for r in db.query(CardProduct).order_by(CardProduct.issuer)]})
 
 
 @router.get("/explore")

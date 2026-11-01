@@ -4,10 +4,11 @@ from collections import defaultdict
 from datetime import date
 from typing import Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from app import cache
 from app.audit import audit
 from app.db import get_db
 from app.deps import current_user
@@ -177,11 +178,11 @@ def confirm_policy(pid: str, user: User = Depends(current_user), db: Session = D
 
 
 @router.get("/catalogue")
-def catalogue(type: str | None = None, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def catalogue(request: Request, type: str | None = None, user: User = Depends(current_user), db: Session = Depends(get_db)):
     q = db.query(InsuranceProduct)
     if type:
         q = q.filter(InsuranceProduct.type == type)
-    return {"currency": "INR", "products": [{**r.data, "catalogue": catalogue_meta(r)} for r in q.order_by(InsuranceProduct.type)]}
+    return cache.etag_response(request, {"currency": "INR", "products": [{**r.data, "catalogue": catalogue_meta(r)} for r in q.order_by(InsuranceProduct.type)]})
 
 
 class RecommendIn(BaseModel):

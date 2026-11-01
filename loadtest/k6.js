@@ -9,6 +9,7 @@ import { Trend } from 'k6/metrics'
 const BASE = __ENV.BASE || 'http://127.0.0.1:18000'
 const VUS = Number(__ENV.VUS || 20)
 const USERS = Number(__ENV.USERS || 10)
+const ONLY = __ENV.ONLY || ''
 const THINK = Number(__ENV.THINK ?? 0.5) // seconds between requests per user; 0 = saturation test
 const DURATION = __ENV.DURATION || '60s'
 const workspace = new Trend('workspace_create_ms', true)
@@ -40,7 +41,7 @@ export function setup() {
 export default function (data) {
   const jar = http.cookieJar()
   jar.set(BASE, 'vitram_session', data.sessions[(__VU - 1) % data.sessions.length])
-  const pick = Math.random()
+  const pick = ONLY === 'dashboard' ? 0 : Math.random()   // ONLY=dashboard isolates one endpoint (used to measure the cache)
   let r
   if (pick < 0.35) r = http.get(`${BASE}/api/dashboard`, read('dashboard'))
   else if (pick < 0.50) r = http.get(`${BASE}/api/documents`, read('documents'))

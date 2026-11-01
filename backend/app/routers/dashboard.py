@@ -5,6 +5,7 @@ from datetime import date, timedelta
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from app import cache
 from app.config import get_settings
 from app.db import get_db
 from app.deps import current_user
@@ -16,6 +17,11 @@ router = APIRouter(tags=["dashboard"])
 
 @router.get("/dashboard")
 def dashboard(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    # Cached per user until any of their data changes (or the day rolls over: "due in N days" depends on today); see app/cache.py.
+    return cache.cached("dashboard", user.id, lambda: _build_dashboard(user, db), daily=True)
+
+
+def _build_dashboard(user: User, db: Session) -> dict:
     settings = get_settings()
     p = profile_engine.get_profile(db, user)
     cf = p.get("cashflow_metrics", {})
