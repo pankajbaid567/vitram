@@ -8,6 +8,9 @@ _tmp = Path(tempfile.mkdtemp(prefix="vitram-test-"))
 os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL") or f"sqlite:///{_tmp / 'test.db'}"
 os.environ["DATA_DIR"] = str(_tmp)
 os.environ["APP_ORIGIN"] = "http://testserver"
+# No background loops inside the test process: tests drive the job queue and the reminder dispatcher explicitly, and a polling loop
+# would race them (it could claim a job a test is about to claim itself).
+os.environ["RUN_SCHEDULER"] = "false"
 # Explicit empty values override the repository-root .env so tests never use
 # developer credentials or make live vendor requests by accident.
 for k in ("GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_LIVE_MODEL", "OPENWA_BASE_URL",

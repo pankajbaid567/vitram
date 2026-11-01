@@ -4,7 +4,7 @@ import calendar
 from datetime import date, timedelta
 from typing import Literal
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
@@ -12,6 +12,7 @@ from app.audit import audit
 from app.config import get_settings
 from app.db import get_db
 from app.deps import current_user
+from app.concurrency import require_match
 from app.errors import DomainError, NotFound
 from app.models import Emi, ProfileOverride, RecurringGroup, User
 from app.services import calculations, obligations, profile_engine, slices
@@ -83,7 +84,7 @@ def outstanding(e: Emi) -> float | None:
     return e.amount * (1 - (1 + r) ** -e.remaining_count) / r
 
 
-def emi_out(e: Emi, db: Session | None = None) -> dict:
+def emi_out(e: Emi, db: Session | None = None) -> dict:  # includes `version` for If-Match
     g = db.get(RecurringGroup, e.recurring_group_id) if (db is not None and e.recurring_group_id) else None
     bal = outstanding(e)
     missing = []
@@ -99,7 +100,7 @@ def emi_out(e: Emi, db: Session | None = None) -> dict:
         "first_due_date": e.first_due_date.isoformat() if e.first_due_date else None,
         "rate": e.rate, "rate_type": e.rate_type, "late_rule": e.late_rule, "prepayment_rule": e.prepayment_rule,
         "source_type": e.source_type, "source_ref": e.source_ref, "source_document_id": e.source_document_id,
-        "confirmed": e.confirmed, "estimated_outstanding": round(bal, 2) if bal is not None else None,
+        "confirmed": e.confirmed, "version": e.version, "estimated_outstanding": round(bal, 2) if bal is not None else None,
         "missing_terms": missing,
         "detection": {"occurrences": g.occurrences, "first_date": g.first_date.isoformat(), "last_date": g.last_date.isoformat(),
                       "confidence": g.confidence} if g else None,
@@ -145,8 +146,9 @@ def add_emi(body: EmiIn, user: User = Depends(current_user), db: Session = Depen
 
 
 @router.patch("/{emi_id}")
-def update_emi(emi_id: str, body: EmiIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def update_emi(emi_id: str, body: EmiIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
     e = _get(db, user, emi_id)
+    require_match(request, e.version)
     data = body.model_dump()
     for k, v in data.items():
         setattr(e, k, v)

@@ -142,7 +142,10 @@ def test_schema_behind_the_code_is_not_ready(client, monkeypatch):
 
 def test_the_scheduler_flag_defaults_on_and_the_worker_module_imports():
     from app import worker
-    assert get_settings().run_scheduler is True and callable(worker.main)
+    from app.config import Settings
+
+    # the test environment turns the loops off (tests/conftest.py); the shipped default is on
+    assert Settings.model_fields["run_scheduler"].default is True and callable(worker.main)
 
 
 @pytest.mark.parametrize("given,expected", [

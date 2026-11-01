@@ -3,13 +3,14 @@
 from datetime import date
 from typing import Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.audit import audit
 from app.db import get_db
 from app.deps import current_user
+from app.concurrency import require_match
 from app.errors import DomainError, NotFound
 from app.models import FamilyMember, PolicyMember, User, UserPolicy
 from app.services import profile_engine
@@ -45,7 +46,7 @@ def member_out(m: FamilyMember, db: Session, policies: list[UserPolicy] | None =
         )
     return {
         "id": m.id, "name": m.name, "relation": m.relation, "dob": m.dob.isoformat() if m.dob else None,
-        "age": _age(m), "is_dependant": m.is_dependant,
+        "age": _age(m), "is_dependant": m.is_dependant, "version": m.version,
         "policies": [{"id": p.id, "insurer": p.insurer, "product_name": p.product_name, "type": p.type} for p in policies],
     }
 
@@ -90,8 +91,9 @@ def add_member(body: MemberIn, user: User = Depends(current_user), db: Session =
 
 
 @router.patch("/{member_id}")
-def update_member(member_id: str, body: MemberIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def update_member(member_id: str, body: MemberIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
     m = _get(db, user, member_id)
+    require_match(request, m.version)
     for k, v in body.model_dump().items():
         setattr(m, k, v)
     profile_engine.build_profile(db, user)

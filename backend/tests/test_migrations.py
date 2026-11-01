@@ -122,7 +122,7 @@ def test_rebase_old_local_0004_history_without_losing_user_data(db):
         command.stamp(cfg, "0004")
     info = upgrade_to_head(engine, url)
     assert info["rebased_from"] == "0004" and info["backup"] and Path(info["backup"]).exists()
-    assert current_revision(engine) == "0013"
+    assert current_revision(engine) == "0015"
     assert _schema_diff(engine) == []
     with engine.connect() as conn:
         assert conn.execute(text("SELECT email FROM users WHERE id='u1'")).scalar() == "a@b.c"

@@ -12,7 +12,7 @@ from datetime import date, datetime, time, timedelta, timezone
 from sqlalchemy import or_, update
 from sqlalchemy.orm import Session
 
-from app import ratelimit
+from app import idempotency, ratelimit
 from app.db import SessionLocal
 from app.deps import has_consent
 from app.models import Emi, Notification, Reminder, ReminderPreference, User, UserCard, UserPolicy, WorkerHeartbeat
@@ -261,5 +261,6 @@ def _tick() -> None:
         dispatch_due(db)
         beat(db)
         ratelimit.purge_expired()
+        idempotency.purge_expired()
     finally:
         db.close()

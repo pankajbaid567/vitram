@@ -2,13 +2,14 @@
 
 from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
 from app.audit import audit
 from app.db import get_db
 from app.deps import current_user
+from app.concurrency import require_match
 from app.errors import DomainError, NotFound
 from app.models import CardProduct, Document, FinancialProfile, User, UserCard
 from app.security import looks_like_full_card_number
@@ -84,7 +85,7 @@ def card_out(c: UserCard) -> dict:
     data = cat.data if cat else {}
     rules = data.get("rules") or {}
     return {
-        "id": c.id, "nickname": c.nickname, "last4": c.last4, "masked": f"•••• {c.last4}" if c.last4 else None,
+        "id": c.id, "version": c.version, "nickname": c.nickname, "last4": c.last4, "masked": f"•••• {c.last4}" if c.last4 else None,
         "catalogue_id": c.catalogue_id, "issuer": cat.issuer if cat else None, "card_name": cat.card_name if cat else None,
         "network": data.get("network"), "credit_limit": c.credit_limit, "outstanding": c.outstanding,
         "due_date": c.due_date.isoformat() if c.due_date else None,
@@ -257,8 +258,9 @@ def add_card(body: CardIn, user: User = Depends(current_user), db: Session = Dep
 
 
 @router.patch("/{card_id}")
-def update_card(card_id: str, body: CardIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def update_card(card_id: str, body: CardIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
     c = _get(db, user, card_id)
+    require_match(request, c.version)
     _apply(c, body, db)
     db.flush()
     db.refresh(c)

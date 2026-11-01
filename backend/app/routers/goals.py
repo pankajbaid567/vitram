@@ -2,13 +2,14 @@
 
 from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.audit import audit
 from app.db import get_db
 from app.deps import current_user
+from app.concurrency import require_match
 from app.errors import DomainError, NotFound
 from app.models import Goal, GoalContribution, User
 from app.services import profile_engine
@@ -37,7 +38,7 @@ def goal_out(db: Session, g: Goal, rows: list[GoalContribution] | None = None) -
         rows = db.query(GoalContribution).filter(GoalContribution.goal_id == g.id).order_by(GoalContribution.on_date.desc()).all()
     saved = sum(r.amount for r in rows)
     return {"id": g.id, "name": g.name, "target_amount": g.target_amount, "target_date": g.target_date.isoformat() if g.target_date else None,
-            "status": g.status, "created_at": g.created_at.isoformat(), **progress(g, saved),
+            "status": g.status, "version": g.version, "created_at": g.created_at.isoformat(), **progress(g, saved),
             "contributions": [{"id": r.id, "amount": r.amount, "on_date": r.on_date.isoformat(), "note": r.note} for r in rows[:50]]}
 
 
@@ -89,8 +90,9 @@ class GoalPatch(BaseModel):
 
 
 @router.patch("/{goal_id}")
-def update_goal(goal_id: str, body: GoalPatch, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def update_goal(goal_id: str, body: GoalPatch, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
     g = _get(db, user, goal_id)
+    require_match(request, g.version)
     if body.name is not None:
         g.name = body.name.strip()
     if body.target_amount is not None:

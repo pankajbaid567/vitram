@@ -95,6 +95,9 @@ class Consent(Base):
 class FamilyMember(Base):
     __tablename__ = "family_members"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    # Optimistic concurrency: bumped by every UPDATE, and a write from a stale copy is refused (see app/concurrency.py).
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    __mapper_args__ = {"version_id_col": version}
     user_id: Mapped[str] = _fk("users.id")
     name: Mapped[str] = mapped_column(String(80))
     relation: Mapped[str] = mapped_column(String(30))
@@ -281,6 +284,9 @@ class CardProduct(Base):
 class UserCard(Base):
     __tablename__ = "user_credit_cards"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    # Optimistic concurrency: bumped by every UPDATE, and a write from a stale copy is refused (see app/concurrency.py).
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    __mapper_args__ = {"version_id_col": version}
     user_id: Mapped[str] = _fk("users.id")
     catalogue_id: Mapped[str | None] = mapped_column(
         String(60), ForeignKey("credit_card_catalogue.id", ondelete="SET NULL"), nullable=True
@@ -307,6 +313,9 @@ class UserCard(Base):
 class Emi(Base):
     __tablename__ = "emis"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    # Optimistic concurrency: bumped by every UPDATE, and a write from a stale copy is refused (see app/concurrency.py).
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    __mapper_args__ = {"version_id_col": version}
     user_id: Mapped[str] = _fk("users.id")
     user_loan_id: Mapped[str | None] = _fk("user_loans.id", nullable=True, ondelete="SET NULL")
     title: Mapped[str] = mapped_column(String(120))
@@ -518,6 +527,9 @@ class Goal(Base):
 
     __tablename__ = "goals"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    # Optimistic concurrency: bumped by every UPDATE, and a write from a stale copy is refused (see app/concurrency.py).
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    __mapper_args__ = {"version_id_col": version}
     user_id: Mapped[str] = _fk("users.id")
     name: Mapped[str] = mapped_column(String(80))
     target_amount: Mapped[float] = mapped_column(Float)
@@ -582,3 +594,18 @@ class Job(Base):
     last_error: Mapped[str | None] = mapped_column(String(300), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class IdempotencyKey(Base):
+    """A client-supplied ``Idempotency-Key`` and the response it produced, so a retried request replays instead of running twice."""
+
+    __tablename__ = "idempotency_keys"
+    __table_args__ = (UniqueConstraint("scope", "key", name="uq_idempotency_scope_key"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    scope: Mapped[str] = mapped_column(String(64))          # hash of the session, so keys never collide across users
+    key: Mapped[str] = mapped_column(String(120))
+    fingerprint: Mapped[str] = mapped_column(String(64))    # method + path + query + body
+    state: Mapped[str] = mapped_column(String(12), default="in_progress")  # in_progress | done
+    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    response_body: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)

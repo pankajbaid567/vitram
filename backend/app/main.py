@@ -8,6 +8,9 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.db import init_db
+from sqlalchemy.orm.exc import StaleDataError
+
+from app import idempotency
 from app.deps import SESSION_COOKIE
 from app.errors import DomainError, domain_error_handler
 from app.observability import configure_logging, new_request_id, request_id_var
@@ -38,6 +41,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="VITRAM API", version="0.1.0", lifespan=lifespan)
 app.add_exception_handler(DomainError, domain_error_handler)
+
+
+async def _stale_write(_: Request, __: StaleDataError) -> JSONResponse:
+    """Two requests edited the same record at once; the second write was refused by the database's version check."""
+    return JSONResponse({"error": {"code": "CONFLICT", "message": "This was changed at the same time somewhere else. Reload and try again."}}, 409)
+
+
+app.add_exception_handler(StaleDataError, _stale_write)
 
 
 def _bad_origin(message: str) -> JSONResponse:
@@ -78,6 +89,37 @@ def _internal_error(request_id: str) -> JSONResponse:
     return JSONResponse(body, status_code=500)
 
 
+async def _with_idempotency(request: Request, call_next):
+    key = request.headers.get(idempotency.HEADER)
+    token = request.cookies.get(SESSION_COOKIE)
+    if (not idempotency.applies(request.method, key, token) or request.url.path.startswith(CSRF_EXEMPT_PREFIXES)
+            or int(request.headers.get("content-length") or 0) > idempotency.MAX_BODY):
+        return await call_next(request)
+    body = await request.body()
+    fp = idempotency.fingerprint(request.method, request.url.path, request.url.query, body)
+    outcome = await asyncio.to_thread(idempotency.begin, idempotency.scope_of(token), key, fp)
+    if isinstance(outcome, idempotency.Replay):
+        if outcome.error:
+            code, message = outcome.error
+            extra = {"Retry-After": "1"} if outcome.status == 409 else {}
+            return JSONResponse({"error": {"code": code, "message": message}}, outcome.status, headers=extra)
+        return Response(outcome.body, outcome.status, media_type="application/json", headers={"Idempotent-Replay": "true"})
+    try:
+        response = await call_next(request)
+        stored = None
+        if response.status_code < 500 and response.headers.get("content-type", "").startswith("application/json"):
+            chunks = [chunk async for chunk in response.body_iterator]
+            raw = b"".join(chunks)
+            response = Response(raw, response.status_code, dict(response.headers), response.media_type)
+            if len(raw) <= idempotency.MAX_STORED:
+                stored = raw.decode()
+        await asyncio.to_thread(idempotency.finish, outcome, response.status_code, stored)
+        return response
+    except BaseException:
+        await asyncio.to_thread(idempotency.finish, outcome, 500, None)   # release the key: the retry should run for real
+        raise
+
+
 @app.middleware("http")
 async def security_middleware(request: Request, call_next):
     rid = new_request_id(request.headers.get("x-request-id"))
@@ -87,7 +129,7 @@ async def security_middleware(request: Request, call_next):
             response = blocked
         else:
             try:
-                response = await call_next(request)
+                response = await _with_idempotency(request, call_next)
             except Exception:  # noqa: BLE001 - last line of defence: log with the request id, never leak internals
                 log.exception("unhandled error on %s %s", request.method, request.url.path)
                 response = _internal_error(rid)
