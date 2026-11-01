@@ -12,6 +12,8 @@ export interface Env {
   API_ORIGIN: string
   /** Optional: other free services to keep awake, comma-separated base URLs (e.g. the OpenWA gateway). */
   KEEPALIVE_URLS?: string
+  /** Optional Workers Rate Limiting binding (wrangler.jsonc "unsafe.bindings"): one budget per client IP, enforced before the API is woken. */
+  EDGE_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> }
 }
 
 const HOP_BY_HOP = ['connection', 'keep-alive', 'transfer-encoding', 'upgrade', 'proxy-authenticate', 'proxy-authorization', 'te', 'trailer']
@@ -20,6 +22,16 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request)
+
+    // Coarse flood protection at the edge: an abusive client is turned away here and never reaches (or wakes) the free API host. The API
+    // applies the precise per-user budgets (app/throttle.py).
+    if (env.EDGE_LIMITER) {
+      const { success } = await env.EDGE_LIMITER.limit({ key: request.headers.get('cf-connecting-ip') ?? 'unknown' })
+      if (!success) {
+        return Response.json({ error: { code: 'RATE_LIMITED', message: "You're going a bit fast. Wait a moment and try again." } },
+          { status: 429, headers: { 'Retry-After': '30' } })
+      }
+    }
 
     const upstream = new URL(url.pathname + url.search, env.API_ORIGIN)
     const headers = new Headers(request.headers)
@@ -30,7 +42,9 @@ export default {
       const res = await fetch(upstream, {
         method: request.method, headers, body: ['GET', 'HEAD'].includes(request.method) ? undefined : request.body, redirect: 'manual',
       })
-      return new Response(res.body, res)   // status, Set-Cookie and the rest pass through unchanged
+      const out = new Response(res.body, res)   // status, Set-Cookie and the rest pass through unchanged
+      out.headers.set('x-edge-limiter', env.EDGE_LIMITER ? 'on' : 'off')
+      return out
     } catch {
       return Response.json({ error: { code: 'UPSTREAM_UNAVAILABLE', message: 'The server is starting up. Try again in a few seconds.' } }, { status: 502 })
     }

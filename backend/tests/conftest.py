@@ -11,6 +11,8 @@ os.environ["APP_ORIGIN"] = "http://testserver"
 # No background loops inside the test process: tests drive the job queue and the reminder dispatcher explicitly, and a polling loop
 # would race them (it could claim a job a test is about to claim itself).
 os.environ["RUN_SCHEDULER"] = "false"
+os.environ["THROTTLE_ENABLED"] = "false"     # rate-limit tests switch it on explicitly (tests/test_throttle.py)
+os.environ["REDIS_URL"] = ""
 # Explicit empty values override the repository-root .env so tests never use
 # developer credentials or make live vendor requests by accident.
 for k in ("GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_LIVE_MODEL", "OPENWA_BASE_URL",

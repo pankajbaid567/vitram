@@ -42,6 +42,14 @@ the sign-up → statement upload → loans → cards → EMIs → insurance → 
 `https://vitram.baidpankaj567.workers.dev/api/webhooks/whatsapp` (the verify-token handshake is confirmed). For remote runs of the browser
 scripts use `WAIT_SCALE=5 node scripts/e2e-journey.mjs --base <url>`: a cold free host is slower than the default waits.
 
+### Rate limits (Upstash Redis and the edge)
+
+Two layers. The Worker's **Rate Limiting binding** (`EDGE_LIMITER` in `wrangler.jsonc`, 300 API requests/minute per client IP) turns floods away before they wake
+the free API host; verified by temporarily lowering it to 20 per 10 s, where 200 rapid requests got 120 `429`s. The API applies precise per-user token buckets
+(`app/throttle.py`): reads 240/min, writes 60/min, uploads 8/min, assistant messages 15/min plus `AI_DAILY_CAP` a day. Set `REDIS_URL` (free Upstash Redis, **same AWS
+region as the API: `us-east-2` for Render Ohio**) to share the counters across instances; without it each process counts alone. If Redis is unreachable the limiter fails
+open behind a circuit breaker. Details and the load-shedding limits: [`OBSERVABILITY.md`](OBSERVABILITY.md).
+
 ### WhatsApp on the free tier (OpenWA on Render)
 
 For a free, unofficial WhatsApp gateway, [`deploy/openwa/`](../deploy/openwa) wraps the OpenWA image (Baileys engine, no Chromium) for a

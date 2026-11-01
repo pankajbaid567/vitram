@@ -13,7 +13,7 @@ from app.db import init_db
 from opentelemetry import trace
 from sqlalchemy.orm.exc import StaleDataError
 
-from app import idempotency, metrics, tracing
+from app import idempotency, metrics, throttle, tracing
 from app.deps import SESSION_COOKIE
 from app.errors import DomainError, domain_error_handler
 from app.observability import configure_logging, new_request_id, request_id_var
@@ -130,6 +130,19 @@ async def _shed(request: Request) -> JSONResponse | None:
     return JSONResponse({"error": {"code": "BUSY", "message": message}}, 503, headers={"Retry-After": "10"})
 
 
+async def _throttle(request: Request) -> JSONResponse | None:
+    """Per-user / per-IP token buckets (app/throttle.py). 429 with Retry-After when a budget is spent."""
+    args = (request.method, request.url.path, request.cookies.get(SESSION_COOKIE),
+            (request.headers.get("cf-connecting-ip") or "").strip() or None, request.client.host if request.client else None)
+    decision = await asyncio.to_thread(throttle.check, *args) if get_settings().redis_url else throttle.check(*args)
+    if decision is None or decision.allowed:
+        return None
+    message = ("You've reached today's limit for assistant messages. It resets tomorrow." if decision.reason == "daily"
+               else "You're going a bit fast. Wait a moment and try again.")
+    return JSONResponse({"error": {"code": "RATE_LIMITED", "message": message}}, 429,
+                        headers={"Retry-After": str(decision.retry_after), "RateLimit-Limit": str(decision.limit), "RateLimit-Remaining": "0"})
+
+
 async def _with_idempotency(request: Request, call_next):
     key = request.headers.get(idempotency.HEADER)
     token = request.cookies.get(SESSION_COOKIE)
@@ -170,6 +183,10 @@ async def security_middleware(request: Request, call_next):
         shed.headers["X-Request-ID"] = rid
         request_id_var.reset(token)
         return shed
+    if (limited := await _throttle(request)) is not None:
+        limited.headers["X-Request-ID"] = rid
+        request_id_var.reset(token)
+        return limited
     metrics.HTTP_INFLIGHT.inc()
     trace.get_current_span().set_attribute("vitram.request_id", rid)   # joins a log line to its trace (no-op when tracing is off)
     status = 500

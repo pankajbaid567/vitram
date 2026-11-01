@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     data_dir: Path = BACKEND_DIR / ".data"
     # Where encrypted uploads live: "local" (DATA_DIR/objects, needs a persistent disk) or "s3" (any S3-compatible
     # bucket, e.g. Cloudflare R2, for hosts without a disk). Files are Fernet-encrypted before they leave the process.
+    redis_url: str = ""                   # rediss://… (Upstash): shared rate-limit and cache state; empty = per-process memory
+    redis_timeout_seconds: float = 0.5    # per Redis call; the limiter fails open beyond this
+    throttle_enabled: bool = True         # per-user / per-IP token buckets on every API route (app/throttle.py)
+    ai_daily_cap: int = 200               # assistant messages per user per day
     max_inflight_requests: int = 100      # beyond this many simultaneous requests the API answers 503 + Retry-After (load shedding)
     max_queued_jobs: int = 500            # uploads are refused (503) while this many jobs wait: the workers are behind
     db_pool_size: int = 5                 # connections kept per process (PostgreSQL only)
