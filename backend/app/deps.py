@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 
+from app import rls
 from app.db import get_db
 from app.errors import DomainError
 from app.models import AuthSession, Consent, User
@@ -28,6 +29,7 @@ def current_user(request: Request, db: Session = Depends(get_db)) -> User:
     user = db.get(User, session.user_id)
     if user is None:
         raise DomainError("UNAUTHENTICATED", "Sign in to continue.", status_code=401)
+    rls.bind_request(db, user.id)
     return user
 
 

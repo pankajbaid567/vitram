@@ -12,6 +12,7 @@ from typing import Any
 from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
+from app import rls
 from app.audit import audit
 from app.models import (
     AuditEvent, BankAccount, CalculationRun, Consent, ConsultationRequest, Conversation, Document, DocumentFact,
@@ -88,8 +89,9 @@ def delete_account(db: Session, user: User) -> None:
             storage.delete(d.file_key)
         except OSError:  # a missing object must not block erasure
             log.warning("stored object for a deleted document was already gone")
-    # Keep the audit trail's shape but cut its link to the person.
-    db.query(AuditEvent).filter(AuditEvent.user_id == user.id).update({AuditEvent.user_id: None}, synchronize_session=False)
-    audit(db, None, "account.deleted")  # no user id, no personal data
-    db.query(User).filter(User.id == user.id).delete(synchronize_session=False)  # the database cascades to every child row
-    db.commit()
+    # Keep the audit trail's shape but cut its link to the person. (System context: see rls.system for why.)
+    with rls.system(db):
+        db.query(AuditEvent).filter(AuditEvent.user_id == user.id).update({AuditEvent.user_id: None}, synchronize_session=False)
+        audit(db, None, "account.deleted")  # no user id, no personal data
+        db.query(User).filter(User.id == user.id).delete(synchronize_session=False)  # the database cascades to every child row
+        db.commit()
