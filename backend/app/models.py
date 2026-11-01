@@ -196,7 +196,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
     __table_args__ = (
         UniqueConstraint("bank_account_id", "fingerprint", name="uq_txn_fingerprint"),
-        Index("ix_transactions_user_date", "user_id", "txn_date"),   # statement views and every profile rebuild
+        Index("ix_transactions_user_date_id", "user_id", "txn_date", "id"),   # statement views, profile rebuilds and keyset pages (no sort step)
     )
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     user_id: Mapped[str] = _fk("users.id")

@@ -55,7 +55,9 @@ def test_a_two_year_statement_is_processed_in_seconds(client):
 
 @pytest.mark.skipif(engine.dialect.name != "sqlite", reason="uses SQLite's EXPLAIN QUERY PLAN")
 @pytest.mark.parametrize("sql,index", [
-    ("SELECT * FROM transactions WHERE user_id = 'u' ORDER BY txn_date DESC LIMIT 100", "ix_transactions_user_date"),
+    ("SELECT * FROM transactions WHERE user_id = 'u' ORDER BY txn_date DESC LIMIT 100", "ix_transactions_user_date_id"),
+    ("SELECT * FROM transactions WHERE user_id = 'u' AND (txn_date < '2026-01-01' OR (txn_date = '2026-01-01' AND id < 'x')) "
+     "ORDER BY txn_date DESC, id DESC LIMIT 101", "ix_transactions_user_date_id"),
     ("SELECT * FROM document_facts WHERE document_id = 'd' AND key = 'last4'", "ix_document_facts_doc_key"),
     ("SELECT id FROM reminders WHERE status = 'scheduled' AND schedule_at <= '2030-01-01' ORDER BY schedule_at LIMIT 100", "ix_reminders_status_schedule"),
 ])

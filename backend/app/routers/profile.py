@@ -1,5 +1,6 @@
 """Financial Profile, review & correction (RD §9.3–9.4, S06)."""
 
+import base64
 from typing import Literal
 
 from datetime import date
@@ -7,6 +8,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from app.audit import audit
@@ -135,8 +137,10 @@ def set_override(body: OverrideIn, user: User = Depends(current_user), db: Sessi
 def list_transactions(
     category: str | None = None, q: str | None = Query(default=None, max_length=80), direction: str | None = None,
     limit: int = Query(default=100, le=500), offset: int = 0,
+    cursor: str | None = Query(default=None, max_length=120, description="Opaque keyset cursor from a previous page's next_cursor"),
     user: User = Depends(current_user), db: Session = Depends(get_db),
 ):
+    """Newest first. Page with ``cursor`` (keyset: cost does not grow with page depth); ``offset`` remains for compatibility."""
     query = db.query(Transaction).filter(Transaction.user_id == user.id)
     if category:
         query = query.filter(Transaction.category == category)
@@ -144,10 +148,27 @@ def list_transactions(
         query = query.filter(Transaction.direction == direction)
     if q:
         query = query.filter(Transaction.description.ilike(f"%{q}%"))
-    total = query.count()
-    rows = query.order_by(Transaction.txn_date.desc()).offset(offset).limit(limit).all()
+    total = query.count() if cursor is None else None   # counting is O(n): only on the first page
+    query = query.order_by(Transaction.txn_date.desc(), Transaction.id.desc())
+    if cursor:
+        try:
+            raw = base64.urlsafe_b64decode(cursor.encode()).decode()
+            day, tid = raw.split("|", 1)
+            after = date.fromisoformat(day)
+        except (ValueError, UnicodeDecodeError) as exc:
+            raise DomainError("BAD_CURSOR", "That page link isn't valid. Start again from the first page.", field="cursor") from exc
+        query = query.filter(or_(Transaction.txn_date < after, and_(Transaction.txn_date == after, Transaction.id < tid)))
+    elif offset:
+        query = query.offset(offset)
+    rows = query.limit(limit + 1).all()
+    more = len(rows) > limit
+    rows = rows[:limit]
+    next_cursor = None
+    if more and rows:
+        last = rows[-1]
+        next_cursor = base64.urlsafe_b64encode(f"{last.txn_date.isoformat()}|{last.id}".encode()).decode()
     names = _doc_names(db, user)
-    return {"currency": "INR", "total": total, "items": [_txn_out(t, names) for t in rows]}
+    return {"currency": "INR", "total": total, "items": [_txn_out(t, names) for t in rows], "next_cursor": next_cursor}
 
 
 class TxnPatch(BaseModel):

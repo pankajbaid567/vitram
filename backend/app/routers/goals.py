@@ -31,8 +31,10 @@ def progress(goal: Goal, saved: float, today: date | None = None) -> dict:
             "months_left": months_left, "monthly_needed": monthly_needed, "reached": saved >= goal.target_amount}
 
 
-def goal_out(db: Session, g: Goal) -> dict:
-    rows = db.query(GoalContribution).filter(GoalContribution.goal_id == g.id).order_by(GoalContribution.on_date.desc()).all()
+def goal_out(db: Session, g: Goal, rows: list[GoalContribution] | None = None) -> dict:
+    """``rows`` (newest first) may be supplied by the list endpoint, which loads every goal's contributions in one query."""
+    if rows is None:
+        rows = db.query(GoalContribution).filter(GoalContribution.goal_id == g.id).order_by(GoalContribution.on_date.desc()).all()
     saved = sum(r.amount for r in rows)
     return {"id": g.id, "name": g.name, "target_amount": g.target_amount, "target_date": g.target_date.isoformat() if g.target_date else None,
             "status": g.status, "created_at": g.created_at.isoformat(), **progress(g, saved),
@@ -51,7 +53,11 @@ def list_goals(user: User = Depends(current_user), db: Session = Depends(get_db)
     goals = db.query(Goal).filter(Goal.user_id == user.id, Goal.status != "archived").order_by(Goal.created_at).all()
     profile = profile_engine.get_profile(db, user)
     surplus = ((profile.get("cashflow_metrics") or {}).get("monthly_surplus") or {})
-    return {"currency": "INR", "goals": [goal_out(db, g) for g in goals],
+    by_goal: dict[str, list[GoalContribution]] = {g.id: [] for g in goals}
+    if goals:
+        for c in (db.query(GoalContribution).filter(GoalContribution.goal_id.in_(by_goal)).order_by(GoalContribution.on_date.desc())):
+            by_goal[c.goal_id].append(c)
+    return {"currency": "INR", "goals": [goal_out(db, g, by_goal[g.id]) for g in goals],
             # an estimate from the statement, shown next to "monthly needed" so the user can judge it themselves
             "monthly_surplus": {"value": surplus.get("value"), "state": surplus.get("state")},
             "note": "Progress counts only the contributions you record. VITRAM doesn't move money or assume any returns."}

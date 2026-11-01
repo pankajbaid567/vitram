@@ -11,9 +11,15 @@ class Base(DeclarativeBase):
 
 
 def _make_engine(url: str):
-    kwargs = {}
+    kwargs: dict = {}
     if url.startswith("sqlite"):
         kwargs["connect_args"] = {"check_same_thread": False}
+    else:
+        # Serverless Postgres (Neon) closes idle connections and scales to zero: test a pooled connection before use and retire
+        # old ones, so the first request after a quiet period reconnects instead of failing with "connection closed".
+        s = get_settings()
+        kwargs.update(pool_pre_ping=True, pool_recycle=s.db_pool_recycle_seconds, pool_size=s.db_pool_size,
+                      max_overflow=s.db_max_overflow)
     engine = create_engine(url, **kwargs)
     if url.startswith("sqlite"):
 

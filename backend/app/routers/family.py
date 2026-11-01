@@ -34,13 +34,15 @@ def _age(m: FamilyMember) -> int | None:
     return m.age
 
 
-def member_out(m: FamilyMember, db: Session) -> dict:
-    policies = (
-        db.query(UserPolicy)
-        .join(PolicyMember, PolicyMember.policy_id == UserPolicy.id)
-        .filter(PolicyMember.family_member_id == m.id)
-        .all()
-    )
+def member_out(m: FamilyMember, db: Session, policies: list[UserPolicy] | None = None) -> dict:
+    """``policies`` may be supplied by a list endpoint that already loaded everyone's policies in one query (no N+1)."""
+    if policies is None:
+        policies = (
+            db.query(UserPolicy)
+            .join(PolicyMember, PolicyMember.policy_id == UserPolicy.id)
+            .filter(PolicyMember.family_member_id == m.id)
+            .all()
+        )
     return {
         "id": m.id, "name": m.name, "relation": m.relation, "dob": m.dob.isoformat() if m.dob else None,
         "age": _age(m), "is_dependant": m.is_dependant,
@@ -54,10 +56,16 @@ def list_members(user: User = Depends(current_user), db: Session = Depends(get_d
         db.query(UserPolicy).join(PolicyMember, PolicyMember.policy_id == UserPolicy.id)
         .filter(UserPolicy.user_id == user.id, PolicyMember.family_member_id.is_(None)).all()
     )
+    members = db.query(FamilyMember).filter(FamilyMember.user_id == user.id).order_by(FamilyMember.created_at).all()
+    by_member: dict[str, list[UserPolicy]] = {m.id: [] for m in members}
+    for member_id, policy in (db.query(PolicyMember.family_member_id, UserPolicy)
+                              .join(UserPolicy, PolicyMember.policy_id == UserPolicy.id)
+                              .filter(UserPolicy.user_id == user.id, PolicyMember.family_member_id.isnot(None))):
+        by_member.setdefault(member_id, []).append(policy)
     return {
         "self": {"id": "self", "name": user.name, "relation": "self",
                  "policies": [{"id": p.id, "insurer": p.insurer, "product_name": p.product_name, "type": p.type} for p in self_policies]},
-        "members": [member_out(m, db) for m in db.query(FamilyMember).filter(FamilyMember.user_id == user.id).order_by(FamilyMember.created_at)],
+        "members": [member_out(m, db, by_member[m.id]) for m in members],
     }
 
 
