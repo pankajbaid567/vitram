@@ -126,6 +126,7 @@ def fail(db: Session, job: Job, error: str) -> None:
 def run_next(wid: str | None = None) -> bool:
     """Claim and run one job in a fresh session. Returns False when nothing was runnable."""
     from app.services import pipeline  # noqa: F401 - importing registers the handlers (avoids a circular import at module load)
+    from app.services.channels import inbox  # noqa: F401
 
     wid = wid or worker_id()
     db = SessionLocal()

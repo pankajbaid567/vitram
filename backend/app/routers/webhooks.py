@@ -7,7 +7,7 @@ de-duplicates redelivered events, and hands the facts to the service layer
 
 import logging
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Request
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 
@@ -16,7 +16,8 @@ from app.config import get_settings
 from app.db import get_db
 from app.errors import DomainError
 from app.models import ConsultationRequest, Reminder
-from app.services.channels import delivery, gateway, inbound, twilio_voice
+from app.services import jobs
+from app.services.channels import delivery, gateway, inbox, twilio_voice
 from app.services.channels.idempotency import first_time
 
 router = APIRouter(prefix="/webhooks", tags=["webhooks"])
@@ -34,7 +35,7 @@ def whatsapp_subscribe(request: Request):
 
 @router.post("/whatsapp")
 @router.post("/openwa", include_in_schema=False)  # original path, kept so existing gateway configs keep working
-async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
+async def whatsapp_webhook(request: Request, background: BackgroundTasks, db: Session = Depends(get_db)):
     wa = gateway.whatsapp()
     if not wa.webhook_configured():
         raise DomainError("INTEGRATION_NOT_CONFIGURED", "The WhatsApp webhook secret is not configured.", status_code=503)
@@ -52,6 +53,7 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
         return PlainTextResponse("", status_code=204)
 
     messages, statuses = wa.parse_webhook(payload)
+    queued = False
     event_key = (request.headers.get(wa.idempotency_header) if wa.idempotency_header else None) or payload.get("idempotencyKey")
 
     for st in statuses:
@@ -69,10 +71,11 @@ async def whatsapp_webhook(request: Request, db: Session = Depends(get_db)):
         # One verified person per number: never answer into a group or an unresolved identity.
         if msg["is_group"] or not msg["sender"]:
             continue
-        reply = inbound.handle_inbound(db, msg)
-        if reply:
-            inbound.reply(msg["sender"], reply)
+        inbox.enqueue_inbound(db, msg, key)   # same transaction as the event record: acknowledged means durably queued
+        queued = True
     db.commit()
+    if queued:
+        background.add_task(jobs.run_available)   # fast path; the worker loop picks the job up if this process dies first
     return {"ok": True}
 
 
