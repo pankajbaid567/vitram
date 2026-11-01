@@ -13,7 +13,7 @@ from app.deps import current_user
 from app.errors import DomainError, NotFound
 from app.models import AuditEvent, BankAccount, Consent, User
 from app.routers.auth import user_out
-from app.security import decrypt_str, encrypt_str, mask_phone, normalize_indian_phone, phone_lookup_hash
+from app.security import decrypt_str, encrypt_str, mask_phone, normalize_indian_phone, phone_lookup_candidates, phone_lookup_hash
 from app.services import profile_engine
 
 router = APIRouter(tags=["onboarding"])
@@ -59,10 +59,11 @@ def update_about(body: AboutIn, user: User = Depends(current_user), db: Session 
             if not e164:
                 raise DomainError("INVALID_PHONE", "Enter a 10-digit Indian mobile number.", field="phone")
             lookup = phone_lookup_hash(e164)
-            owner = db.query(User).filter(User.phone_lookup == lookup, User.id != user.id).first()
+            candidates = phone_lookup_candidates(e164)   # also matches rows hashed under a retired key
+            owner = db.query(User).filter(User.phone_lookup.in_(candidates), User.id != user.id).first()
             if owner:
                 raise DomainError("PHONE_ALREADY_LINKED", "This mobile number is already linked to an account.", field="phone", status_code=409)
-            if user.phone_lookup != lookup:
+            if user.phone_lookup not in candidates:
                 user.phone_verified_at = None
                 from app.models import Reminder
                 for reminder in db.query(Reminder).filter(Reminder.user_id == user.id, Reminder.channel == "whatsapp",

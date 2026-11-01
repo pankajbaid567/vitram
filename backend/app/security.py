@@ -49,8 +49,19 @@ def token_id(token: str) -> str:
 
 
 # --- at-rest encryption ---------------------------------------------------
+#
+# Envelope encryption. Every stored file gets its own random data key (DEK); the file is encrypted with the DEK, and the DEK is encrypted
+# ("wrapped") with the master key. Blob layout:  b"VTR2" | wrapped-DEK length (2 bytes) | wrapped DEK | Fernet(DEK)(file).
+# Rotating the master key therefore re-wraps a ~100-byte header per file instead of re-encrypting every file, and a leaked DEK exposes one file.
+# Objects written before this scheme are plain Fernet tokens under the master key and are still read (and upgraded by app.rotate_keys).
+#
+# Master keys: VITRAM_DATA_KEY is the primary (used to encrypt); VITRAM_DATA_KEY_PREVIOUS lists retired keys that may still decrypt.
 
-_fernet: Fernet | None = None
+from cryptography.fernet import MultiFernet  # noqa: E402
+
+ENVELOPE_MAGIC = b"VTR2"
+
+_masters: list[bytes] | None = None
 
 
 def _load_key() -> bytes:
@@ -69,30 +80,103 @@ def _load_key() -> bytes:
     return key
 
 
+def master_keys() -> list[bytes]:
+    """Primary key first, then retired keys (decrypt-only)."""
+    global _masters
+    previous = [k.strip().encode() for k in (get_settings().vitram_data_key_previous or "").split(",") if k.strip()]
+    keys = [_load_key(), *previous]
+    if _masters != keys:
+        _masters = keys
+        _reset_caches()
+    return keys
+
+
+_fernet: Fernet | None = None
+_multi: MultiFernet | None = None
+
+
+def _reset_caches() -> None:
+    global _fernet, _multi
+    _fernet = _multi = None
+
+
 def fernet() -> Fernet:
+    """The primary master key."""
     global _fernet
+    master_keys()
     if _fernet is None:
-        _fernet = Fernet(_load_key())
+        _fernet = Fernet(master_keys()[0])
     return _fernet
 
 
+def multi() -> MultiFernet:
+    """Encrypts with the primary, decrypts with any master key."""
+    global _multi
+    keys = master_keys()
+    if _multi is None:
+        _multi = MultiFernet([Fernet(k) for k in keys])
+    return _multi
+
+
 def encrypt_bytes(data: bytes) -> bytes:
-    return fernet().encrypt(data)
+    dek = Fernet.generate_key()
+    wrapped = fernet().encrypt(dek)
+    return ENVELOPE_MAGIC + len(wrapped).to_bytes(2, "big") + wrapped + Fernet(dek).encrypt(data)
+
+
+def _split(blob: bytes) -> tuple[bytes, bytes] | None:
+    if not blob.startswith(ENVELOPE_MAGIC):
+        return None
+    n = int.from_bytes(blob[4:6], "big")
+    return blob[6:6 + n], blob[6 + n:]
 
 
 def decrypt_bytes(data: bytes) -> bytes:
     try:
-        return fernet().decrypt(data)
-    except InvalidToken as exc:  # key rotated or file tampered
+        parts = _split(data)
+        if parts is None:                                   # legacy: a Fernet token under the master key
+            return multi().decrypt(data)
+        wrapped, body = parts
+        return Fernet(multi().decrypt(wrapped)).decrypt(body)
+    except InvalidToken as exc:  # wrong or retired-and-removed key, or the file was tampered with
         raise ValueError("Stored file could not be decrypted") from exc
 
 
+def rewrap(blob: bytes) -> bytes | None:
+    """The blob protected by the *primary* master key, or None when it already is.
+
+    Envelope blobs only get their wrapped DEK replaced (the encrypted body is byte-for-byte unchanged); legacy blobs are re-encrypted whole.
+    """
+    parts = _split(blob)
+    if parts is None:
+        return encrypt_bytes(decrypt_bytes(blob))
+    wrapped, body = parts
+    try:
+        fernet().decrypt(wrapped)
+        return None
+    except InvalidToken:
+        pass
+    try:
+        new_wrapped = multi().rotate(wrapped)
+    except InvalidToken as exc:
+        raise ValueError("Stored file could not be decrypted") from exc
+    return ENVELOPE_MAGIC + len(new_wrapped).to_bytes(2, "big") + new_wrapped + body
+
+
 def encrypt_str(value: str) -> str:
-    return encrypt_bytes(value.encode()).decode()
+    """Short values (a phone number) are encrypted directly under the master key; ``rotate_str`` moves them to a new one."""
+    return fernet().encrypt(value.encode()).decode()
 
 
 def decrypt_str(value: str) -> str:
-    return decrypt_bytes(value.encode()).decode()
+    try:
+        return multi().decrypt(value.encode()).decode()
+    except InvalidToken as exc:
+        raise ValueError("Stored value could not be decrypted") from exc
+
+
+def rotate_str(value: str) -> str:
+    return multi().rotate(value.encode()).decode()
 
 
 # --- masking --------------------------------------------------------------
@@ -119,8 +203,14 @@ def normalize_indian_phone(raw: str) -> str | None:
     return "+91" + digits
 
 
-def phone_lookup_hash(e164: str) -> str:
-    return hmac.new(_load_key(), e164.encode(), hashlib.sha256).hexdigest()
+def phone_lookup_hash(e164: str, key: bytes | None = None) -> str:
+    """Keyed hash of a phone number, for matching inbound messages without decrypting. Stored under the primary key."""
+    return hmac.new(key or master_keys()[0], e164.encode(), hashlib.sha256).hexdigest()
+
+
+def phone_lookup_candidates(e164: str) -> list[str]:
+    """The hash under every master key, so a lookup still works while rows are being re-keyed after a rotation."""
+    return [phone_lookup_hash(e164, k) for k in master_keys()]
 
 
 def mask_phone(e164: str) -> str:

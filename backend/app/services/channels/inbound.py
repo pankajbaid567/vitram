@@ -15,7 +15,7 @@ from app.audit import audit
 from app.config import get_settings
 from app.deps import has_consent
 from app.models import Consent, Conversation, Message, Reminder, ReminderPreference, User
-from app.security import phone_lookup_hash
+from app.security import phone_lookup_candidates
 from app.services.channels import gateway
 from app.services.channels.gateway import InboundMessage
 
@@ -30,7 +30,7 @@ def _resolve_user(db: Session, sender: str) -> User | None:
     """The single account that owns this number, or None when unknown/ambiguous."""
     if not sender:
         return None
-    users = db.query(User).filter(User.phone_lookup == phone_lookup_hash("+" + sender.lstrip("+"))).limit(2).all()
+    users = db.query(User).filter(User.phone_lookup.in_(phone_lookup_candidates("+" + sender.lstrip("+")))).limit(2).all()
     return users[0] if len(users) == 1 else None
 
 

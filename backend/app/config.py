@@ -50,6 +50,8 @@ class Settings(BaseSettings):
     metrics_token: str = ""               # /api/metrics is off (404) unless this is set; then it needs "Authorization: Bearer <token>"
     # Fernet key for encrypting uploaded files at rest. Auto-generated in dev.
     vitram_data_key: str | None = None
+    # Retired master keys, comma-separated, still accepted for decryption while data is re-wrapped (docs/SECURITY_MODEL.md, "Key rotation").
+    vitram_data_key_previous: str | None = None
     # Public origin of the web app, used for CSRF origin checks and deep links.
     app_origin: str = "http://localhost:5173"
     # Public HTTPS base URL of this API, needed for OpenWA/Twilio webhooks.

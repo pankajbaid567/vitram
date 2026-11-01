@@ -22,6 +22,7 @@ class _Backend(Protocol):
     def put(self, key: str, blob: bytes) -> None: ...
     def get(self, key: str) -> bytes: ...
     def delete(self, key: str) -> None: ...
+    def keys(self): ...   # iterate stored object keys (key rotation)
 
 
 class _LocalBackend:
@@ -40,6 +41,10 @@ class _LocalBackend:
         path = self._path(key)
         if path.exists():
             path.unlink()
+
+    def keys(self):
+        d = get_settings().data_dir / "objects"
+        return (p.stem for p in sorted(d.glob("*.bin"))) if d.exists() else iter(())
 
 
 class _S3Backend:
@@ -68,6 +73,13 @@ class _S3Backend:
     def delete(self, key: str) -> None:
         self._client.delete_object(Bucket=self._bucket, Key=f"objects/{key}.bin")   # idempotent on S3
 
+    def keys(self):
+        for page in self._client.get_paginator("list_objects_v2").paginate(Bucket=self._bucket, Prefix="objects/"):
+            for obj in page.get("Contents", []):
+                name = obj["Key"].removeprefix("objects/")
+                if name.endswith(".bin"):
+                    yield name[:-4]
+
 
 @lru_cache
 def _backend() -> _Backend:
@@ -95,3 +107,23 @@ def delete(key: str) -> None:
     if not key.isalnum():
         return
     _backend().delete(key)
+
+
+def rotate_all(dry_run: bool = False) -> dict:
+    """Re-protect every stored object with the primary master key. Idempotent; an unreadable object is reported, not fatal."""
+    from app.security import rewrap
+
+    done = skipped = failed = 0
+    for key in _backend().keys():
+        try:
+            new = rewrap(_backend().get(key))
+        except ValueError:
+            failed += 1
+            continue
+        if new is None:
+            skipped += 1
+            continue
+        if not dry_run:
+            _backend().put(key, new)
+        done += 1
+    return {"rewrapped": done, "already_current": skipped, "unreadable": failed, "dry_run": dry_run}

@@ -22,6 +22,18 @@ class FakeS3:
     def delete_object(self, Bucket, Key):
         self.objects.pop((Bucket, Key), None)
 
+    def get_paginator(self, name):
+        assert name == "list_objects_v2"
+        fake = self
+
+        class _Pages:
+            def paginate(self, Bucket, Prefix):
+                keys = sorted(k for (b, k) in fake.objects if b == Bucket and k.startswith(Prefix))
+                yield {"Contents": [{"Key": k} for k in keys[:2]]}      # two pages, to exercise pagination
+                yield {"Contents": [{"Key": k} for k in keys[2:]]}
+
+        return _Pages()
+
 
 @pytest.fixture
 def s3(monkeypatch):
@@ -80,3 +92,31 @@ def test_unknown_backend_is_refused(monkeypatch):
         monkeypatch.delenv("STORAGE_BACKEND")
         get_settings.cache_clear()
         storage._backend.cache_clear()
+
+
+def test_s3_objects_can_be_listed_and_rotated_across_pages(s3, monkeypatch):
+    from cryptography.fernet import Fernet
+
+    from app import security
+    from app.config import get_settings
+
+    s = get_settings()
+    old = s.vitram_data_key or security._load_key().decode()
+    keys = [storage.put(f"object {i}".encode()) for i in range(5)]
+    assert sorted(storage._backend().keys()) == sorted(keys)
+    new_key = Fernet.generate_key().decode()
+    monkeypatch.setattr(s, "vitram_data_key", new_key)
+    monkeypatch.setattr(s, "vitram_data_key_previous", old)
+    security._reset_caches()
+    security._masters = None
+    try:
+        report = storage.rotate_all()
+        assert report["rewrapped"] == 5 and report["unreadable"] == 0
+        monkeypatch.setattr(s, "vitram_data_key_previous", None)          # retire the old key
+        security._reset_caches()
+        security._masters = None
+        assert [storage.get(k) for k in keys] == [f"object {i}".encode() for i in range(5)]
+    finally:
+        monkeypatch.undo()
+        security._reset_caches()
+        security._masters = None
