@@ -24,3 +24,4 @@ frontend/dist/
 # local audit notes — not for the public repo
 RESUME_AUDIT.md
 pitch-deck-screenshots/
+backend/mutants/

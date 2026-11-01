@@ -35,7 +35,7 @@ postgres = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8", "pytest-cov>=5", "reportlab>=4", "freezegun>=1.5", "ruff>=0.6"]
+dev = ["pytest>=8", "pytest-cov>=5", "reportlab>=4", "freezegun>=1.5", "ruff>=0.6", "hypothesis>=6.100", "mutmut>=3"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -55,3 +55,9 @@ ignore = [
   "B023",  # the closures it flags (insurance.py, parser.py, make_fixtures.py) run inside the loop iteration that defines them
   "B905",  # zip() over equal-length sequences built together
 ]
+
+[tool.mutmut]
+# Mutation testing of the money maths: `uv run mutmut run`, then `uv run mutmut results`. A surviving mutant is a bug the tests would miss.
+source_paths = ["app/services/finance/emi.py"]
+pytest_add_cli_args_test_selection = ["tests/test_finance.py", "tests/test_finance_properties.py", "tests/test_irr_fast.py", "tests/test_emi_edges.py"]
+also_copy = ["app", "tests", "evals", "migrations", "fixtures", "pyproject.toml"]

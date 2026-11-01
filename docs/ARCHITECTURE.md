@@ -157,6 +157,9 @@ Identity & consent (`users`, `sessions`, `consents`, `auth_tokens`, `password_re
 
 Behaviour that needs a real phone or provider key is listed, not claimed, in [`STATUS.md`](STATUS.md).
 
+- **Property-based tests** (`tests/test_finance_properties.py`, Hypothesis, 300 generated cases each): for every principal, rate and tenure the schedule clears the loan exactly, balances never rise, interest is never negative, closed forms agree with simulation, a longer tenure never lowers total interest, the IRR of a level loan is the loan's own rate, and a no-charge prepayment never costs more. They found a real bug on their first run: a vanishingly small rate made `(1+r)^n - 1` exactly zero and the EMI divided by it (fixed with `expm1`/`log1p`).
+- **Mutation testing** (`uv run mutmut run`, config in `pyproject.toml`): the EMI module is mutated 233 ways and the tests must notice. First run **78.5% killed**; after adding boundary tests written from the survivors, **89.3% (208/233)**. The remaining survivors are equivalent mutants (a changed error-message string, `<=` vs `<` at points no input can reach).
+
 ## Repository layout
 
 ```

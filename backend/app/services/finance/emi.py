@@ -15,6 +15,12 @@ def _r(annual_rate_pct: float) -> float:
     return annual_rate_pct / 12 / 100
 
 
+def _compound(r: float, n: int) -> tuple[float, float]:
+    """((1+r)^n, (1+r)^n - 1) without catastrophic cancellation: for a tiny rate the naive ``f - 1`` is exactly 0 and the EMI divides by it."""
+    x = n * math.log1p(r)
+    return math.exp(x), math.expm1(x)
+
+
 def emi(principal: float, annual_rate_pct: float, months: int) -> float:
     if principal <= 0:
         raise ValueError("Principal must be positive")
@@ -23,8 +29,8 @@ def emi(principal: float, annual_rate_pct: float, months: int) -> float:
     r = _r(annual_rate_pct)
     if r == 0:
         return principal / months
-    f = (1 + r) ** months
-    return principal * r * f / (f - 1)
+    f, f_minus_1 = _compound(r, months)
+    return principal * r * f / f_minus_1
 
 
 def schedule(principal: float, annual_rate_pct: float, months: int, emi_amount: float | None = None) -> list[dict]:
@@ -77,8 +83,8 @@ def outstanding_after(principal: float, annual_rate_pct: float, months: int, pai
     if r == 0:
         return principal - principal / months * paid_months
     e = emi(principal, annual_rate_pct, months)
-    f = (1 + r) ** paid_months
-    return principal * f - e * (f - 1) / r
+    f, f_minus_1 = _compound(r, paid_months)
+    return principal * f - e * f_minus_1 / r
 
 
 def months_to_repay(balance: float, annual_rate_pct: float, emi_amount: float) -> int | None:
