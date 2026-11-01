@@ -106,3 +106,11 @@ version and the date. Nothing has to remember which keys to delete. Append-only 
 **Consequences.** Hits cost ~2 queries; a write anywhere in a user's data invalidates all of that user's cached pages (coarse but safe); with several
 instances and no Redis a page can be up to the TTL old, so production sets `REDIS_URL`. A broken Redis degrades to uncached, never to an error.
 
+## ADR-0017: Improve retrieval with measured vocabulary, keep BM25 as the default
+
+**Context.** Paraphrased questions found the right fact only 33% of the time. **Decision.** Build a 125-question golden set with a dev/held-out split, add a
+domain synonym lexicon, and compare a hybrid (BM25 + character-trigram TF-IDF, rank-fused) ranker. Keep BM25 as the default; hybrid stays available behind
+`RETRIEVAL_MODE`. **Why.** The lexicon moved recall@3 from 61.7% to 85.2%; hybrid was a statistical tie at higher complexity. Dense embeddings were not
+adopted because they would send document text to a model by default. **Consequences.** CI gates on the held-out half; the lexicon needs upkeep as new
+document types arrive, which the golden set will show.
+

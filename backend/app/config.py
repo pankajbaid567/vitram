@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     # Where encrypted uploads live: "local" (DATA_DIR/objects, needs a persistent disk) or "s3" (any S3-compatible
     # bucket, e.g. Cloudflare R2, for hosts without a disk). Files are Fernet-encrypted before they leave the process.
     redis_url: str = ""                   # rediss://… (Upstash): shared rate-limit and cache state; empty = per-process memory
+    retrieval_mode: str = "bm25"          # bm25 | hybrid (BM25 + character-trigram TF-IDF, rank-fused); see evals/
     cache_enabled: bool = True            # server-side read cache keyed by per-user data version (app/cache.py)
     cache_ttl_seconds: int = 30           # backstop expiry for what a version cannot see
     redis_timeout_seconds: float = 0.5    # per Redis call; the limiter fails open beyond this

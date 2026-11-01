@@ -1,0 +1,877 @@
+[
+ {
+  "q": "What is the sum insured on my family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "sum_insured",
+  "kind": "direct",
+  "id": 1
+ },
+ {
+  "q": "How much cover does the Family Health Shield give?",
+  "doc": "sample_policy_family_health",
+  "fact": "sum_insured",
+  "kind": "direct",
+  "id": 2
+ },
+ {
+  "q": "Up to what amount will the family floater pay out in a year?",
+  "doc": "sample_policy_family_health",
+  "fact": "sum_insured",
+  "kind": "paraphrase",
+  "id": 3
+ },
+ {
+  "q": "maximum payout of my family health plan",
+  "doc": "sample_policy_family_health",
+  "fact": "sum_insured",
+  "kind": "paraphrase",
+  "id": 4
+ },
+ {
+  "q": "What is the pre-existing disease waiting period in the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "ped_waiting_period",
+  "kind": "direct",
+  "id": 5
+ },
+ {
+  "q": "How long before existing illnesses get covered under the family floater?",
+  "doc": "sample_policy_family_health",
+  "fact": "ped_waiting_period",
+  "kind": "paraphrase",
+  "id": 6
+ },
+ {
+  "q": "when does cover start for conditions I already had, family health plan",
+  "doc": "sample_policy_family_health",
+  "fact": "ped_waiting_period",
+  "kind": "paraphrase",
+  "id": 7
+ },
+ {
+  "q": "family health policy mein purani bimari ka waiting kitna hai",
+  "doc": "sample_policy_family_health",
+  "fact": "ped_waiting_period",
+  "kind": "hinglish",
+  "id": 8
+ },
+ {
+  "q": "pehle se hui bimari kab cover hogi family plan mein",
+  "doc": "sample_policy_family_health",
+  "fact": "ped_waiting_period",
+  "kind": "hinglish",
+  "id": 9
+ },
+ {
+  "q": "pre existng disease waitng period family health",
+  "doc": "sample_policy_family_health",
+  "fact": "ped_waiting_period",
+  "kind": "typo",
+  "id": 10
+ },
+ {
+  "q": "What is the initial waiting period in the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "initial_waiting_period",
+  "kind": "direct",
+  "id": 11
+ },
+ {
+  "q": "How many days after buying the family plan can I make my first claim?",
+  "doc": "sample_policy_family_health",
+  "fact": "initial_waiting_period",
+  "kind": "paraphrase",
+  "id": 12
+ },
+ {
+  "q": "specific illness waiting period family health shield",
+  "doc": "sample_policy_family_health",
+  "fact": "specific_disease_waiting_period",
+  "kind": "direct",
+  "id": 13
+ },
+ {
+  "q": "how long do I wait for things like hernia or cataract on the family floater",
+  "doc": "sample_policy_family_health",
+  "fact": "specific_disease_waiting_period",
+  "kind": "paraphrase",
+  "id": 14
+ },
+ {
+  "q": "What is the room rent limit in the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "room_rent_limit",
+  "kind": "direct",
+  "id": 15
+ },
+ {
+  "q": "which hospital room am I allowed under the family floater",
+  "doc": "sample_policy_family_health",
+  "fact": "room_rent_limit",
+  "kind": "paraphrase",
+  "id": 16
+ },
+ {
+  "q": "can I take a private room with the family plan",
+  "doc": "sample_policy_family_health",
+  "fact": "room_rent_limit",
+  "kind": "paraphrase",
+  "id": 17
+ },
+ {
+  "q": "family health policy mein kaunsa room milega",
+  "doc": "sample_policy_family_health",
+  "fact": "room_rent_limit",
+  "kind": "hinglish",
+  "id": 18
+ },
+ {
+  "q": "Is there a co-payment on the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "copay",
+  "kind": "direct",
+  "id": 19
+ },
+ {
+  "q": "do I have to pay a share of the hospital bill under the family floater",
+  "doc": "sample_policy_family_health",
+  "fact": "copay",
+  "kind": "paraphrase",
+  "id": 20
+ },
+ {
+  "q": "What is the annual premium of the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "premium",
+  "kind": "direct",
+  "id": 21
+ },
+ {
+  "q": "how much do I pay every year for the Family Health Shield",
+  "doc": "sample_policy_family_health",
+  "fact": "premium",
+  "kind": "paraphrase",
+  "id": 22
+ },
+ {
+  "q": "When does the family health policy expire?",
+  "doc": "sample_policy_family_health",
+  "fact": "end_date",
+  "kind": "direct",
+  "id": 23
+ },
+ {
+  "q": "renewal date of the family floater",
+  "doc": "sample_policy_family_health",
+  "fact": "end_date",
+  "kind": "paraphrase",
+  "id": 24
+ },
+ {
+  "q": "kab tak valid hai family health policy",
+  "doc": "sample_policy_family_health",
+  "fact": "end_date",
+  "kind": "paraphrase",
+  "id": 25
+ },
+ {
+  "q": "How soon must I inform the insurer about an emergency hospitalisation under the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "claim_intimation",
+  "kind": "direct",
+  "id": 26
+ },
+ {
+  "q": "family health policy mein hospital ka claim kitne ghante mein batana hai",
+  "doc": "sample_policy_family_health",
+  "fact": "claim_intimation",
+  "kind": "hinglish",
+  "id": 27
+ },
+ {
+  "q": "What is the claims helpline number for the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "helpline",
+  "kind": "direct",
+  "id": 28
+ },
+ {
+  "q": "phone number to call for a claim on the family floater",
+  "doc": "sample_policy_family_health",
+  "fact": "helpline",
+  "kind": "paraphrase",
+  "id": 29
+ },
+ {
+  "q": "who do I call when someone in the family is admitted",
+  "doc": "sample_policy_family_health",
+  "fact": "helpline",
+  "kind": "paraphrase",
+  "id": 30
+ },
+ {
+  "q": "Which TPA handles claims for the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "tpa",
+  "kind": "direct",
+  "id": 31
+ },
+ {
+  "q": "How do I get a cashless claim under the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "cashless_process",
+  "kind": "direct",
+  "id": 32
+ },
+ {
+  "q": "steps to get treated without paying upfront at a network hospital, family plan",
+  "doc": "sample_policy_family_health",
+  "fact": "cashless_process",
+  "kind": "paraphrase",
+  "id": 33
+ },
+ {
+  "q": "How does reimbursement work under the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "reimbursement_process",
+  "kind": "direct",
+  "id": 34
+ },
+ {
+  "q": "if I pay the hospital myself how do I get the money back on the family floater",
+  "doc": "sample_policy_family_health",
+  "fact": "reimbursement_process",
+  "kind": "paraphrase",
+  "id": 35
+ },
+ {
+  "q": "Which documents are needed for a claim on the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "claim_documents",
+  "kind": "direct",
+  "id": 36
+ },
+ {
+  "q": "family health claim ke liye kaun se kagaz chahiye",
+  "doc": "sample_policy_family_health",
+  "fact": "claim_documents",
+  "kind": "hinglish",
+  "id": 37
+ },
+ {
+  "q": "What is excluded from the family health policy?",
+  "doc": "sample_policy_family_health",
+  "fact": "exclusions",
+  "kind": "direct",
+  "id": 38
+ },
+ {
+  "q": "things the family floater will not pay for",
+  "doc": "sample_policy_family_health",
+  "fact": "exclusions",
+  "kind": "paraphrase",
+  "id": 39
+ },
+ {
+  "q": "is cosmetic surgery covered under the family health plan",
+  "doc": "sample_policy_family_health",
+  "fact": "exclusions",
+  "kind": "paraphrase",
+  "id": 40
+ },
+ {
+  "q": "family health policy mein kya cover nahi hota",
+  "doc": "sample_policy_family_health",
+  "fact": "exclusions",
+  "kind": "hinglish",
+  "id": 41
+ },
+ {
+  "q": "What benefits does the family health policy cover?",
+  "doc": "sample_policy_family_health",
+  "fact": "benefits",
+  "kind": "direct",
+  "id": 42
+ },
+ {
+  "q": "what does the family floater pay for",
+  "doc": "sample_policy_family_health",
+  "fact": "benefits",
+  "kind": "paraphrase",
+  "id": 43
+ },
+ {
+  "q": "cataract limit in the family health policy",
+  "doc": "sample_policy_family_health",
+  "fact": "conditions",
+  "kind": "direct",
+  "id": 44
+ },
+ {
+  "q": "any sub-limits or caps on specific treatments in the family health plan",
+  "doc": "sample_policy_family_health",
+  "fact": "conditions",
+  "kind": "direct",
+  "id": 45
+ },
+ {
+  "q": "What is the sum insured on the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "sum_insured",
+  "kind": "direct",
+  "id": 46
+ },
+ {
+  "q": "how much cover does my mother's plan have",
+  "doc": "sample_policy_senior_care",
+  "fact": "sum_insured",
+  "kind": "paraphrase",
+  "id": 47
+ },
+ {
+  "q": "What is the co-payment under the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "copay",
+  "kind": "direct",
+  "id": 48
+ },
+ {
+  "q": "what share of the bill does mother have to pay herself",
+  "doc": "sample_policy_senior_care",
+  "fact": "copay",
+  "kind": "paraphrase",
+  "id": 49
+ },
+ {
+  "q": "does my mother's policy make her pay part of the claim",
+  "doc": "sample_policy_senior_care",
+  "fact": "copay",
+  "kind": "paraphrase",
+  "id": 50
+ },
+ {
+  "q": "mummy ki policy mein kitna copay lagta hai",
+  "doc": "sample_policy_senior_care",
+  "fact": "copay",
+  "kind": "hinglish",
+  "id": 51
+ },
+ {
+  "q": "room rent limit in the senior care policy",
+  "doc": "sample_policy_senior_care",
+  "fact": "room_rent_limit",
+  "kind": "direct",
+  "id": 52
+ },
+ {
+  "q": "how much per day can the hospital room cost on my mother's policy",
+  "doc": "sample_policy_senior_care",
+  "fact": "room_rent_limit",
+  "kind": "paraphrase",
+  "id": 53
+ },
+ {
+  "q": "pre-existing disease waiting period senior care",
+  "doc": "sample_policy_senior_care",
+  "fact": "ped_waiting_period",
+  "kind": "direct",
+  "id": 54
+ },
+ {
+  "q": "mummy ki policy mein pehle se hui bimari ka waiting period",
+  "doc": "sample_policy_senior_care",
+  "fact": "ped_waiting_period",
+  "kind": "hinglish",
+  "id": 55
+ },
+ {
+  "q": "What is the premium of the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "premium",
+  "kind": "direct",
+  "id": 56
+ },
+ {
+  "q": "how much do we pay yearly for mother's insurance",
+  "doc": "sample_policy_senior_care",
+  "fact": "premium",
+  "kind": "paraphrase",
+  "id": 57
+ },
+ {
+  "q": "Is knee replacement limited under the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "conditions",
+  "kind": "direct",
+  "id": 58
+ },
+ {
+  "q": "cap on knee surgery for mother",
+  "doc": "sample_policy_senior_care",
+  "fact": "conditions",
+  "kind": "paraphrase",
+  "id": 59
+ },
+ {
+  "q": "what is the limit for joint replacement on the senior plan",
+  "doc": "sample_policy_senior_care",
+  "fact": "conditions",
+  "kind": "paraphrase",
+  "id": 60
+ },
+ {
+  "q": "What is excluded from the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "exclusions",
+  "kind": "direct",
+  "id": 61
+ },
+ {
+  "q": "is dental treatment covered for mother",
+  "doc": "sample_policy_senior_care",
+  "fact": "exclusions",
+  "kind": "paraphrase",
+  "id": 62
+ },
+ {
+  "q": "How do I claim under the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "claim_process",
+  "kind": "direct",
+  "id": 63
+ },
+ {
+  "q": "what should I do when my mother is admitted to hospital",
+  "doc": "sample_policy_senior_care",
+  "fact": "claim_process",
+  "kind": "paraphrase",
+  "id": 64
+ },
+ {
+  "q": "mummy ko hospital mein admit karna pada to claim kaise karun",
+  "doc": "sample_policy_senior_care",
+  "fact": "claim_process",
+  "kind": "hinglish",
+  "id": 65
+ },
+ {
+  "q": "Which documents are required to claim under the senior care policy?",
+  "doc": "sample_policy_senior_care",
+  "fact": "claim_documents",
+  "kind": "direct",
+  "id": 66
+ },
+ {
+  "q": "When does the senior care policy end?",
+  "doc": "sample_policy_senior_care",
+  "fact": "end_date",
+  "kind": "direct",
+  "id": 67
+ },
+ {
+  "q": "when must mother's insurance be renewed",
+  "doc": "sample_policy_senior_care",
+  "fact": "end_date",
+  "kind": "paraphrase",
+  "id": 68
+ },
+ {
+  "q": "What is the sum assured on the term life policy?",
+  "doc": "sample_policy_term_life",
+  "fact": "sum_insured",
+  "kind": "direct",
+  "id": 69
+ },
+ {
+  "q": "how much money does my family get if I die",
+  "doc": "sample_policy_term_life",
+  "fact": "sum_insured",
+  "kind": "paraphrase",
+  "id": 70
+ },
+ {
+  "q": "life cover amount on Term Secure",
+  "doc": "sample_policy_term_life",
+  "fact": "sum_insured",
+  "kind": "paraphrase",
+  "id": 71
+ },
+ {
+  "q": "What is the death benefit of the term plan?",
+  "doc": "sample_policy_term_life",
+  "fact": "death_benefit",
+  "kind": "direct",
+  "id": 72
+ },
+ {
+  "q": "how is the payout made to the nominee",
+  "doc": "sample_policy_term_life",
+  "fact": "death_benefit",
+  "kind": "paraphrase",
+  "id": 73
+ },
+ {
+  "q": "kya nominee ko ek saath paisa milega",
+  "doc": "sample_policy_term_life",
+  "fact": "death_benefit",
+  "kind": "paraphrase",
+  "id": 74
+ },
+ {
+  "q": "What is the monthly premium of the term life policy?",
+  "doc": "sample_policy_term_life",
+  "fact": "premium",
+  "kind": "direct",
+  "id": 75
+ },
+ {
+  "q": "how much do I pay each month for term insurance",
+  "doc": "sample_policy_term_life",
+  "fact": "premium",
+  "kind": "paraphrase",
+  "id": 76
+ },
+ {
+  "q": "What is excluded from the term life policy?",
+  "doc": "sample_policy_term_life",
+  "fact": "exclusions",
+  "kind": "direct",
+  "id": 77
+ },
+ {
+  "q": "is suicide covered under my term insurance",
+  "doc": "sample_policy_term_life",
+  "fact": "exclusions",
+  "kind": "paraphrase",
+  "id": 78
+ },
+ {
+  "q": "when will the term plan not pay out",
+  "doc": "sample_policy_term_life",
+  "fact": "exclusions",
+  "kind": "paraphrase",
+  "id": 79
+ },
+ {
+  "q": "How does the nominee claim under the term life policy?",
+  "doc": "sample_policy_term_life",
+  "fact": "claim_process",
+  "kind": "direct",
+  "id": 80
+ },
+ {
+  "q": "what should my nominee do after my death",
+  "doc": "sample_policy_term_life",
+  "fact": "claim_process",
+  "kind": "paraphrase",
+  "id": 81
+ },
+ {
+  "q": "Which documents does the nominee need for the term life claim?",
+  "doc": "sample_policy_term_life",
+  "fact": "claim_documents",
+  "kind": "direct",
+  "id": 82
+ },
+ {
+  "q": "paperwork to claim the death benefit",
+  "doc": "sample_policy_term_life",
+  "fact": "claim_documents",
+  "kind": "paraphrase",
+  "id": 83
+ },
+ {
+  "q": "When does the term life policy end?",
+  "doc": "sample_policy_term_life",
+  "fact": "end_date",
+  "kind": "direct",
+  "id": 84
+ },
+ {
+  "q": "till what year does the term plan run",
+  "doc": "sample_policy_term_life",
+  "fact": "end_date",
+  "kind": "paraphrase",
+  "id": 85
+ },
+ {
+  "q": "What is the interest rate on my personal loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "annual_rate_pct",
+  "kind": "direct",
+  "id": 86
+ },
+ {
+  "q": "how much interest does the Vindhya Credit loan charge",
+  "doc": "sample_loan_kfs",
+  "fact": "annual_rate_pct",
+  "kind": "paraphrase",
+  "id": 87
+ },
+ {
+  "q": "personal loan ka byaaj kitna hai",
+  "doc": "sample_loan_kfs",
+  "fact": "annual_rate_pct",
+  "kind": "hinglish",
+  "id": 88
+ },
+ {
+  "q": "What is the EMI of the personal loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "stated_emi",
+  "kind": "direct",
+  "id": 89
+ },
+ {
+  "q": "how much do I pay every month on the loan",
+  "doc": "sample_loan_kfs",
+  "fact": "stated_emi",
+  "kind": "paraphrase",
+  "id": 90
+ },
+ {
+  "q": "What is the loan tenure?",
+  "doc": "sample_loan_kfs",
+  "fact": "tenure_months",
+  "kind": "direct",
+  "id": 91
+ },
+ {
+  "q": "over how many months is the loan repaid",
+  "doc": "sample_loan_kfs",
+  "fact": "tenure_months",
+  "kind": "paraphrase",
+  "id": 92
+ },
+ {
+  "q": "What is the processing fee on the personal loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "processing_fee",
+  "kind": "direct",
+  "id": 93
+ },
+ {
+  "q": "how much did the lender charge upfront to process the loan",
+  "doc": "sample_loan_kfs",
+  "fact": "processing_fee",
+  "kind": "paraphrase",
+  "id": 94
+ },
+ {
+  "q": "loan ki processing fees kitni hai",
+  "doc": "sample_loan_kfs",
+  "fact": "processing_fee",
+  "kind": "hinglish",
+  "id": 95
+ },
+ {
+  "q": "What are the part-prepayment charges on the loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "part_prepayment",
+  "kind": "direct",
+  "id": 96
+ },
+ {
+  "q": "can I pay some of the loan early and what does it cost",
+  "doc": "sample_loan_kfs",
+  "fact": "part_prepayment",
+  "kind": "paraphrase",
+  "id": 97
+ },
+ {
+  "q": "loan ka thoda paisa pehle bharna ho to kitna charge lagega",
+  "doc": "sample_loan_kfs",
+  "fact": "part_prepayment",
+  "kind": "hinglish",
+  "id": 98
+ },
+ {
+  "q": "partprepayment chrges loan",
+  "doc": "sample_loan_kfs",
+  "fact": "part_prepayment",
+  "kind": "typo",
+  "id": 99
+ },
+ {
+  "q": "What are the foreclosure charges on the personal loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "foreclosure",
+  "kind": "direct",
+  "id": 100
+ },
+ {
+  "q": "what does it cost to close the loan completely before the end",
+  "doc": "sample_loan_kfs",
+  "fact": "foreclosure",
+  "kind": "paraphrase",
+  "id": 101
+ },
+ {
+  "q": "cost of paying off the whole loan early",
+  "doc": "sample_loan_kfs",
+  "fact": "foreclosure",
+  "kind": "paraphrase",
+  "id": 102
+ },
+ {
+  "q": "What is the late payment penalty on the loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "late_payment",
+  "kind": "direct",
+  "id": 103
+ },
+ {
+  "q": "what happens if I pay the EMI late",
+  "doc": "sample_loan_kfs",
+  "fact": "late_payment",
+  "kind": "paraphrase",
+  "id": 104
+ },
+ {
+  "q": "charge for overdue instalment",
+  "doc": "sample_loan_kfs",
+  "fact": "late_payment",
+  "kind": "paraphrase",
+  "id": 105
+ },
+ {
+  "q": "What is the EMI bounce charge?",
+  "doc": "sample_loan_kfs",
+  "fact": "bounce_charge",
+  "kind": "direct",
+  "id": 106
+ },
+ {
+  "q": "penalty when my cheque or auto-debit fails",
+  "doc": "sample_loan_kfs",
+  "fact": "bounce_charge",
+  "kind": "paraphrase",
+  "id": 107
+ },
+ {
+  "q": "What is the APR stated by the lender?",
+  "doc": "sample_loan_kfs",
+  "fact": "stated_apr_pct",
+  "kind": "direct",
+  "id": 108
+ },
+ {
+  "q": "the all-in annual cost of the loan including fees",
+  "doc": "sample_loan_kfs",
+  "fact": "stated_apr_pct",
+  "kind": "paraphrase",
+  "id": 109
+ },
+ {
+  "q": "Is loan insurance bundled with the personal loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "credit_insurance",
+  "kind": "direct",
+  "id": 110
+ },
+ {
+  "q": "did the lender add an insurance premium to my loan",
+  "doc": "sample_loan_kfs",
+  "fact": "credit_insurance",
+  "kind": "paraphrase",
+  "id": 111
+ },
+ {
+  "q": "What is the loan amount?",
+  "doc": "sample_loan_kfs",
+  "fact": "principal",
+  "kind": "direct",
+  "id": 112
+ },
+ {
+  "q": "How much stamp duty was charged on the loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "stamp_duty",
+  "kind": "direct",
+  "id": 113
+ },
+ {
+  "q": "documentation charges on the loan",
+  "doc": "sample_loan_kfs",
+  "fact": "documentation",
+  "kind": "direct",
+  "id": 114
+ },
+ {
+  "q": "When is the first EMI due on the loan?",
+  "doc": "sample_loan_kfs",
+  "fact": "first_due_date",
+  "kind": "direct",
+  "id": 115
+ },
+ {
+  "q": "What is my Netflix subscription price?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 116
+ },
+ {
+  "q": "Who won the cricket match yesterday?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 117
+ },
+ {
+  "q": "What is the weather in Mumbai today?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 118
+ },
+ {
+  "q": "How do I file my income tax return?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 119
+ },
+ {
+  "q": "What is the price of gold today?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 120
+ },
+ {
+  "q": "Does my policy cover a trip to Mars?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 121
+ },
+ {
+  "q": "Recommend a good restaurant near me",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 122
+ },
+ {
+  "q": "What is the capital of France?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 123
+ },
+ {
+  "q": "How do I reset my WiFi router?",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 124
+ },
+ {
+  "q": "Write me a poem about monsoon",
+  "doc": null,
+  "fact": null,
+  "kind": "unanswerable",
+  "id": 125
+ }
+]
