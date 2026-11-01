@@ -75,6 +75,7 @@ Found while doing it: the pre-existing OpenWA webhook pointed at another local p
 |---|---|
 | Load test | k6, one process: ~213 req/s saturation, read p95 86 / 108 / 151 ms at 10 / 25 / 50 users, 0 errors ([`PERFORMANCE.md`](PERFORMANCE.md)) |
 | Optimisations, measured | loan IRR **-46% CPU** (13.5 to 7.2 ms/request); dashboard cache **~4x lower p95, ~3.5x throughput**; sample workspace **9-11 s to ~4 s** on the free tier |
+| Production WhatsApp loop | On the **deployed** stack (Cloudflare Worker → Render API → Neon, OpenWA gateway on Render linked to a real number, Upstash/queue/throttle live): a fresh account verified its phone by SMS code and gave WhatsApp consent; a message from that number to the linked number reached the signed webhook (HTTP 200), was queued and handled as a durable job, and the reply arrived on the phone. Before the account existed the same message was ignored by design ("unlinked or opted-out number") |
 | Durable job queue | document processing and inbound WhatsApp are jobs with leases, retry, dead-letter; a test **kills a real process mid-job** and proves exactly-once completion ([ADR-0014](DECISIONS.md)) |
 | Concurrency safety | idempotency keys (10 racing requests, one effect), optimistic concurrency (10 racing edits, one wins) |
 | N+1 and indexes | N+1 found and fixed in family and goals lists; query-count budgets on 10 endpoints; keyset pagination; newest-100 query 4.7 to 0.25 ms |

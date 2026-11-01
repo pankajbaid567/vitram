@@ -120,7 +120,7 @@ narrate tool output. External systems sit behind **ports with adapters** (storag
 | Database | Neon free PostgreSQL (us-east-2) |
 | Uploads | Cloudflare R2 bucket (ciphertext only) |
 | Rate limits / cache state | Upstash Redis (AWS us-east-2, same region as the API) |
-| WhatsApp (demo) | OpenWA gateway on Render free; linked device verified `ready`, outbound send verified, inbound webhook delivered |
+| WhatsApp (demo) | OpenWA gateway on Render free, linked to a real number. **Verified end to end on production:** SMS phone verification → consent → inbound message → signed webhook → durable job → reply received on the phone; unlinked numbers are ignored by design |
 
 Known free-tier trade-offs: the API sleeps when idle (a Cloudflare cron pings it every 10 minutes); first request after a long idle can take up to a minute; the sample workspace takes ~4 s.
 
