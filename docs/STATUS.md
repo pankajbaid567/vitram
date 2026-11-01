@@ -11,7 +11,7 @@ under *Not verified* rather than claimed; [`GO_LIVE.md`](GO_LIVE.md) is the orde
 | Backend tests | **656 pass**, 19 skips (10 shared-catalogue routes; 9 that need a real PostgreSQL role or Redis, which run when `TEST_DATABASE_URL` / `TEST_REDIS_URL` are set) | `make test-backend` |
 | Backend coverage | **88 %** (8.6k statements) | `cd backend && uv run pytest -q --cov=app` |
 | Backend on a Linux container | pass (same results as macOS) | `make ci-linux` |
-| Backend on PostgreSQL 16 | **614 pass** on the whole suite, including four racing workers, `SKIP LOCKED` job claims, Row Level Security with a real no-bypass role, and the shared rate limiter | `TEST_DATABASE_URL=postgresql+psycopg://… uv run pytest -q --deselect tests/test_migrations.py` |
+| Backend on PostgreSQL 16 | **658 pass** on the whole suite, including four racing workers, `SKIP LOCKED` job claims, Row Level Security with a real no-bypass role, and the shared rate limiter | `TEST_DATABASE_URL=postgresql+psycopg://… uv run pytest -q --deselect tests/test_migrations.py` |
 | Backend lint | clean | `uv run ruff check .` |
 | Frontend tests | **50 pass** (journeys render the real route tree against fixtures captured from the live API) | `make test-frontend` |
 | Typecheck, lint, build | pass; lint has **0 warnings** | `make lint && npm run build` |

@@ -26,6 +26,17 @@ gateway. See [`docs/DEPLOY.md`](docs/DEPLOY.md).
 - **Honest about what it can't do.** Missing integrations show *not configured*, never a fake success. See [`docs/STATUS.md`](docs/STATUS.md) for exactly what has and hasn't been verified, and `python -m app.doctor` to check your own setup.
 - **Yours to take with you.** Download everything held about you as JSON, or delete the account and every file under it.
 
+## Engineering depth (measured, not claimed)
+
+| | |
+|---|---|
+| **Scale and concurrency** | k6 load test: ~213 req/s on one process, read p95 151 ms at 50 users, 0 errors; durable job queue (leases, retry, dead-letter) proven by killing a real worker mid-job; idempotency keys and optimistic concurrency under 10-way races ([`PERFORMANCE.md`](docs/PERFORMANCE.md)) |
+| **Measured optimisations** | loan IRR -46% CPU; version-keyed dashboard cache ~4x lower p95; N+1 removed and guarded by query budgets; newest-100 query 4.7 ms to 0.25 ms |
+| **Resilience** | circuit breakers, bulkheads, load shedding, token-bucket rate limits on Redis, edge limiter ([`OBSERVABILITY.md`](docs/OBSERVABILITY.md)) |
+| **Security** | three isolation layers incl. PostgreSQL Row Level Security (whole suite passes as a no-bypass role), envelope encryption with key rotation, enforcing CSP, STRIDE model ([`SECURITY_MODEL.md`](docs/SECURITY_MODEL.md)) |
+| **Correctness** | 656 backend tests (88% coverage) on SQLite and PostgreSQL, property-based tests that found a real bug, mutation testing 89%, 125-question retrieval golden set with a CI gate ([`RETRIEVAL_EVAL.md`](docs/RETRIEVAL_EVAL.md)) |
+| **Operations** | $0 stack (Cloudflare + Render + Neon + R2 + Upstash), traces/metrics/alerts, expand/contract migrations enforced in CI, rehearsed rollback, weekly backup-restore verification ([`RELEASING.md`](docs/RELEASING.md)) |
+
 ## Journeys
 
 | Journey | What you get |
