@@ -77,3 +77,23 @@ Short architecture decision records: what was decided, why, and what it costs. N
 keeps one contract (`put`/`get`/`delete`, ciphertext only, random keys) with `local` and `s3` backends chosen by
 `STORAGE_BACKEND`; R2 (S3-compatible) serves the free deployment. **Consequences.** No caller changed; the bucket never sees
 plaintext; boto3 is an optional extra; moving between backends needs a copy of existing objects.
+
+## ADR-0014: A durable job queue on the application database
+
+**Context.** Document processing ran as an in-process background task, so a restart (or the free host sleeping) stranded the work.
+**Decision.** A `jobs` table (`services/jobs.py`): enqueued in the upload's own transaction, claimed with a lease by a conditional
+`UPDATE` (plus `FOR UPDATE SKIP LOCKED` on PostgreSQL), retried with exponential back-off and jitter, parked as `dead` after the last
+attempt with a dead-letter hook that marks the document failed. Delivery is at-least-once, so every stage is idempotent. The upload
+still triggers an immediate in-process run (a fast path); the worker loop is the safety net. **Why not Redis/SQS/Kafka.** One datastore
+fewer to run and back up, jobs commit atomically with the rows they belong to (no dual write), and the volume is tiny; the
+`register`/`enqueue`/`claim` seam lets a broker replace it. **Consequences.** Throughput is bounded by database polling (5 s idle);
+fine here, wrong for thousands of jobs per second.
+
+## ADR-0015: Idempotency keys and optimistic concurrency
+
+**Decision.** `Idempotency-Key` (middleware, per-session scope, 24 h) makes a retried state-changing request replay the first
+response; a different body under the same key is refused (422) and a racing duplicate gets 409. Editable records (EMIs, goals,
+family members, cards) carry a `version`; `If-Match` on PATCH gives 412 when stale, and `version_id_col` makes the database itself
+refuse a write from a stale copy (409). **Why both layers.** The header lets a client say what it saw; the database guard protects
+clients that say nothing. **Consequences.** One extra row per keyed request; omitting the headers keeps the old behaviour.
+

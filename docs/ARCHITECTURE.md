@@ -55,7 +55,7 @@ Verified by recomputing EMI, interest, tenure what-ifs and reward values indepen
 
 ## Document pipeline
 
-`Ingest → Parse → Normalise → Validate → Persist → Serve` (`services/pipeline.py`), run as a background task with its own DB session. Stage and status are persisted, so the UI shows progress and offers *Retry* after a failure.
+`Ingest → Parse → Normalise → Validate → Persist → Serve` (`services/pipeline.py`), run as a **durable job** (`services/jobs.py`, ADR-0014): the upload commits the document and its job together; a worker claims it with a lease, retries with back-off, and parks it as `dead` (document marked failed, *Retry* in the UI) after the last attempt. A worker that dies mid-job loses its lease and another finishes it. Stage and status are persisted, so the UI shows progress.
 
 - **Parse**: CSV and text-PDF statements (`statements/`), policies, loan KFS and card statements (`extractors/`), photos and scans through `services/vision` (one interface, providers `macos` | `gemini` | `none`). The default is on-device Apple Vision; Gemini OCR sends the document to Google and is therefore an explicit opt-in.
 - **Safety**: size and magic-byte checks, EXIF stripped and images re-encoded, duplicate detection by checksum, prompt-injection text is treated as content and excluded from structured facts.
@@ -111,6 +111,9 @@ Identity & consent (`users`, `sessions`, `consents`, `auth_tokens`, `password_re
 | Gemini down / unset | Falls back to labelled Tool mode; provider is cooled off for 60 s |
 | WhatsApp gateway 5xx / timeout | Reminder returns to `scheduled` with growing back-off (max 3 attempts); in-app notification kept |
 | Worker dies mid-send | Claim expires after 5 min and another worker retries |
+| Worker dies mid-document | The job's 5-minute lease expires; another worker re-runs it (stages are idempotent), proven by a test that kills a real process |
+| Client retries or double-clicks a write | `Idempotency-Key` replays the first response; no second effect |
+| Two people edit the same record | `If-Match` gives 412; the database version check gives 409; no lost update |
 | Duplicate / replayed webhook | Ignored via the unique event key |
 | Wrong-session or unsigned webhook | `204` (drop) / `401` |
 | Document processing fails | Stage and error code persisted; *Retry* from the UI; saved work is untouched |
@@ -131,8 +134,8 @@ Identity & consent (`users`, `sessions`, `consents`, `auth_tokens`, `password_re
 
 ## Scaling path and known limits
 
-- Uploads live on local disk (encrypted), so run **one API instance** until an object-storage adapter exists; workers and the database scale independently. `services/storage.py` is the only module that touches the filesystem.
-- A broker is not needed at this scale; if reminder volume demands it, the claim logic moves behind a queue interface without touching callers.
+- Uploads go through `services/storage.py` (local disk, or S3/R2 with `STORAGE_BACKEND=s3`), so the API holds no state and can run several instances; workers and the database scale independently. Measured single-process capacity is in [`PERFORMANCE.md`](PERFORMANCE.md).
+- A broker is not needed at this scale: reminders and document jobs both use database claims. If volume demands it, `services/jobs.py` is the seam to replace.
 - SQLite is the zero-setup default; production uses PostgreSQL. The migration chain and the whole suite run on both (and in Linux containers).
 - Offline OCR is macOS-only (a Swift helper around Apple Vision); on Linux, scans need the opt-in Gemini provider and otherwise return a clear "can't read scans here".
 - Retrieval is keyword-based BM25 with light stemming, not embeddings: precise for field questions, weaker for paraphrase.
