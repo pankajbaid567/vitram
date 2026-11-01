@@ -95,12 +95,23 @@ def months_to_repay(balance: float, annual_rate_pct: float, emi_amount: float) -
 
 
 def monthly_irr(net_disbursal: float, payments: list[float]) -> float | None:
-    """Monthly IRR by bisection: net_disbursal = Σ payment_t / (1+i)^t."""
+    """Monthly IRR by bisection: net_disbursal = Σ payment_t / (1+i)^t.
+
+    Bisection stops once the bracket is below float precision (about 50 halvings, not a fixed 200). Level payment
+    streams (every EMI loan) use the closed-form annuity value, so each step costs O(1) instead of O(tenure).
+    """
     if net_disbursal <= 0 or not payments or sum(payments) <= net_disbursal:
         return 0.0 if payments and abs(sum(payments) - net_disbursal) < 1e-6 else None
 
+    n = len(payments)
+    level = payments[0] if all(p == payments[0] for p in payments) else None
+
     def npv(i: float) -> float:
-        return sum(p / (1 + i) ** (t + 1) for t, p in enumerate(payments)) - net_disbursal
+        if level is not None:
+            pv = level * n if i == 0 else level * (1 - (1 + i) ** -n) / i
+        else:
+            pv = sum(p / (1 + i) ** (t + 1) for t, p in enumerate(payments))
+        return pv - net_disbursal
 
     lo, hi = 0.0, 1.0
     for _ in range(200):
@@ -109,4 +120,6 @@ def monthly_irr(net_disbursal: float, payments: list[float]) -> float | None:
             lo = mid
         else:
             hi = mid
+        if hi - lo < 1e-16:
+            break
     return (lo + hi) / 2
