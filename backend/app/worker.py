@@ -14,6 +14,7 @@ from app.db import init_db
 from app.observability import configure_logging
 from app.services.catalogue import load_catalogues
 from app.services.channels.scheduler import reminder_loop
+from app.services.jobs import job_loop
 
 log = logging.getLogger("vitram.worker")
 
@@ -23,16 +24,17 @@ async def run(interval: int = 60) -> None:
     settings.assert_production_ready()
     init_db()
     load_catalogues()
-    task = asyncio.create_task(reminder_loop(interval))
+    tasks = [asyncio.create_task(reminder_loop(interval)), asyncio.create_task(job_loop())]
     stop = asyncio.Event()
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(sig, stop.set)
-    log.info("worker started (reminder loop every %ss)", interval)
+    log.info("worker started (reminder loop every %ss, job loop)", interval)
     await stop.wait()
     log.info("worker stopping")
-    task.cancel()
-    await asyncio.gather(task, return_exceptions=True)
+    for task in tasks:
+        task.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
 
 
 def main() -> None:

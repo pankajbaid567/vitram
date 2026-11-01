@@ -23,7 +23,7 @@ from app.models import (
     UserLoan,
     UserPolicy,
 )
-from app.services import ai_extraction, profile_engine, storage
+from app.services import ai_extraction, jobs, profile_engine, storage
 from app.services.extractors.common import Extraction
 from app.services.extractors.card import extract_card
 from app.services.extractors.insurance import extract_policy
@@ -54,7 +54,12 @@ def _fail(db: Session, doc: Document, code: str, message: str) -> None:
     db.commit()
 
 
-def process_document(document_id: str) -> None:
+def process_document(document_id: str, *, reraise: bool = False) -> None:
+    """Run the pipeline for one document in its own session. Safe to run again: derived rows are replaced, not appended.
+
+    ``reraise=True`` (the job queue) leaves an unexpected failure to the queue's retry policy instead of marking the document failed
+    on the first error; the dead-letter hook marks it failed once the attempts are used up.
+    """
     db = SessionLocal()
     try:
         doc = db.get(Document, document_id)
@@ -72,6 +77,8 @@ def process_document(document_id: str) -> None:
     except Exception:  # noqa: BLE001 — never leak content; record a generic failure
         log.exception("document processing failed for %s", document_id)
         db.rollback()
+        if reraise:
+            raise
         doc = db.get(Document, document_id)
         if doc is not None:
             _fail(db, doc, "PROCESSING_ERROR", "Something went wrong while reading this document. Try again.")
@@ -348,3 +355,31 @@ def _finish_receipt(db: Session, doc: Document, ex) -> None:
                         body="Check the merchant, date and total, then match it to a bank transaction if you like.",
                         link=f"/documents/receipts/{doc.id}", dedupe_key=f"docdone:{doc.id}"))
     db.commit()
+
+
+# --- durable job wiring -------------------------------------------------------------------------------------------------------
+
+JOB_KIND = "process_document"
+
+
+def enqueue_processing(db: Session, doc: Document) -> None:
+    """Queue the pipeline for ``doc`` in the caller's transaction (the caller commits)."""
+    db.flush()   # the document id is assigned on flush
+    jobs.enqueue(db, JOB_KIND, {"document_id": doc.id}, dedupe_key=f"doc:{doc.id}")
+
+
+def _run_job(payload: dict) -> None:
+    process_document(payload["document_id"], reraise=True)
+
+
+def _job_dead(payload: dict, error: str) -> None:
+    db = SessionLocal()
+    try:
+        doc = db.get(Document, payload.get("document_id"))
+        if doc is not None and doc.processing_status != "failed":
+            _fail(db, doc, "PROCESSING_ERROR", "Something went wrong while reading this document. Try again.")
+    finally:
+        db.close()
+
+
+jobs.register(JOB_KIND, _run_job, _job_dead)

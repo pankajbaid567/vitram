@@ -26,12 +26,13 @@ async def lifespan(app: FastAPI):
     init_db()
     from app.services.catalogue import load_catalogues
     from app.services.channels.scheduler import reminder_loop
+    from app.services.jobs import job_loop
 
     load_catalogues()
     # The reminder loop can live in this process (default) or in a dedicated worker: RUN_SCHEDULER=false + `python -m app.worker`.
-    task = asyncio.create_task(reminder_loop()) if settings.run_scheduler else None
+    tasks = [asyncio.create_task(reminder_loop()), asyncio.create_task(job_loop())] if settings.run_scheduler else []
     yield
-    if task:
+    for task in tasks:
         task.cancel()
 
 

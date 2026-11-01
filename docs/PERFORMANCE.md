@@ -14,7 +14,7 @@ reads fail < 1% and p95 < 300 ms.
 
 ## Setup
 
-Apple laptop (10 cores), Docker PostgreSQL 16 on the same machine, **one** uvicorn process (the same shape as the free Render instance, but with
+Apple M3 laptop (8 cores), Docker PostgreSQL 16 on the same machine, **one** uvicorn process (the same shape as the free Render instance, but with
 far more CPU), `RATE_LIMIT_BACKEND=database`, no reverse proxy. Numbers on the free cloud tier will be higher: add the network round trip
 (browser to Cloudflare to Render in Ohio) and a fraction of a CPU.
 

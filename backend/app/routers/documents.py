@@ -29,7 +29,7 @@ from app.models import (
     UserPolicy,
 )
 from app.routers.onboarding import AccountIn, create_account
-from app.services import pipeline, profile_engine, receipts, retrieval, storage
+from app.services import jobs, pipeline, profile_engine, receipts, retrieval, storage
 from app.services.card_import import clear_linked_values
 from app.services.vision import IMAGE_MIMES, VisionError, prepare_image, sniff_image
 
@@ -186,8 +186,9 @@ async def upload(
     if type == "bank_statement" and user.onboarding_step in ("about", "family", "statement"):
         user.onboarding_step = "processing"
     audit(db, user.id, "document.uploaded", "document", doc.id, type=type, size=len(data))
+    pipeline.enqueue_processing(db, doc)   # committed with the document: the job cannot be lost between the two
     db.commit()
-    background.add_task(pipeline.process_document, doc.id)
+    background.add_task(jobs.run_available)   # fast path; if this process dies the worker loop still finds the job
     return doc_out(doc, db)
 
 
@@ -362,8 +363,9 @@ def reprocess(doc_id: str, background: BackgroundTasks, user: User = Depends(cur
         profile_engine.build_profile(db, user)
     d.processing_status, d.processing_stage = "queued", "uploaded"
     audit(db, user.id, "document.reprocess", "document", d.id)
+    pipeline.enqueue_processing(db, d)
     db.commit()
-    background.add_task(pipeline.process_document, d.id)
+    background.add_task(jobs.run_available)
     return doc_out(d, db)
 
 
