@@ -63,10 +63,10 @@ _SYN = {
     "call": ["helpline"], "phone": ["helpline"], "number": ["helpline"], "contact": ["helpline"],
     "admitted": ["hospitalisation", "claim"], "admission": ["hospitalisation"],
     "inform": ["claim intimation"], "notify": ["claim intimation"], "intimate": ["claim intimation"],
-    "paperwork": ["documents"], "kagaz": ["documents"], "papers": ["documents"],
+    "paperwork": ["documents"], "papers": ["documents"],
     "private": ["room rent limit"], "ac": ["room rent limit"],
     "surgery": ["conditions", "limited"], "limit": ["sub-limit", "limited"], "cap": ["limited", "sub-limit"],
-    "nahi": ["exclusions", "not covered"], "excluded": ["exclusions"],
+    "nahi": ["exclusions", "not covered"],
 }
 
 
