@@ -42,6 +42,19 @@ the sign-up → statement upload → loans → cards → EMIs → insurance → 
 `https://vitram.baidpankaj567.workers.dev/api/webhooks/whatsapp` (the verify-token handshake is confirmed). For remote runs of the browser
 scripts use `WAIT_SCALE=5 node scripts/e2e-journey.mjs --base <url>`: a cold free host is slower than the default waits.
 
+### WhatsApp on the free tier (OpenWA on Render)
+
+For a free, unofficial WhatsApp gateway, [`deploy/openwa/`](../deploy/openwa) wraps the OpenWA image (Baileys engine, no Chromium) for a
+Render free web service. `start.sh` restores `/app/data` (the linked-device login and its small database) from R2 prefix `openwa-data` at boot and
+pushes changes back every 30 seconds, so a restart keeps the session without a new QR. Set on the API: `WHATSAPP_PROVIDER=openwa`,
+`OPENWA_BASE_URL`, `OPENWA_API_KEY`, `OPENWA_SESSION_ID`, `OPENWA_WEBHOOK_SECRET`, and register the webhook
+`https://<worker>/api/webhooks/whatsapp`. The Worker cron also pings the gateway (`KEEPALIVE_URLS`).
+Pair once by scanning the session QR (WhatsApp → Linked devices). Verified: session `ready`, outbound send accepted, inbound
+webhook signed and delivered; messages from numbers with no linked account and consent are ignored by design.
+
+**Caveat:** this uses an unofficial protocol. WhatsApp can restrict a number that uses it, so link a spare number, never one you
+cannot lose. For real users use the official Meta Cloud API (`WHATSAPP_PROVIDER=meta`).
+
 Limits to expect: the first request after a long idle takes up to a minute while the API wakes; the Worker's free plan allows
 100,000 API requests a day; Render's free plan gives 750 instance-hours a month, enough for one always-awake service.
 

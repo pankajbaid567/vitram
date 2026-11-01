@@ -7,6 +7,12 @@ An AI-assisted financial companion for salaried people in India: **loans, cards,
 > The app's on-screen brand is **VITRAM**; VITRAM is the project name.
 > **Decision-support prototype.** All *priced* loan, card and insurance data is fictional sample data, labelled as such. The lists of real cards and insurance products are **reference-only** (names and official links, with no fees or benefits invented). VITRAM is not a lender, insurer, broker or adviser.
 
+**Live demo (free tier):** https://vitram.baidpankaj567.workers.dev. Open *Try the sample workspace* on the sign-in page, no sign-up needed. The first load after
+a quiet period can take up to a minute while the free API wakes up.
+
+Runs entirely on free plans: Cloudflare Worker (app + `/api` proxy) → Render (API) → Neon PostgreSQL, uploads in Cloudflare R2, optional OpenWA WhatsApp
+gateway. See [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
 | | |
 |---|---|
 | ![Dashboard](docs/screenshots/dashboard.jpg) | ![Loan options with real cost](docs/screenshots/loan-options.jpg) |
