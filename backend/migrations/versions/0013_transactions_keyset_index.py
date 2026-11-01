@@ -6,6 +6,9 @@ Revises: 0012
 Measured on 58,000 rows: the newest-100 query for the busiest user fell from 4.7 ms (an index scan plus an incremental
 sort) to about 0.25 ms (a plain backward index scan). The new index starts with the old one's columns, so the old
 index is redundant and is dropped.
+
+CONTRACT: drops ix_transactions_user_date. Safe in the same release because an index is invisible to the code (no query names it) and the
+new index serves every query the old one did; the previous release keeps working against the new schema.
 """
 
 from typing import Sequence, Union

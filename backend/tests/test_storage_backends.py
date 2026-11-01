@@ -120,3 +120,21 @@ def test_s3_objects_can_be_listed_and_rotated_across_pages(s3, monkeypatch):
         monkeypatch.undo()
         security._reset_caches()
         security._masters = None
+
+
+def test_sample_documents_are_served_from_bundled_fixtures_without_touching_storage(s3):
+    from pathlib import Path
+
+    fixture = (Path(__file__).resolve().parent.parent / "fixtures" / "sample_loan_kfs.pdf").read_bytes()
+    key = storage.put_sample(fixture)
+    assert key.startswith(storage.SAMPLE_PREFIX) and key.isalnum()
+    assert not s3.objects                                   # nothing was written to the bucket
+    assert storage.get(key) == fixture                      # and nothing is read from it
+    storage.delete(key)                                     # shared, so deleting is a no-op
+    assert storage.get(key) == fixture
+
+
+def test_a_non_fixture_passed_to_put_sample_is_stored_normally(s3):
+    key = storage.put_sample(b"not a bundled fixture")
+    assert not key.startswith(storage.SAMPLE_PREFIX) and len(s3.objects) == 1
+    assert storage.get(key) == b"not a bundled fixture"

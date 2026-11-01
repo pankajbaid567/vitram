@@ -36,7 +36,7 @@ jobs:
         with:
           enable-cache: true
       - name: Install
-        run: uv sync --frozen --extra ai --extra postgres
+        run: uv sync --frozen --extra ai --extra postgres --extra otel --extra redis --extra s3
       - name: Lint
         if: matrix.db == 'sqlite'
         run: uv run ruff check .
@@ -108,6 +108,7 @@ jobs:
           APP_ORIGIN: http://localhost:5173
           DATABASE_URL: sqlite:///${{ runner.temp }}/e2e.db
           DATA_DIR: ${{ runner.temp }}/data
+          THROTTLE_ENABLED: "false"   # the browser audits fire hundreds of requests from one client in a minute
         run: |
           uv sync --frozen
           nohup uv run uvicorn app.main:app --port 8000 > ${{ runner.temp }}/api.log 2>&1 &

@@ -28,7 +28,7 @@ FIXTURES = BACKEND_DIR / "fixtures"
 def _upload(db: Session, user: User, path: Path, doc_type: str, mime: str, **kw) -> Document:
     data = path.read_bytes()
     d = Document(owner_user_id=user.id, type=doc_type, display_name=path.name, mime=mime, size_bytes=len(data),
-                 file_key=storage.put(data), checksum=hashlib.sha256(data).hexdigest(), **kw)
+                 file_key=storage.put_sample(data), checksum=hashlib.sha256(data).hexdigest(), **kw)
     db.add(d)
     db.commit()
     pipeline.process_document(d.id)

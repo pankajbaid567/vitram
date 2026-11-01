@@ -1,0 +1,46 @@
+name: Preview
+
+# Every pull request gets its own Cloudflare Worker version (a unique *.workers.dev preview URL) with the built web app, pointing at the production
+# API origin from wrangler.jsonc. Needs the repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID; without them the job skips quietly.
+# The API itself is not duplicated: a preview exercises the UI against the live API (use a sample workspace). A per-branch API + Neon branch
+# database is the next step; docs/FUTURE.md describes it.
+
+on:
+  pull_request:
+    paths: ["frontend/**", "deploy/cloudflare/**"]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    permissions: {pull-requests: write}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Check credentials
+        id: creds
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then echo "present=false" >> "$GITHUB_OUTPUT"; echo "No Cloudflare secrets: skipping the preview."; else echo "present=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/checkout@v4
+        if: steps.creds.outputs.present == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.creds.outputs.present == 'true'
+        with: {node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - name: Build the web app
+        if: steps.creds.outputs.present == 'true'
+        working-directory: frontend
+        run: npm ci && npm run build
+      - name: Upload a Worker version (not promoted to production)
+        if: steps.creds.outputs.present == 'true'
+        id: upload
+        working-directory: deploy/cloudflare
+        run: |
+          npx --yes wrangler@4 versions upload --message "PR #${{ github.event.number }} ${{ github.sha }}" | tee upload.log
+          echo "url=$(grep -o 'https://[^ ]*workers.dev' upload.log | head -1)" >> "$GITHUB_OUTPUT"
+      - name: Comment the preview URL
+        if: steps.creds.outputs.present == 'true' && steps.upload.outputs.url != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number,
+              body: `Preview of this branch: ${{ steps.upload.outputs.url }}\n\nThe preview uses the production API; try the **Open sample workspace** button.`})

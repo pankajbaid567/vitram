@@ -214,7 +214,7 @@
 | POST | `/api/profile/recurring/{group_id}` | Recurring Action | session |
 | GET | `/api/profile/review` | Review | session |
 | GET | `/api/profile/spending` | Spending | session |
-| GET | `/api/transactions` | List Transactions | session |
+| GET | `/api/transactions` | Newest first. Page with ``cursor`` (keyset: cost does not grow with page depth); ``offset`` remains for compatibility | session |
 | PATCH | `/api/transactions/{txn_id}` | Patch Transaction | session |
 
 ## reminders

@@ -64,13 +64,18 @@ def test_deleting_an_account_removes_every_row_and_every_file(client_factory):
     victim, bystander = client_factory(), client_factory()
     victim.post("/api/demo/workspace")
     bystander.post("/api/demo/workspace")
+    # A sample workspace's documents are shared public fixtures, so it also holds one real upload: the thing erasure must remove.
+    up = victim.post("/api/documents", data={"type": "bank_statement", "period_months": "6"},
+                     files={"file": ("mine.csv", b"date,description,debit,credit,balance\n2026-01-01,MY OWN UPLOAD,10,,990\n", "text/csv")})
+    assert up.status_code == 200, up.text
     me = victim.get("/api/auth/me").json()["id"]
     other = bystander.get("/api/auth/me").json()["id"]
 
     db = SessionLocal()
-    keys = [d.file_key for d in db.query(Document).filter(Document.owner_user_id == me)]
+    all_keys = [d.file_key for d in db.query(Document).filter(Document.owner_user_id == me)]
     db.close()
-    assert keys and all(storage.get(k) for k in keys)
+    keys = [k for k in all_keys if not k.startswith(storage.SAMPLE_PREFIX)]
+    assert len(keys) == 1 and len(all_keys) == 7 and all(storage.get(k) for k in all_keys)
 
     assert victim.post("/api/auth/account/delete", json={"confirm": "DELETE"}).status_code == 200  # sample workspaces have no password
     assert victim.get("/api/auth/me").status_code == 401
@@ -92,4 +97,4 @@ def test_deleting_an_account_removes_every_row_and_every_file(client_factory):
         assert db.query(AuditEvent).filter(AuditEvent.action == "account.deleted").count() >= 1
     finally:
         db.close()
-    assert len(bystander.get("/api/documents").json()) == 5   # someone else's data is untouched
+    assert len(bystander.get("/api/documents").json()) == 6   # someone else's data is untouched (the workspace's six sample documents)

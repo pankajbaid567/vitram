@@ -12,6 +12,7 @@ Two interchangeable backends behind the same three functions (``put``/``get``/``
 
 import secrets
 from functools import lru_cache
+from pathlib import Path
 from typing import Protocol
 
 from app.config import get_settings
@@ -91,6 +92,34 @@ def _backend() -> _Backend:
     raise RuntimeError(f"Unknown STORAGE_BACKEND {kind!r}: use 'local' or 's3'")
 
 
+# --- shared sample documents ---------------------------------------------------------------------------------------------------
+# The sample workspace's five documents are public, fictional fixtures that ship inside the image. Writing an encrypted copy of each to the
+# object store for every workspace (and reading it back to process it) cost ten network round trips per click of "Open sample workspace",
+# about 10 s on the free tier. Instead a sample document's key names the bundled fixture by content hash; reading it needs no network, and
+# deleting it is a no-op (it is shared). Real uploads are unaffected.
+SAMPLE_PREFIX = "smpl"
+_sample_index: dict[str, bytes] | None = None
+
+
+def _fixtures() -> dict[str, bytes]:
+    global _sample_index
+    if _sample_index is None:
+        import hashlib
+
+        folder = Path(__file__).resolve().parent.parent.parent / "fixtures"
+        _sample_index = {f"{SAMPLE_PREFIX}{hashlib.sha256(p.read_bytes()).hexdigest()[:24]}": p.read_bytes()
+                         for p in folder.iterdir() if p.is_file()} if folder.is_dir() else {}
+    return _sample_index
+
+
+def put_sample(data: bytes) -> str:
+    """Key for a bundled sample fixture (no storage write). Falls back to a normal encrypted upload for anything that is not a fixture."""
+    import hashlib
+
+    key = f"{SAMPLE_PREFIX}{hashlib.sha256(data).hexdigest()[:24]}"
+    return key if key in _fixtures() else put(data)
+
+
 def put(data: bytes) -> str:
     key = secrets.token_hex(16)
     _backend().put(key, encrypt_bytes(data))
@@ -100,12 +129,14 @@ def put(data: bytes) -> str:
 def get(key: str) -> bytes:
     if not key.isalnum():
         raise ValueError("Invalid storage key")
+    if key.startswith(SAMPLE_PREFIX) and key in _fixtures():
+        return _fixtures()[key]
     return decrypt_bytes(_backend().get(key))
 
 
 def delete(key: str) -> None:
-    if not key.isalnum():
-        return
+    if not key.isalnum() or key.startswith(SAMPLE_PREFIX):
+        return                      # shared sample fixtures are never deleted
     _backend().delete(key)
 
 

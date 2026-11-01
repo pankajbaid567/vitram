@@ -7031,6 +7031,7 @@
     },
     "/api/transactions": {
       "get": {
+        "description": "Newest first. Page with ``cursor`` (keyset: cost does not grow with page depth); ``offset`` remains for compatibility.",
         "operationId": "list_transactions_api_transactions_get",
         "parameters": [
           {
@@ -7101,6 +7102,25 @@
               "default": 0,
               "title": "Offset",
               "type": "integer"
+            }
+          },
+          {
+            "description": "Opaque keyset cursor from a previous page's next_cursor",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque keyset cursor from a previous page's next_cursor",
+              "title": "Cursor"
             }
           }
         ],

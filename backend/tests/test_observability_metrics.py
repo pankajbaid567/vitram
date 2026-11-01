@@ -1,5 +1,7 @@
 """Metrics endpoint, readiness queue signals and tracing."""
 
+import pytest
+
 from app import metrics
 from app.config import get_settings
 from app.db import SessionLocal
@@ -80,6 +82,7 @@ def _sample(name, **labels):
 
 
 def test_tracing_emits_server_sql_and_request_id_spans():
+    pytest.importorskip("opentelemetry.sdk")   # the optional `otel` extra
     from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
     from fastapi import FastAPI

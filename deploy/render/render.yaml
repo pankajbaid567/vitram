@@ -1,0 +1,51 @@
+# Render Blueprint: the free-tier API and the OpenWA WhatsApp gateway as code.  New Blueprint -> point at this repo and this file.
+# Secrets (sync: false) are entered once in the dashboard; nothing sensitive is committed. The web app and /api proxy live in
+# deploy/cloudflare (wrangler.jsonc); the database is Neon; uploads are Cloudflare R2.
+services:
+  - type: web
+    name: vitram-api
+    runtime: docker
+    plan: free
+    region: ohio                      # keep Upstash Redis and Neon in the same AWS region (us-east-2)
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/ready
+    autoDeploy: true
+    envVars:
+      - {key: APP_ENV, value: production}
+      - {key: AUTO_MIGRATE, value: "true"}
+      - {key: RUN_SCHEDULER, value: "true"}            # the free plan has no separate worker: reminders and the job loop run beside the API
+      - {key: STORAGE_BACKEND, value: s3}
+      - {key: LOG_FORMAT, value: json}
+      - {key: APP_ORIGIN, sync: false}                  # the Worker's public URL
+      - {key: PUBLIC_API_URL, sync: false}              # same URL: webhooks reach the API through the Worker
+      - {key: DATABASE_URL, sync: false}                # Neon pooled connection string
+      - {key: VITRAM_DATA_KEY, sync: false}
+      - {key: S3_ENDPOINT_URL, sync: false}
+      - {key: S3_BUCKET, sync: false}
+      - {key: S3_ACCESS_KEY_ID, sync: false}
+      - {key: S3_SECRET_ACCESS_KEY, sync: false}
+      - {key: REDIS_URL, sync: false}                   # Upstash rediss:// URL, same region as this service
+      - {key: WHATSAPP_PROVIDER, value: openwa}
+      - {key: OPENWA_BASE_URL, sync: false}
+      - {key: OPENWA_API_KEY, sync: false}
+      - {key: OPENWA_SESSION_ID, sync: false}
+      - {key: OPENWA_WEBHOOK_SECRET, sync: false}
+      - {key: METRICS_TOKEN, sync: false}               # optional: enables /api/metrics
+
+  - type: web
+    name: vitram-openwa
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./deploy/openwa/Dockerfile
+    dockerContext: ./deploy/openwa
+    healthCheckPath: /api/health/ready
+    autoDeploy: false                 # a gateway restart can drop the linked-device session until R2 restores it: deploy deliberately
+    envVars:
+      - {key: ENGINE, value: baileys}
+      - {key: S3_BUCKET, sync: false}
+      - {key: S3_ACCESS_KEY_ID, sync: false}
+      - {key: S3_SECRET_ACCESS_KEY, sync: false}
+      - {key: S3_ENDPOINT_URL, sync: false}
+      - {key: API_MASTER_KEY, sync: false}

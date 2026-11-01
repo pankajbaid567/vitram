@@ -1,0 +1,58 @@
+name: Backup restore check
+
+# An untested backup is a hope, not a backup. Weekly (and on demand) this seeds a PostgreSQL database with sample workspaces, takes a real
+# backup with backend/scripts/backup.sh, restores it into a second database with restore.sh, and compares every table by row count and
+# checksum. It exercises the procedure and the scripts. To check the production database the same way, run scripts/verify_backup.sh with the
+# production DATABASE_URL (read-only dump) and a scratch SCRATCH_DATABASE_URL from a trusted machine.
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+  pull_request:
+    paths: ["backend/scripts/**", ".github/workflows/backup-verify.yml"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: {POSTGRES_USER: vitram, POSTGRES_PASSWORD: vitram, POSTGRES_DB: vitram}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U vitram" --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: PostgreSQL client tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      - run: uv sync --frozen --extra postgres
+      - name: Seed three sample workspaces
+        env:
+          DATABASE_URL: postgresql+psycopg://vitram:vitram@localhost:5432/vitram
+          DATA_DIR: ${{ runner.temp }}/data
+          APP_ORIGIN: http://testserver
+          THROTTLE_ENABLED: "false"
+          RUN_SCHEDULER: "false"
+        run: |
+          uv run python - <<'PY'
+          from fastapi.testclient import TestClient
+          from app.main import app
+          with TestClient(app) as c:
+              c.headers["Origin"] = "http://testserver"
+              for _ in range(3):
+                  assert c.post("/api/demo/workspace").status_code == 200
+          PY
+      - name: Back up, restore into a scratch database, compare every table
+        env:
+          DATABASE_URL: postgresql+psycopg://vitram:vitram@localhost:5432/vitram
+          SCRATCH_DATABASE_URL: postgresql+psycopg://vitram:vitram@localhost:5432/vitram_verify
+          PGPASSWORD: vitram
+          PYTHON: uv run --extra postgres python
+        run: |
+          psql -h localhost -U vitram -d postgres -c "CREATE DATABASE vitram_verify"
+          sh scripts/verify_backup.sh
