@@ -1,5 +1,9 @@
 # Future work: scale, concurrency, system design and depth
 
+> **Status (2026-11-01): P0, P1 and P2 below are implemented, tested and deployed**; the evidence is in [`STATUS.md`](STATUS.md) and each topic's own document
+> ([`PERFORMANCE.md`](PERFORMANCE.md), [`OBSERVABILITY.md`](OBSERVABILITY.md), [`RETRIEVAL_EVAL.md`](RETRIEVAL_EVAL.md), [`SECURITY_MODEL.md`](SECURITY_MODEL.md), [`RELEASING.md`](RELEASING.md)).
+> The text under each item is kept as the original plan and acceptance criteria. What genuinely remains is under **Still open** at the end of this file.
+
 Ordered by **value per hour of work**. Every item says what is true today, what to build, how to know it worked
 (a number or a test, not a feeling) and what it teaches. Do them roughly in order; P0 first.
 
@@ -167,3 +171,19 @@ Status words: **Today** = verified in the code at the time of writing.
 3. Give one number from your own measurements (p95, queue age, recall@k).
 4. Name the trade-off you accepted (Postgres queue instead of Kafka: fewer moving parts at this scale; the interface allows swapping).
 5. Say what you would change at 100× the load. The honest answer is in this file.
+
+
+---
+
+## Still open (after P0 to P2)
+
+Honest leftovers, most valuable first:
+
+1. **Run it on real traffic.** Everything is measured on synthetic load and one laptop; a week of real users (even 10) would give real p95s, error rates and the first bug reports.
+2. **Per-branch environments:** a Neon branch database and a throwaway API per pull request (the preview today reuses the production API).
+3. **Horizontal scale proof:** run two API instances against Redis + Postgres and re-run the load test to show linear scaling and cross-instance cache invalidation.
+4. **Dense retrieval** behind the existing `mode` seam, judged by the golden set, only if the privacy trade-off (document text to an embedding model) is acceptable.
+5. **Sessions:** MFA, device list with remote sign-out, rotation on password change (listed in `SECURITY_MODEL.md` as known gaps).
+6. **Official WhatsApp (Meta Cloud API)** with templates, replacing the unofficial gateway for anything beyond a demo.
+7. **A real data source** for catalogues instead of labelled fictional samples.
+8. **P3 product depth:** Server-Sent Events for processing progress, PWA/offline dashboard, Hindi navigation labels, empty-state illustrations, a ⌘K shortcut sheet.

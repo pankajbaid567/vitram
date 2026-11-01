@@ -8,14 +8,14 @@ under *Not verified* rather than claimed; [`GO_LIVE.md`](GO_LIVE.md) is the orde
 
 | Check | Result | Command |
 |---|---|---|
-| Backend tests | **517 pass**, 10 documented skips (routes that address shared catalogue data) | `make test-backend` |
+| Backend tests | **656 pass**, 19 skips (10 shared-catalogue routes; 9 that need a real PostgreSQL role or Redis, which run when `TEST_DATABASE_URL` / `TEST_REDIS_URL` are set) | `make test-backend` |
 | Backend coverage | **88 %** (8.6k statements) | `cd backend && uv run pytest -q --cov=app` |
 | Backend on a Linux container | pass (same results as macOS) | `make ci-linux` |
-| Backend on PostgreSQL 16 | pass, including four racing workers and the shared rate limiter (migration tests are SQLite-specific) | `TEST_DATABASE_URL=postgresql+psycopg://… uv run pytest -q --deselect tests/test_migrations.py` |
+| Backend on PostgreSQL 16 | **614 pass** on the whole suite, including four racing workers, `SKIP LOCKED` job claims, Row Level Security with a real no-bypass role, and the shared rate limiter | `TEST_DATABASE_URL=postgresql+psycopg://… uv run pytest -q --deselect tests/test_migrations.py` |
 | Backend lint | clean | `uv run ruff check .` |
 | Frontend tests | **50 pass** (journeys render the real route tree against fixtures captured from the live API) | `make test-frontend` |
 | Typecheck, lint, build | pass; lint has **0 warnings** | `make lint && npm run build` |
-| Migrations | `0001 → 0011` apply on empty SQLite and PostgreSQL; `0007` also verified on PostgreSQL with data; idempotent for pre-Alembic databases | `python -m app.migrate upgrade` |
+| Migrations | `0001 → 0016` apply on empty SQLite and PostgreSQL, and **roll back to 0011 and forward again** with data intact (SQLite test, PostgreSQL by hand); `0007` also verified on PostgreSQL with data; idempotent for pre-Alembic databases | `python -m app.migrate upgrade` |
 | Real-user journey (browser) | **16/16 steps, at desktop and phone (390 px) width**, as a brand-new user: sign up → onboarding → upload a statement → profile review → dashboard → add a policy → loans (options, real cost, compare) → cards → EMIs → emergency mode → reminders → ask the assistant → export data → delete the account (and the door is locked afterwards). Also asserts no console errors or failed requests | `make journey` |
 | Browser smoke on the sample workspace | **9/9 steps** on the local stack **and** on the containerised stack (nginx → API → PostgreSQL + worker); proven to fail on the original Documents crash | `make e2e` |
 | Accessibility | **0 axe violations** (81 route scans; 79 on the Linux stack, which has no on-device OCR), 8/8 keyboard and touch checks. Screen-reader testing is still manual | `make a11y` |
@@ -68,6 +68,24 @@ Run by the author with the OpenWA gateway paired to a spare number and one contr
 | Safety gates | A message from the number *before* it was verified was ignored; after `STOP`, consent was revoked, nothing stayed queued on WhatsApp, and "Send now" stayed in-app and said so |
 
 Found while doing it: the pre-existing OpenWA webhook pointed at another local project's port (it was repointed), and the doctor wrongly warned when the webhook targets `host.docker.internal` instead of a public URL (fixed).
+
+## Added in the scale / reliability pass (all verified)
+
+| Area | Evidence |
+|---|---|
+| Load test | k6, one process: ~213 req/s saturation, read p95 86 / 108 / 151 ms at 10 / 25 / 50 users, 0 errors ([`PERFORMANCE.md`](PERFORMANCE.md)) |
+| Optimisations, measured | loan IRR **-46% CPU** (13.5 to 7.2 ms/request); dashboard cache **~4x lower p95, ~3.5x throughput**; sample workspace **9-11 s to ~4 s** on the free tier |
+| Durable job queue | document processing and inbound WhatsApp are jobs with leases, retry, dead-letter; a test **kills a real process mid-job** and proves exactly-once completion ([ADR-0014](DECISIONS.md)) |
+| Concurrency safety | idempotency keys (10 racing requests, one effect), optimistic concurrency (10 racing edits, one wins) |
+| N+1 and indexes | N+1 found and fixed in family and goals lists; query-count budgets on 10 endpoints; keyset pagination; newest-100 query 4.7 to 0.25 ms |
+| Resilience | circuit breakers, bulkhead, retry budget, load shedding, edge limiter proven live (200 rapid requests, 120 refused) |
+| Rate limits | token buckets verified against **real Upstash Redis** (20 racing callers, exactly 5 admitted) |
+| Observability | Prometheus metrics, readiness queue signals, OpenTelemetry trace verified in Jaeger (one dashboard request = 21 spans), alerts, Grafana dashboard ([`OBSERVABILITY.md`](OBSERVABILITY.md)) |
+| Retrieval | 125-question golden set, recall@3 **61.7% to 85.2%**, paraphrase 33% to 73%, held-out 87.7%; CI quality gate ([`RETRIEVAL_EVAL.md`](RETRIEVAL_EVAL.md)) |
+| Security depth | Row Level Security (whole suite passes as a no-bypass role), envelope encryption with key rotation, enforcing CSP, STRIDE model ([`SECURITY_MODEL.md`](SECURITY_MODEL.md)) |
+| Testing depth | 13 Hypothesis property tests (found a real divide-by-zero), mutation testing of the money maths **78.5% to 89.3%** killed |
+| Release safety | expand/contract migration policy enforced in CI, rollback rehearsed, weekly backup-restore verification: 39 tables / 1,382 rows identical ([`RELEASING.md`](RELEASING.md)) |
+| Production browser run | smoke **9/9**, journey **16/16** at desktop and 390 px, with the new queue, throttle, cache and enforcing CSP all live |
 
 ## Not verified
 
