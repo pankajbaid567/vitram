@@ -79,3 +79,15 @@ def whatsapp() -> WhatsAppGateway:
 
         return openwa.OpenWAGateway()
     raise NotConfigured(f"Unknown WHATSAPP_PROVIDER {provider!r}; use 'meta' or 'openwa'.")
+
+
+def resilient_send(name: str, fn):
+    """Send through the gateway's circuit breaker. Only transient failures (network, 5xx, 429) count against the gateway; a rejected
+    destination or a malformed request does not. While the circuit is open the send fails fast as a *retryable* SendError, so the reminder
+    scheduler backs off instead of every queued reminder waiting on a dead gateway."""
+    from app import resilience
+
+    try:
+        return resilience.call(name, fn, is_dependency_failure=lambda exc: isinstance(exc, SendError) and exc.retryable)
+    except resilience.CircuitOpen as exc:
+        raise SendError(str(exc), retryable=True) from exc

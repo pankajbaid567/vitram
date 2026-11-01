@@ -8,11 +8,11 @@ nothing is hard-coded.
 
 import json
 import logging
-import time
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
+from app import metrics, resilience
 from app.config import get_settings
 from app.errors import DomainError
 from app.models import Conversation, Message, User
@@ -24,7 +24,11 @@ MAX_TOOL_STEPS = 5
 LIVE_API_VERSION = "v1beta"
 HISTORY_TURNS = 12
 PROVIDER_COOLDOWN_SECONDS = 60
-_provider_unavailable_until = 0.0
+
+
+def _circuit():
+    """One failure opens the circuit for the cooldown, then a single probe decides (tool mode serves the user meanwhile)."""
+    return resilience.breaker("gemini", failure_threshold=1, cooldown=PROVIDER_COOLDOWN_SECONDS)
 
 
 class GeminiUnavailable(Exception):
@@ -65,9 +69,10 @@ def profile_slice_for(db: Session, user: User, ctx: dict) -> str:
 
 
 def run_turn(db: Session, user: User, conv: Conversation, text: str, ctx: dict) -> dict:
-    global _provider_unavailable_until
-    if time.monotonic() < _provider_unavailable_until:
-        raise GeminiUnavailable("provider cooling down after a recent failure")
+    try:
+        _circuit().before()
+    except resilience.CircuitOpen as exc:
+        raise GeminiUnavailable("provider cooling down after a recent failure") from exc
 
     from google.genai import types
 
@@ -97,6 +102,7 @@ def run_turn(db: Session, user: User, conv: Conversation, text: str, ctx: dict) 
             resp = client.models.generate_content(model=s.gemini_model, contents=contents, config=config)
             calls = resp.function_calls or []
             if not calls:
+                _circuit().success()
                 return {"text": (resp.text or "").strip() or "I don't have an answer for that.", "cards": cards,
                         "citations": cites, "tool_calls": tool_log, "tool_data": tool_data}
             contents.append(resp.candidates[0].content)
@@ -115,14 +121,17 @@ def run_turn(db: Session, user: User, conv: Conversation, text: str, ctx: dict) 
                     tool_log.append({"name": call.name, "args": args, "error": exc.code})
                 parts.append(types.Part.from_function_response(name=call.name, response={"result": json.loads(json.dumps(payload, default=str))}))
             contents.append(types.Content(role="user", parts=parts))
+        _circuit().success()
         return {"text": "I ran several calculations; the results are shown below.", "cards": cards, "citations": cites,
                 "tool_calls": tool_log, "tool_data": tool_data}
     except GeminiUnavailable:
+        _circuit().release_trial()
         raise
     except Exception as exc:  # noqa: BLE001 — network/API errors → graceful fallback (RD §26)
         # Avoid making every chat turn wait on a provider that just failed.
         # Tool mode remains fully functional during this short cooldown.
-        _provider_unavailable_until = time.monotonic() + PROVIDER_COOLDOWN_SECONDS
+        _circuit().failure()
+        metrics.GATEWAY.labels("gemini", "error").inc()
         raise GeminiUnavailable(f"{type(exc).__name__}") from exc
 
 

@@ -92,6 +92,44 @@ def _internal_error(request_id: str) -> JSONResponse:
     return JSONResponse(body, status_code=500)
 
 
+SHED_EXEMPT = ("/api/health", "/api/ready", "/api/metrics", "/api/webhooks/")
+_queue_depth_cache: tuple[float, int] = (0.0, 0)
+
+
+def _queued_jobs() -> int:
+    """Queue depth, cached for two seconds so a flood of uploads costs one count, not one per request."""
+    global _queue_depth_cache
+    now = time.monotonic()
+    if now - _queue_depth_cache[0] > 2.0:
+        from app.db import SessionLocal
+        from app.services import jobs
+
+        db = SessionLocal()
+        try:
+            _queue_depth_cache = (now, jobs.stats(db)["queued"])
+        finally:
+            db.close()
+    return _queue_depth_cache[1]
+
+
+async def _shed(request: Request) -> JSONResponse | None:
+    """Refuse work early when the service is saturated, instead of letting every request get slow (503 + Retry-After)."""
+    path, s = request.url.path, get_settings()
+    if path.startswith(SHED_EXEMPT):
+        return None
+    reason = None
+    if metrics.HTTP_INFLIGHT._value.get() >= s.max_inflight_requests:
+        reason = "inflight"
+    elif request.method == "POST" and path == "/api/documents" and await asyncio.to_thread(_queued_jobs) >= s.max_queued_jobs:
+        reason = "queue"
+    if reason is None:
+        return None
+    metrics.SHED.labels(reason).inc()
+    message = "VITRAM is very busy right now. Wait a few seconds and try again." if reason == "inflight" else \
+        "Document processing is backed up. Your upload was not accepted; try again in a minute."
+    return JSONResponse({"error": {"code": "BUSY", "message": message}}, 503, headers={"Retry-After": "10"})
+
+
 async def _with_idempotency(request: Request, call_next):
     key = request.headers.get(idempotency.HEADER)
     token = request.cookies.get(SESSION_COOKIE)
@@ -128,6 +166,10 @@ async def security_middleware(request: Request, call_next):
     rid = new_request_id(request.headers.get("x-request-id"))
     token = request_id_var.set(rid)
     started = time.perf_counter()
+    if (shed := await _shed(request)) is not None:
+        shed.headers["X-Request-ID"] = rid
+        request_id_var.reset(token)
+        return shed
     metrics.HTTP_INFLIGHT.inc()
     trace.get_current_span().set_attribute("vitram.request_id", rid)   # joins a log line to its trace (no-op when tracing is off)
     status = 500

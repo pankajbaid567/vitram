@@ -16,7 +16,7 @@ import re
 import httpx
 
 from app.config import get_settings
-from app.services.channels.gateway import InboundMessage, NotConfigured, SendError, StatusUpdate
+from app.services.channels.gateway import resilient_send, InboundMessage, NotConfigured, SendError, StatusUpdate
 
 GRAPH = "https://graph.facebook.com"
 DEFAULT_GRAPH_VERSION = "v21.0"  # an empty WHATSAPP_GRAPH_VERSION in .env must not produce a broken URL
@@ -163,10 +163,10 @@ class MetaCloudGateway:
         return get_settings().meta_webhook_configured
 
     def send_text(self, to_e164: str, body: str) -> str:
-        return send_text(to_e164, body)
+        return resilient_send(self.name, lambda: send_text(to_e164, body))
 
     def send_reminder(self, to_e164: str, text: str, params: list[str]) -> str:
-        return send_reminder(to_e164, text, params)
+        return resilient_send(self.name, lambda: send_reminder(to_e164, text, params))
 
     def verify_signature(self, raw_body: bytes, header: str | None) -> bool:
         return verify_signature(raw_body, header)

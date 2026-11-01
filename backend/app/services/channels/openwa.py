@@ -14,7 +14,7 @@ from urllib.parse import quote
 import httpx
 
 from app.config import get_settings
-from app.services.channels.gateway import InboundMessage, NotConfigured, SendError, StatusUpdate
+from app.services.channels.gateway import resilient_send, InboundMessage, NotConfigured, SendError, StatusUpdate
 
 __all__ = ["NotConfigured", "SendError", "OpenWAGateway", "send_text", "verify_signature", "parse_webhook"]
 
@@ -125,10 +125,11 @@ class OpenWAGateway:
         return get_settings().openwa_webhook_configured
 
     def send_text(self, to_e164: str, body: str) -> str:
-        return send_text(to_e164, body)
+        return resilient_send(self.name, lambda: send_text(to_e164, body))
 
     def send_reminder(self, to_e164: str, text: str, params: list[str]) -> str:
-        return send_text(to_e164, text)  # no templates on this gateway: the rendered text is sent as is
+        # no templates on this gateway: the rendered text is sent as is
+        return resilient_send(self.name, lambda: send_text(to_e164, text))
 
     def verify_signature(self, raw_body: bytes, header: str | None) -> bool:
         return verify_signature(raw_body, header)

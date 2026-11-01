@@ -11,6 +11,7 @@ import pytest
 genai_types = pytest.importorskip("google.genai.types")
 
 from app.config import get_settings  # noqa: E402
+from app import resilience
 from app.services.saathi import gemini  # noqa: E402
 
 
@@ -60,7 +61,7 @@ def gemini_on(monkeypatch):
     s = get_settings()
     monkeypatch.setattr(s, "gemini_api_key", "test-key")
     monkeypatch.setattr(s, "gemini_model", "configured-model-id")
-    monkeypatch.setattr(gemini, "_provider_unavailable_until", 0.0)
+    resilience.reset_all()
     yield
 
 

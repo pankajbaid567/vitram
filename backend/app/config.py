@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     data_dir: Path = BACKEND_DIR / ".data"
     # Where encrypted uploads live: "local" (DATA_DIR/objects, needs a persistent disk) or "s3" (any S3-compatible
     # bucket, e.g. Cloudflare R2, for hosts without a disk). Files are Fernet-encrypted before they leave the process.
+    max_inflight_requests: int = 100      # beyond this many simultaneous requests the API answers 503 + Retry-After (load shedding)
+    max_queued_jobs: int = 500            # uploads are refused (503) while this many jobs wait: the workers are behind
     db_pool_size: int = 5                 # connections kept per process (PostgreSQL only)
     db_max_overflow: int = 10             # extra connections allowed under a burst
     db_pool_recycle_seconds: int = 280    # below Neon's and most proxies' idle timeout
