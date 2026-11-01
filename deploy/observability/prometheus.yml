@@ -1,0 +1,7 @@
+global: {scrape_interval: 15s}
+rule_files: [/etc/prometheus/alerts.yml]
+scrape_configs:
+  - job_name: vitram-api
+    metrics_path: /api/metrics
+    authorization: {type: Bearer, credentials_file: /etc/prometheus/metrics_token}
+    static_configs: [{targets: ["host.docker.internal:18000"]}]   # the API on the host; use the service name inside a compose network

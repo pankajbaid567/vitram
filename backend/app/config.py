@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     s3_access_key_id: str | None = None
     s3_secret_access_key: str | None = None
     s3_region: str = "auto"
+    metrics_token: str = ""               # /api/metrics is off (404) unless this is set; then it needs "Authorization: Bearer <token>"
     # Fernet key for encrypting uploaded files at rest. Auto-generated in dev.
     vitram_data_key: str | None = None
     # Public origin of the web app, used for CSRF origin checks and deep links.

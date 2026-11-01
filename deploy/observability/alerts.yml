@@ -1,0 +1,55 @@
+# Prometheus alert rules for VITRAM. Load with `rule_files:` (see prometheus.yml). Thresholds are starting points: tune them to your SLOs.
+groups:
+  - name: vitram
+    rules:
+      - alert: ApiDown
+        expr: up{job="vitram-api"} == 0
+        for: 2m
+        labels: {severity: page}
+        annotations: {summary: "VITRAM API is not answering scrapes"}
+
+      - alert: HighServerErrorRate
+        expr: |
+          sum(rate(vitram_http_requests_total{status="5xx"}[5m]))
+            / clamp_min(sum(rate(vitram_http_requests_total[5m])), 1e-9) > 0.02
+        for: 5m
+        labels: {severity: page}
+        annotations: {summary: "More than 2% of requests are failing with 5xx", description: "Find the request_id in the logs and follow the trace."}
+
+      - alert: SlowReads
+        expr: |
+          histogram_quantile(0.95, sum by (le) (rate(vitram_http_request_duration_seconds_bucket{method="GET"}[10m]))) > 1
+        for: 10m
+        labels: {severity: ticket}
+        annotations: {summary: "p95 read latency above 1 s for 10 minutes (SLO: 300 ms)"}
+
+      - alert: JobQueueStalled
+        expr: vitram_jobs_oldest_queued_age_seconds > 300
+        for: 5m
+        labels: {severity: page}
+        annotations: {summary: "A runnable job has waited over 5 minutes: no worker is draining the queue"}
+
+      - alert: DeadJobs
+        expr: increase(vitram_jobs_finished_total{outcome="dead"}[1h]) > 0
+        labels: {severity: ticket}
+        annotations: {summary: "A job exhausted its retries and was parked as dead (the user sees Retry on the document)"}
+
+      - alert: GatewayFailing
+        expr: |
+          sum by (gateway) (rate(vitram_gateway_requests_total{outcome!="ok"}[10m]))
+            / clamp_min(sum by (gateway) (rate(vitram_gateway_requests_total[10m])), 1e-9) > 0.2
+        for: 10m
+        labels: {severity: ticket}
+        annotations: {summary: "More than 20% of calls to {{ $labels.gateway }} fail"}
+
+      - alert: CircuitOpen
+        expr: vitram_circuit_state == 2
+        for: 2m
+        labels: {severity: ticket}
+        annotations: {summary: "The circuit to {{ $labels.dependency }} has been open for 2 minutes; features that need it are degraded"}
+
+      - alert: LoadShedding
+        expr: sum(rate(vitram_load_shed_total[5m])) > 0
+        for: 5m
+        labels: {severity: ticket}
+        annotations: {summary: "The API is refusing requests to protect itself: scale up or find the slow dependency"}

@@ -1,6 +1,8 @@
 import asyncio
 import contextlib
 import logging
+import secrets
+import time
 from urllib.parse import urlparse
 
 from fastapi import FastAPI, Request, Response
@@ -8,9 +10,10 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.db import init_db
+from opentelemetry import trace
 from sqlalchemy.orm.exc import StaleDataError
 
-from app import idempotency
+from app import idempotency, metrics, tracing
 from app.deps import SESSION_COOKIE
 from app.errors import DomainError, domain_error_handler
 from app.observability import configure_logging, new_request_id, request_id_var
@@ -124,6 +127,10 @@ async def _with_idempotency(request: Request, call_next):
 async def security_middleware(request: Request, call_next):
     rid = new_request_id(request.headers.get("x-request-id"))
     token = request_id_var.set(rid)
+    started = time.perf_counter()
+    metrics.HTTP_INFLIGHT.inc()
+    trace.get_current_span().set_attribute("vitram.request_id", rid)   # joins a log line to its trace (no-op when tracing is off)
+    status = 500
     try:
         if (blocked := _csrf_violation(request, get_settings().app_origin)) is not None:
             response = blocked
@@ -135,14 +142,33 @@ async def security_middleware(request: Request, call_next):
                 response = _internal_error(rid)
         response.headers["X-Request-ID"] = rid
         _harden(request, response)
+        status = response.status_code
         return response
     finally:
+        metrics.HTTP_INFLIGHT.dec()
+        if request.url.path != "/api/metrics":
+            route = metrics.route_template(request.scope)
+            metrics.HTTP_REQUESTS.labels(request.method, route, f"{status // 100}xx").inc()
+            metrics.HTTP_DURATION.labels(request.method, route).observe(time.perf_counter() - started)
         request_id_var.reset(token)
 
 
 @app.get("/api/health")
 def health():
     return {"ok": True}
+
+
+@app.get("/api/metrics", include_in_schema=False)
+def prometheus_metrics(request: Request):
+    """Prometheus scrape target. Disabled (404) unless METRICS_TOKEN is set; then requires ``Authorization: Bearer <token>``."""
+    expected = get_settings().metrics_token
+    if not expected:
+        return JSONResponse({"error": {"code": "NOT_FOUND", "message": "Not found."}}, 404)
+    given = request.headers.get("authorization", "")
+    if not secrets.compare_digest(given.encode(), f"Bearer {expected}".encode()):
+        return JSONResponse({"error": {"code": "UNAUTHENTICATED", "message": "Metrics token required."}}, 401)
+    body, content_type = metrics.render()
+    return Response(body, media_type=content_type)
 
 
 def _include_routers() -> None:
@@ -174,3 +200,5 @@ def _include_routers() -> None:
 
 
 _include_routers()
+
+tracing.setup(app)   # no-op unless OTEL_EXPORTER_OTLP_ENDPOINT is set

@@ -10,6 +10,7 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
+from app import metrics
 from app.db import SessionLocal
 from app.models import (
     Document,
@@ -74,6 +75,8 @@ def process_document(document_id: str, *, reraise: bool = False) -> None:
             _process_pdf_document(db, doc, data)
         else:
             _fail(db, doc, "UNSUPPORTED_TYPE", "This document type isn't supported yet.")
+        db.refresh(doc)
+        metrics.DOCUMENTS.labels(doc.type, doc.processing_status).inc()
     except Exception:  # noqa: BLE001 — never leak content; record a generic failure
         log.exception("document processing failed for %s", document_id)
         db.rollback()

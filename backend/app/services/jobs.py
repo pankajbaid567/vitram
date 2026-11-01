@@ -15,12 +15,14 @@ import logging
 import os
 import random
 import socket
+import time
 from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func, or_, select, update
 from sqlalchemy.orm import Session
 
+from app import metrics
 from app.db import SessionLocal
 from app.models import Job
 
@@ -132,6 +134,7 @@ def run_next(wid: str | None = None) -> bool:
         if job is None:
             return False
         handler = _handlers.get(job.kind)
+        started = time.perf_counter()
         try:
             if handler is None:
                 raise LookupError(f"no handler registered for job kind {job.kind!r}")
@@ -139,9 +142,14 @@ def run_next(wid: str | None = None) -> bool:
         except Exception as exc:  # noqa: BLE001 - any failure is a retry decision, not a crash
             db.rollback()
             log.exception("job %s (%s) failed on attempt %s", job.id, job.kind, job.attempts)
-            fail(db, db.get(Job, job.id), f"{type(exc).__name__}: {exc}")
+            row = db.get(Job, job.id)
+            fail(db, row, f"{type(exc).__name__}: {exc}")
+            metrics.JOB_DURATION.labels(job.kind).observe(time.perf_counter() - started)
+            metrics.JOBS_FINISHED.labels(job.kind, "dead" if row.status == "dead" else "retry").inc()
             return True
         complete(db, db.get(Job, job.id))
+        metrics.JOB_DURATION.labels(job.kind).observe(time.perf_counter() - started)
+        metrics.JOBS_FINISHED.labels(job.kind, "done").inc()
         return True
     finally:
         db.close()

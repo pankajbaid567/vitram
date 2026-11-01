@@ -1,0 +1,425 @@
+{
+ "title": "VITRAM API",
+ "uid": "vitram-api",
+ "schemaVersion": 39,
+ "version": 1,
+ "refresh": "10s",
+ "time": {
+  "from": "now-1h",
+  "to": "now"
+ },
+ "panels": [
+  {
+   "id": 1,
+   "type": "timeseries",
+   "title": "Requests per second (by status class)",
+   "gridPos": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "reqps"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum by (status) (rate(vitram_http_requests_total[1m]))",
+     "legendFormat": "{{status}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "type": "timeseries",
+   "title": "Server error ratio (5xx)",
+   "gridPos": {
+    "x": 8,
+    "y": 0,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum(rate(vitram_http_requests_total{status=\"5xx\"}[5m])) / clamp_min(sum(rate(vitram_http_requests_total[5m])), 1e-9)",
+     "legendFormat": "5xx",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "type": "timeseries",
+   "title": "Latency p50 / p95 / p99",
+   "gridPos": {
+    "x": 16,
+    "y": 0,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "histogram_quantile(0.5, sum by (le) (rate(vitram_http_request_duration_seconds_bucket[5m])))",
+     "legendFormat": "p50",
+     "refId": "A"
+    },
+    {
+     "expr": "histogram_quantile(0.95, sum by (le) (rate(vitram_http_request_duration_seconds_bucket[5m])))",
+     "legendFormat": "p95",
+     "refId": "B"
+    },
+    {
+     "expr": "histogram_quantile(0.99, sum by (le) (rate(vitram_http_request_duration_seconds_bucket[5m])))",
+     "legendFormat": "p99",
+     "refId": "C"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "type": "timeseries",
+   "title": "Slowest routes (p95)",
+   "gridPos": {
+    "x": 0,
+    "y": 7,
+    "w": 12,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "topk(8, histogram_quantile(0.95, sum by (le, route) (rate(vitram_http_request_duration_seconds_bucket[5m]))))",
+     "legendFormat": "{{route}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "type": "timeseries",
+   "title": "In flight",
+   "gridPos": {
+    "x": 12,
+    "y": 7,
+    "w": 6,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "vitram_http_requests_in_flight",
+     "legendFormat": "in flight",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "type": "timeseries",
+   "title": "Load shed / rate limited",
+   "gridPos": {
+    "x": 18,
+    "y": 7,
+    "w": 6,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "reqps"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum by (reason) (rate(vitram_load_shed_total[5m]))",
+     "legendFormat": "shed {{reason}}",
+     "refId": "A"
+    },
+    {
+     "expr": "sum by (policy) (rate(vitram_rate_limited_total[5m]))",
+     "legendFormat": "limited {{policy}}",
+     "refId": "B"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "type": "timeseries",
+   "title": "Job queue depth",
+   "gridPos": {
+    "x": 0,
+    "y": 14,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "vitram_jobs",
+     "legendFormat": "{{status}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "type": "timeseries",
+   "title": "Oldest runnable job (seconds)",
+   "gridPos": {
+    "x": 8,
+    "y": 14,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "vitram_jobs_oldest_queued_age_seconds",
+     "legendFormat": "oldest queued",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "type": "timeseries",
+   "title": "Job outcomes",
+   "gridPos": {
+    "x": 16,
+    "y": 14,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum by (kind, outcome) (rate(vitram_jobs_finished_total[5m]))",
+     "legendFormat": "{{kind}} {{outcome}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "type": "timeseries",
+   "title": "Job duration p95",
+   "gridPos": {
+    "x": 0,
+    "y": 21,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "histogram_quantile(0.95, sum by (le, kind) (rate(vitram_job_duration_seconds_bucket[5m])))",
+     "legendFormat": "{{kind}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "type": "timeseries",
+   "title": "Documents by outcome",
+   "gridPos": {
+    "x": 8,
+    "y": 21,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum by (type, outcome) (increase(vitram_documents_processed_total[1h]))",
+     "legendFormat": "{{type}} {{outcome}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "type": "timeseries",
+   "title": "Gateway calls and latency p95",
+   "gridPos": {
+    "x": 16,
+    "y": 21,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum by (gateway, outcome) (rate(vitram_gateway_requests_total[5m]))",
+     "legendFormat": "{{gateway}} {{outcome}}",
+     "refId": "A"
+    },
+    {
+     "expr": "histogram_quantile(0.95, sum by (le, gateway) (rate(vitram_gateway_request_duration_seconds_bucket[5m])))",
+     "legendFormat": "p95 {{gateway}}",
+     "refId": "B"
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "type": "timeseries",
+   "title": "Circuit breaker state (0 closed, 1 half-open, 2 open)",
+   "gridPos": {
+    "x": 0,
+    "y": 28,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "vitram_circuit_state",
+     "legendFormat": "{{dependency}}",
+     "refId": "A"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "type": "timeseries",
+   "title": "Cache hit ratio",
+   "gridPos": {
+    "x": 8,
+    "y": 28,
+    "w": 8,
+    "h": 7
+   },
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percentunit"
+    },
+    "overrides": []
+   },
+   "targets": [
+    {
+     "expr": "sum by (cache) (rate(vitram_cache_total{result=\"hit\"}[5m])) / clamp_min(sum by (cache) (rate(vitram_cache_total[5m])), 1e-9)",
+     "legendFormat": "{{cache}}",
+     "refId": "A"
+    }
+   ]
+  }
+ ]
+}
